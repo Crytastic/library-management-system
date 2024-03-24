@@ -1,0 +1,22 @@
+# Maven
+**/target/
+*.iml
+
+# IntelliJ IDEA
+.idea/
+
+# Compiled class file
+*.class
+
+# Log files
+*.log
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Libraries and binaries #
+lib/
+bin/
+
