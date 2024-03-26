@@ -26,7 +26,8 @@ tbd
 tbd
 
 ## Use Case Diagram
-tbd
+
+![](./puml/useCaseDiagram.png "Use case diagram of library management system")
 
 ## Class Diagram for the DTOs
 tbd
