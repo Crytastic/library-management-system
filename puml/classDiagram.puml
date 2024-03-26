@@ -1,0 +1,46 @@
+@startuml
+
+class Book {
+String title
+String author
+String description
+BookStatus status
+}
+
+class User {
+String name
+UserType type
+}
+
+class Reservation {
+Book book
+User reservedBy
+Date reservedUntil
+}
+
+class Rental {
+Book book
+User rentedBy
+Date borrowDate
+Date returnDate
+}
+
+enum UserType {
+LIBRARIAN
+MEMBER
+}
+
+enum BookStatus {
+RESERVED
+RENTED
+AVAILABLE
+}
+
+Book -- BookStatus
+User -- UserType
+Rental "0..1" -- "1" Book
+Reservation "0..1" -- "1" Book
+Rental "0..*" -- "1" User
+Reservation "0..*" -- "1" User
+
+@enduml

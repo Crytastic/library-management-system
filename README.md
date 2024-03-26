@@ -30,7 +30,8 @@ tbd
 ![](./puml/useCaseDiagram.png "Use case diagram of library management system")
 
 ## Class Diagram for the DTOs
-tbd
+
+![](./puml/classDiagram.png "Class diagram defining DTOs of library management system")
 
 
 
