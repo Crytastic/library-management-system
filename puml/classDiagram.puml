@@ -25,6 +25,12 @@ Date borrowDate
 Date returnDate
 }
 
+class Fine {
+Rental rental
+Float amount
+Boolean paid
+}
+
 enum UserType {
 LIBRARIAN
 MEMBER
