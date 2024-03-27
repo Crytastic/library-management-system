@@ -38,9 +38,6 @@ AVAILABLE
 
 Book -- BookStatus
 User -- UserType
-Rental "0..1" -- "1" Book
-Reservation "0..1" -- "1" Book
-Rental "0..*" -- "1" User
-Reservation "0..*" -- "1" User
+
 
 @enduml
