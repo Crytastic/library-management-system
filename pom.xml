@@ -29,7 +29,7 @@
   </dependencyManagement>
 
   <modules>
-    <module>catalogue</module>
+    <module>reservation</module>
     <module>book</module>
     <module>rental</module>
     <module>fine</module>
