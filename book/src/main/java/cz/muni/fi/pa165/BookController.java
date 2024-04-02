@@ -3,7 +3,7 @@ package cz.muni.fi.pa165;
 /**
  * Hello world!
  */
-public class App {
+public class BookController {
     public static void main(String[] args) {
         System.out.println("Hello World!");
     }
