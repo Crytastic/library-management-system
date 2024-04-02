@@ -1,0 +1,27 @@
+openapi: 3.0.1
+info:
+  title: Book microservice of library management system
+  description: Book microservice of library management system that provides operations on books
+  version: 1.0.0
+servers:
+  - url: "http://localhost:8080"
+tags:
+  - name: Book
+paths:
+  /api/test:
+    get:
+      tags:
+        - Book
+      summary: Returns test message response
+      operationId: test
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: BookTestResponse
+                properties:
+                  message:
+                    type: string
