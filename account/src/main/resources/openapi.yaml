@@ -1,0 +1,23 @@
+openapi: 3.0.1
+info:
+  title: Account microservice of library management system
+  description: Account microservice of library management system that provides operations with user and user account
+  version: 1.0.0
+servers:
+  - url: "http://localhost:8080"
+tags:
+  - name: Account
+components:
+  schemas:
+    AccountDTO:
+      title: "An account"
+      description: "Account object providing information about user"
+      properties:
+        username: {type: string, description: "Username of user", example: "xholub"}
+        address: {type: string, description: "Address of user", example: "Bratislavská 850/11"}
+        accountType: {type: string, description: "Type of user in library", enum: ["Member", "Librarian"], example: "Member"}
+        birthDate: {type: string, format: date, description: "Date of birth of user", example: "2003-06-25" }
+paths: {}
+
+
+
