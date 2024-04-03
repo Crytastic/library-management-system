@@ -98,3 +98,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Rental'
+    patch:
+      tags:
+        - Rental
+      summary: Update an existing rental
+      operationId: updateRental
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          name: book
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: rentedBy
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: borrowDate
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rental'
+        '404':
+          description: Not found

@@ -46,4 +46,11 @@ public class RentalController implements RentalApi {
         return rental.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
+    @Override
+    public ResponseEntity<Rental> updateRental(Long id, String book, String rentedBy, OffsetDateTime borrowDate) {
+        Optional<Rental> rental = rentalFacade.updateById(id, book, rentedBy, borrowDate);
+        return rental.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 }
