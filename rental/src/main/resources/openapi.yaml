@@ -46,3 +46,19 @@ paths:
                 properties:
                   message:
                     type: string
+  /api/rentals:
+    get:
+      tags:
+        - Rental
+      summary: Returns all rentals
+      operationId: getRentals
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                title: RentalsResponse
+                items:
+                  $ref: '#/components/schemas/Rental'
