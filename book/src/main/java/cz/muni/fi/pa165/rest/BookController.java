@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.rest;
 import cz.muni.fi.pa165.facade.BookFacade;
 import org.openapitools.api.BookApi;
 import org.openapitools.model.Book;
+import org.openapitools.model.BookStatus;
 import org.openapitools.model.BookTestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,5 +48,11 @@ public class BookController implements BookApi {
     @Override
     public ResponseEntity<BookTestResponse> test() {
         return new ResponseEntity<>(new BookTestResponse().message("Book microservice is ready"), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Book> updateBook(Long id, String title, String author, String description, BookStatus status) {
+        Optional<Book> book = bookFacade.updateById(id, title, author, description, status);
+        return book.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

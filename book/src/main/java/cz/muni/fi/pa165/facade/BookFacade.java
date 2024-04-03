@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.facade;
 import cz.muni.fi.pa165.dao.BookDAO;
 import cz.muni.fi.pa165.service.BookService;
 import org.openapitools.model.Book;
+import org.openapitools.model.BookStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +52,13 @@ public class BookFacade {
 
     public void deleteById(Long id) {
         bookService.deleteById(id);
+    }
+
+    public Optional<Book> updateById(Long id, String title, String author, String description, BookStatus status) {
+        return bookService.updateById(id, title, author, description, status).map(dao -> new Book()
+                .title(dao.getTitle())
+                .author(dao.getAuthor())
+                .description(dao.getDescription())
+                .status(dao.getStatus()));
     }
 }

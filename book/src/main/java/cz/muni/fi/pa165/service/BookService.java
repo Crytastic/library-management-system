@@ -34,4 +34,22 @@ public class BookService {
     public void deleteById(Long id) {
         bookRepository.deleteById(id);
     }
+
+    public Optional<BookDAO> updateById(Long id, String title, String author, String description, BookStatus status) {
+        Optional<BookDAO> optionalBook = bookRepository.findById(id);
+
+        if (optionalBook.isEmpty()) {
+            return Optional.empty();
+        }
+
+        BookDAO bookDao = optionalBook.get();
+
+        if (title != null) bookDao.setTitle(title);
+        if (author != null) bookDao.setAuthor(author);
+        if (description != null) bookDao.setDescription(description);
+        if (status != null) bookDao.setStatus(status);
+
+        return bookRepository.updateById(bookDao.getId(), bookDao);
+
+    }
 }

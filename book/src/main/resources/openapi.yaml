@@ -98,6 +98,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Book'
+        '404':
+          description: Not found
 
     delete:
       tags:
@@ -114,3 +116,45 @@ paths:
       responses:
         '204':
           description: No content
+
+    patch:
+      tags:
+        - Book
+      summary: Update a existing book
+      operationId: updateBook
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          name: title
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: author
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: description
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: status
+          required: false
+          schema:
+            $ref: '#/components/schemas/BookStatus'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Not found

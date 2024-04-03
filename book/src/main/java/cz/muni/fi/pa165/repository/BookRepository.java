@@ -31,4 +31,10 @@ public class BookRepository {
     public void deleteById(Long id) {
         books.remove(id);
     }
+
+    public Optional<BookDAO> updateById(Long id, BookDAO bookDAO) {
+        books.put(id, bookDAO);
+        return Optional.ofNullable(bookDAO);
+    }
+
 }
