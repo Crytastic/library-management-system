@@ -16,7 +16,7 @@ components:
         - Available
         - Reserved
         - Rented
-    Book:
+    BookDTO:
       title: "A book"
       description: "Book object"
       properties:
@@ -85,7 +85,7 @@ paths:
                 type: array
                 title: BooksResponse
                 items:
-                  $ref: '#/components/schemas/Book'
+                  $ref: '#/components/schemas/BookDTO'
     post:
       tags:
         - Book
@@ -101,7 +101,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Book'
+                $ref: '#/components/schemas/BookDTO'
 
   /api/books/{id}:
     get:
@@ -122,7 +122,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Book'
+                $ref: '#/components/schemas/BookDTO'
         '404':
           description: Not found
 
@@ -180,7 +180,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Book'
+                $ref: '#/components/schemas/BookDTO'
         '404':
           description: Not found
 

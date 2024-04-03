@@ -2,7 +2,7 @@ package cz.muni.fi.pa165.facade;
 
 import cz.muni.fi.pa165.dao.BookDAO;
 import cz.muni.fi.pa165.service.BookService;
-import org.openapitools.model.Book;
+import org.openapitools.model.BookDTO;
 import org.openapitools.model.BookStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,11 +21,11 @@ public class BookFacade {
         this.bookService = bookService;
     }
 
-    public List<Book> findByFilter(String title, String author, String description, BookStatus status) {
+    public List<BookDTO> findByFilter(String title, String author, String description, BookStatus status) {
         return bookService
                 .findByFilter(title, author, description, status)
                 .stream()
-                .map(dao -> new Book()
+                .map(dao -> new BookDTO()
                         .author(dao.getAuthor())
                         .description(dao.getDescription())
                         .status(dao.getStatus())
@@ -33,17 +33,17 @@ public class BookFacade {
                 .collect(Collectors.toList());
     }
 
-    public Book createBook(String title, String description, String author) {
+    public BookDTO createBook(String title, String description, String author) {
         BookDAO bookDAO = bookService.createBook(title, description, author);
-        return new Book()
+        return new BookDTO()
                 .title(bookDAO.getTitle())
                 .description(bookDAO.getDescription())
                 .author(bookDAO.getAuthor())
                 .status(bookDAO.getStatus());
     }
 
-    public Optional<Book> findById(Long id) {
-        return bookService.findById(id).map(dao -> new Book()
+    public Optional<BookDTO> findById(Long id) {
+        return bookService.findById(id).map(dao -> new BookDTO()
                 .title(dao.getTitle())
                 .author(dao.getAuthor())
                 .description(dao.getDescription())
@@ -54,8 +54,8 @@ public class BookFacade {
         bookService.deleteById(id);
     }
 
-    public Optional<Book> updateById(Long id, String title, String author, String description, BookStatus status) {
-        return bookService.updateById(id, title, author, description, status).map(dao -> new Book()
+    public Optional<BookDTO> updateById(Long id, String title, String author, String description, BookStatus status) {
+        return bookService.updateById(id, title, author, description, status).map(dao -> new BookDTO()
                 .title(dao.getTitle())
                 .author(dao.getAuthor())
                 .description(dao.getDescription())

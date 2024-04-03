@@ -2,7 +2,7 @@ package cz.muni.fi.pa165.rest;
 
 import cz.muni.fi.pa165.facade.BookFacade;
 import org.openapitools.api.BookApi;
-import org.openapitools.model.Book;
+import org.openapitools.model.BookDTO;
 import org.openapitools.model.BookStatus;
 import org.openapitools.model.BookTestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class BookController implements BookApi {
     }
 
     @Override
-    public ResponseEntity<Book> createBook(String title, String description, String author) {
+    public ResponseEntity<BookDTO> createBook(String title, String description, String author) {
         return new ResponseEntity<>(bookFacade.createBook(title, description, author), HttpStatus.CREATED);
     }
 
@@ -35,8 +35,8 @@ public class BookController implements BookApi {
     }
 
     @Override
-    public ResponseEntity<Book> getBook(Long id) {
-        Optional<Book> book = bookFacade.findById(id);
+    public ResponseEntity<BookDTO> getBook(Long id) {
+        Optional<BookDTO> book = bookFacade.findById(id);
         return book.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
@@ -47,7 +47,7 @@ public class BookController implements BookApi {
     }
 
     @Override
-    public ResponseEntity<List<Book>> getBooks(String title, String author, String description, BookStatus status) {
+    public ResponseEntity<List<BookDTO>> getBooks(String title, String author, String description, BookStatus status) {
             return new ResponseEntity<>(bookFacade.findByFilter(title, author, description, status), HttpStatus.OK);
     }
 
@@ -57,8 +57,8 @@ public class BookController implements BookApi {
     }
 
     @Override
-    public ResponseEntity<Book> updateBook(Long id, String title, String author, String description, BookStatus status) {
-        Optional<Book> book = bookFacade.updateById(id, title, author, description, status);
+    public ResponseEntity<BookDTO> updateBook(Long id, String title, String author, String description, BookStatus status) {
+        Optional<BookDTO> book = bookFacade.updateById(id, title, author, description, status);
         return book.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
