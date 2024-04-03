@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
-import java.util.ArrayList;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Controller
@@ -31,5 +31,11 @@ public class RentalController implements RentalApi {
     @Override
     public ResponseEntity<List<Rental>> getRentals() {
         return new ResponseEntity<>(rentalFacade.findAll(), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Rental> createRental(String book, String rentedBy, OffsetDateTime borrowDate) {
+        Rental createdRental = rentalFacade.createRental(book, rentedBy, borrowDate);
+        return new ResponseEntity<>(createdRental, HttpStatus.CREATED);
     }
 }

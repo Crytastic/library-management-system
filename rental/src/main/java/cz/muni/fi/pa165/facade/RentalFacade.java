@@ -6,6 +6,7 @@ import org.openapitools.model.Rental;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,11 @@ public class RentalFacade {
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public Rental createRental(String book, String rentedBy, OffsetDateTime borrowDate) {
+        RentalDAO rentalDAO = rentalService.createRental(book, rentedBy, borrowDate);
+        return convertToDTO(rentalDAO);
     }
 
     private Rental convertToDTO(RentalDAO rentalDAO) {

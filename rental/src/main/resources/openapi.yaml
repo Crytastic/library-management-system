@@ -62,3 +62,19 @@ paths:
                 title: RentalsResponse
                 items:
                   $ref: '#/components/schemas/Rental'
+    post:
+      tags:
+        - Rental
+      summary: Creates new rental
+      operationId: createRental
+      parameters:
+        - { name: book, in: query, required: true, schema: { type: string }, description: "Title of book" }
+        - { name: rentedBy, in: query, required: true, schema: { type: string }, description: "Name of renter" }
+        - { name: borrowDate, in: query, required: true, schema: { type: string, format: date-time }, description: "Borrow date" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rental'
