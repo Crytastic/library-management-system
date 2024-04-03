@@ -2,21 +2,21 @@ package cz.muni.fi.pa165.data.model;
 
 import java.time.LocalDate;
 
-public class Account {
+public class UserDAO {
 
     private Long id;
 
     private String username;
 
-    private String accountType;
-
     private String address;
+
+    private String userType;
 
     private LocalDate birthDate;
 
-    public Account(String username, String accountType, String address, LocalDate birthDate) {
+    public UserDAO(String username, String accountType, String address, LocalDate birthDate) {
         this.username = username;
-        this.accountType = accountType;
+        this.userType = accountType;
         this.address = address;
         this.birthDate = birthDate;
     }
@@ -25,8 +25,8 @@ public class Account {
         this.username = username;
     }
 
-    public void setAccountType(String accountType) {
-        this.accountType = accountType;
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     public void setAddress(String address) {
@@ -45,8 +45,8 @@ public class Account {
         return username;
     }
 
-    public String getAccountType() {
-        return accountType;
+    public String getUserType() {
+        return userType;
     }
 
     public String getAddress() {

@@ -1,15 +1,15 @@
 package cz.muni.fi.pa165.rest;
 
-import cz.muni.fi.pa165.facade.AccountFacade;
+import cz.muni.fi.pa165.facade.UserFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class AccountRestController {
+public class UserRestController {
 
-    private final AccountFacade accountFacade;
+    private final UserFacade accountFacade;
 
-    public AccountRestController(@Autowired AccountFacade accountFacade) {
+    public UserRestController(@Autowired UserFacade accountFacade) {
         this.accountFacade = accountFacade;
     }
 }
