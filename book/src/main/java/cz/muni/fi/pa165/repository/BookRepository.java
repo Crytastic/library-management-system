@@ -27,4 +27,8 @@ public class BookRepository {
     public Optional<BookDAO> findById(Long id) {
         return Optional.ofNullable(books.get(id));
     }
+
+    public void deleteById(Long id) {
+        books.remove(id);
+    }
 }

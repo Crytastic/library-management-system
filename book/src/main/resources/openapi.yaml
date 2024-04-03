@@ -98,3 +98,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Book'
+
+    delete:
+      tags:
+        - Book
+      summary: Delete book by id
+      operationId: deleteBook
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No content

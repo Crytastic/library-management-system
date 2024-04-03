@@ -30,4 +30,8 @@ public class BookService {
     public Optional<BookDAO> findById(Long id) {
         return bookRepository.findById(id);
     }
+
+    public void deleteById(Long id) {
+        bookRepository.deleteById(id);
+    }
 }

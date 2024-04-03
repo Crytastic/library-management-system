@@ -28,6 +28,12 @@ public class BookController implements BookApi {
     }
 
     @Override
+    public ResponseEntity<Void> deleteBook(Long id) {
+        bookFacade.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Override
     public ResponseEntity<Book> getBook(Long id) {
         Optional<Book> book = bookFacade.findById(id);
         return book.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));

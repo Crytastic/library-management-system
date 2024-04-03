@@ -48,4 +48,8 @@ public class BookFacade {
                 .description(dao.getDescription())
                 .status(dao.getStatus()));
     }
+
+    public void deleteById(Long id) {
+        bookService.deleteById(id);
+    }
 }
