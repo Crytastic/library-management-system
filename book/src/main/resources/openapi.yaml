@@ -183,3 +183,28 @@ paths:
                 $ref: '#/components/schemas/Book'
         '404':
           description: Not found
+
+  /api/books/{id}/rentals:
+    get:
+      tags:
+        - Book
+      summary: Get all rentals of specific book
+      operationId: getBookRentals
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:                 #  schema:
+                type: array           #    $ref: '#/path/to/rental/schema'
+                items:
+                  type: string
+        '404':
+          description: Book not found

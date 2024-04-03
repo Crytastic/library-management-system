@@ -41,6 +41,12 @@ public class BookController implements BookApi {
     }
 
     @Override
+    public ResponseEntity<List<String>> getBookRentals(Long id) {
+        Optional<List<String>> rentals = bookFacade.findBookRentals(id);
+        return rentals.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @Override
     public ResponseEntity<List<Book>> getBooks(String title, String author, String description, BookStatus status) {
             return new ResponseEntity<>(bookFacade.findByFilter(title, author, description, status), HttpStatus.OK);
     }
