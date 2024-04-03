@@ -7,6 +7,18 @@ servers:
   - url: "http://localhost:8080"
 tags:
   - name: Book
+
+components:
+  schemas:
+    Book:
+      title: "A book"
+      description: "Book object"
+      properties:
+        title: {type: string, description: "Book title / name", example: "Java tutorial"}
+        description: {type: string, description: "Description of the book", example: "It is *** hard"}
+        author: {type: string, description: "Author name", example: "Bruno Rossi"}
+        status: {type: string, description: "Status of the book", enum: ["Available", "Reserved", "Rented"], example: "Reserved" }
+
 paths:
   /api/test:
     get:
