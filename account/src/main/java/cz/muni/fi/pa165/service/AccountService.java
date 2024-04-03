@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.service;
 
-import cz.muni.fi.pa165.data.AccountRepository;
+import cz.muni.fi.pa165.data.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
