@@ -37,3 +37,20 @@ paths:
                 properties:
                   message:
                     type: string
+
+  /api/books:
+    get:
+      tags:
+        - Book
+      summary: Returns all books
+      operationId: getBooks
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                title: BooksResponse
+                items:
+                  $ref: '#/components/schemas/Book'

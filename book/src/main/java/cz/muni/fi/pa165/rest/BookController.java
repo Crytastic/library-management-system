@@ -2,11 +2,14 @@ package cz.muni.fi.pa165.rest;
 
 import cz.muni.fi.pa165.facade.BookFacade;
 import org.openapitools.api.BookApi;
+import org.openapitools.model.Book;
 import org.openapitools.model.BookTestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class BookController implements BookApi {
@@ -16,6 +19,11 @@ public class BookController implements BookApi {
     @Autowired
     public BookController(BookFacade bookFacade) {
         this.bookFacade = bookFacade;
+    }
+
+    @Override
+    public ResponseEntity<List<Book>> getBooks() {
+        return new ResponseEntity<>(bookFacade.findAll(), HttpStatus.OK);
     }
 
     @Override

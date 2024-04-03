@@ -13,7 +13,8 @@ public class BookDAO {
 
     Book.StatusEnum status;
 
-    public BookDAO(String title, String author, String description, Book.StatusEnum status) {
+    public BookDAO(Long id, String title, String author, String description, Book.StatusEnum status) {
+        this.id = id;
         this.title = title;
         this.author = author;
         this.description = description;
