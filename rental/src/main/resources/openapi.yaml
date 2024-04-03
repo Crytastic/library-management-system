@@ -1,0 +1,28 @@
+openapi: 3.0.1
+info:
+  title: Rental microservice of library management system
+  description: Rental microservice of library management system that provides operations on rentals
+  version: 1.0.0
+servers:
+  - url: "http://localhost:8081"
+tags:
+  - name: Rental
+
+paths:
+  /api/test:
+    get:
+      tags:
+        - Rental
+      summary: Returns test message response
+      operationId: test
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: RentalTestResponse
+                properties:
+                  message:
+                    type: string
