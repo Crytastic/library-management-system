@@ -21,9 +21,9 @@ public class BookFacade {
         this.bookService = bookService;
     }
 
-    public List<Book> findAll() {
+    public List<Book> findByFilter(String title, String author, String description, BookStatus status) {
         return bookService
-                .findAll()
+                .findByFilter(title, author, description, status)
                 .stream()
                 .map(dao -> new Book()
                         .author(dao.getAuthor())

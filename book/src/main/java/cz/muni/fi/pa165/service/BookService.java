@@ -19,8 +19,8 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public List<BookDAO> findAll() {
-        return bookRepository.findAll();
+    public List<BookDAO> findByFilter(String title, String author, String description, BookStatus status) {
+        return bookRepository.findByFilter(title, author, description, status);
     }
 
     public BookDAO createBook(String title, String description, String author) {

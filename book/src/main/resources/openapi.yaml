@@ -49,8 +49,33 @@ paths:
     get:
       tags:
         - Book
-      summary: Returns all books
+      summary: Returns all books that match provided filter
       operationId: getBooks
+      parameters:
+        - in: query
+          name: title
+          required: false
+          description: "Equals match"
+          schema:
+              type: string
+        - in: query
+          name: author
+          required: false
+          description: "Equals match"
+          schema:
+            type: string
+        - in: query
+          name: description
+          required: false
+          description: "Contains match"
+          schema:
+            type: string
+        - in: query
+          name: status
+          required: false
+          description: "Equals match"
+          schema:
+            $ref: '#/components/schemas/BookStatus'
       responses:
         "200":
           description: OK
