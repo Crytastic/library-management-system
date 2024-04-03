@@ -18,8 +18,19 @@ components:
         userType: {type: string, description: "Type of user in library", enum: ["Member", "Librarian"], example: "Member"}
         birthDate: {type: string, format: date, description: "Date of birth of user", example: "2003-06-25" }
 paths:
-  {}
-
-
-
-
+  /api/users:
+    get:
+      tags:
+        - User
+      summary: Returns all users
+      operationId: getUsers
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                title: UsersResponse
+                items:
+                  $ref: '#/components/schemas/UserDTO'
