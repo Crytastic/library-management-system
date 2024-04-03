@@ -5,6 +5,7 @@ import cz.muni.fi.pa165.repository.RentalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +24,7 @@ public class RentalService {
         return rentalRepository.findAll();
     }
 
-    public RentalDAO createRental(String book, String rentedBy, Date borrowDate) {
+    public RentalDAO createRental(String book, String rentedBy, OffsetDateTime borrowDate) {
         return rentalRepository.store(new RentalDAO(book, rentedBy, borrowDate));
     }
 
@@ -35,7 +36,7 @@ public class RentalService {
         rentalRepository.deleteById(id);
     }
 
-    public Optional<RentalDAO> updateById(Long id, String book, String rentedBy, Date borrowDate) {
+    public Optional<RentalDAO> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate) {
         Optional<RentalDAO> optionalRental = rentalRepository.findById(id);
 
         if (optionalRental.isEmpty()) {

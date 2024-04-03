@@ -1,14 +1,15 @@
 package cz.muni.fi.pa165.dao;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 
 public class RentalDAO {
     private Long id;
     private String book;
     private String rentedBy;
-    private Date borrowDate;
+    private OffsetDateTime borrowDate;
 
-    public RentalDAO(String book, String rentedBy, Date borrowDate) {
+    public RentalDAO(String book, String rentedBy, OffsetDateTime borrowDate) {
         this.book = book;
         this.rentedBy = rentedBy;
         this.borrowDate = borrowDate;
@@ -26,7 +27,7 @@ public class RentalDAO {
         return rentedBy;
     }
 
-    public Date getBorrowDate() {
+    public OffsetDateTime getBorrowDate() {
         return borrowDate;
     }
 
@@ -42,7 +43,7 @@ public class RentalDAO {
         this.rentedBy = rentedBy;
     }
 
-    public void setBorrowDate(Date borrowDate) {
+    public void setBorrowDate(OffsetDateTime borrowDate) {
         this.borrowDate = borrowDate;
     }
 }
