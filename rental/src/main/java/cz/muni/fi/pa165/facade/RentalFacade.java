@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +32,10 @@ public class RentalFacade {
     public Rental createRental(String book, String rentedBy, OffsetDateTime borrowDate) {
         RentalDAO rentalDAO = rentalService.createRental(book, rentedBy, borrowDate);
         return convertToDTO(rentalDAO);
+    }
+
+    public Optional<Rental> findById(Long id) {
+        return rentalService.findById(id).map(this::convertToDTO);
     }
 
     private Rental convertToDTO(RentalDAO rentalDAO) {

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class RentalController implements RentalApi {
@@ -37,5 +38,12 @@ public class RentalController implements RentalApi {
     public ResponseEntity<Rental> createRental(String book, String rentedBy, OffsetDateTime borrowDate) {
         Rental createdRental = rentalFacade.createRental(book, rentedBy, borrowDate);
         return new ResponseEntity<>(createdRental, HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<Rental> getRental(Long id) {
+        Optional<Rental> rental = rentalFacade.findById(id);
+        return rental.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
