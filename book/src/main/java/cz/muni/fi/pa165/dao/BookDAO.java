@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.dao;
 
-import org.openapitools.model.Book;
+import org.openapitools.model.BookStatus;
 
 public class BookDAO {
     Long id;
@@ -11,10 +11,9 @@ public class BookDAO {
 
     String description;
 
-    Book.StatusEnum status;
+    BookStatus status;
 
-    public BookDAO(Long id, String title, String author, String description, Book.StatusEnum status) {
-        this.id = id;
+    public BookDAO(String title, String author, String description, BookStatus status) {
         this.title = title;
         this.author = author;
         this.description = description;
@@ -37,7 +36,7 @@ public class BookDAO {
         return description;
     }
 
-    public Book.StatusEnum getStatus() {
+    public BookStatus getStatus() {
         return status;
     }
 
@@ -57,7 +56,7 @@ public class BookDAO {
         this.description = description;
     }
 
-    public void setStatus(Book.StatusEnum status) {
+    public void setStatus(BookStatus status) {
         this.status = status;
     }
 }

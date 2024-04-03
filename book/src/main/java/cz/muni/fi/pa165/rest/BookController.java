@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.rest;
 import cz.muni.fi.pa165.facade.BookFacade;
 import org.openapitools.api.BookApi;
 import org.openapitools.model.Book;
+import org.openapitools.model.BookStatus;
 import org.openapitools.model.BookTestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,11 @@ public class BookController implements BookApi {
     @Autowired
     public BookController(BookFacade bookFacade) {
         this.bookFacade = bookFacade;
+    }
+
+    @Override
+    public ResponseEntity<Book> createBook(String title, String description, String author) {
+        return new ResponseEntity<>(bookFacade.createBook(title, description, author), HttpStatus.CREATED);
     }
 
     @Override
