@@ -1,8 +1,8 @@
-package cz.muni.fi.pa165.dto;
+package cz.muni.fi.pa165.dao;
 
 import org.openapitools.model.Book;
 
-public class BookDTO {
+public class BookDAO {
     Long id;
 
     String title;
@@ -13,7 +13,7 @@ public class BookDTO {
 
     Book.StatusEnum status;
 
-    public BookDTO(String title, String author, String description, Book.StatusEnum status) {
+    public BookDAO(String title, String author, String description, Book.StatusEnum status) {
         this.title = title;
         this.author = author;
         this.description = description;
