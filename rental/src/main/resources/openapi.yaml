@@ -8,6 +8,26 @@ servers:
 tags:
   - name: Rental
 
+components:
+  schemas:
+    Rental:
+      title: "A rental"
+      description: "Represents a single rental of a book in a library"
+      properties:
+        book:
+          type: string
+          description: "Title of the book being rented"
+          example: "The Lords of the Rings: The Two Towers"
+        rentedBy:
+          type: string
+          description: "Name of the person renting the book"
+          example: "Franta Vopršálek"
+        borrowDate:
+          type: string
+          format: date-time
+          description: "Date when the book was borrowed"
+          example: "2024-04-03T10:15:30Z"
+
 paths:
   /api/test:
     get:
