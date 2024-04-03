@@ -77,3 +77,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Book'
+
+  /api/books/{id}:
+    get:
+      tags:
+        - Book
+      summary: Get book by id
+      operationId: getBook
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
