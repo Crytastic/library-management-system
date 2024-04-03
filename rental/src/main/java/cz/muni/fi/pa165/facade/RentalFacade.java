@@ -38,6 +38,10 @@ public class RentalFacade {
         return rentalService.findById(id).map(this::convertToDTO);
     }
 
+    public boolean deleteById(Long id) {
+        return rentalService.deleteById(id);
+    }
+
     public Optional<Rental> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate) {
         return rentalService.updateById(id, book, rentedBy, borrowDate).map(this::convertToDTO);
     }

@@ -27,8 +27,8 @@ public class RentalRepository {
         return Optional.ofNullable(rentals.get(id));
     }
 
-    public void deleteById(Long id) {
-        rentals.remove(id);
+    public boolean deleteById(Long id) {
+        return rentals.remove(id) != null;
     }
 
     public Optional<RentalDAO> updateById(Long id, RentalDAO rentalDAO) {

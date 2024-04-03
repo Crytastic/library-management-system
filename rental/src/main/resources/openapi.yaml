@@ -135,3 +135,22 @@ paths:
                 $ref: '#/components/schemas/Rental'
         '404':
           description: Not found
+    delete:
+      tags:
+        - Rental
+      summary: Delete rental by id
+      operationId: deleteRental
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully deleted
+        '204':
+          description: Failed to delete or couldn't find the rental
+        '404':
+          description: No such rental

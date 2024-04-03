@@ -32,8 +32,8 @@ public class RentalService {
         return rentalRepository.findById(id);
     }
 
-    public void deleteById(Long id) {
-        rentalRepository.deleteById(id);
+    public boolean deleteById(Long id) {
+        return rentalRepository.deleteById(id);
     }
 
     public Optional<RentalDAO> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate) {
