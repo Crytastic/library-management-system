@@ -154,8 +154,8 @@ public class BookControllerTest {
         // Arrange
         Long id = 1L;
         String title = "The Lord of the Rings";
-        String description = "Fantasy novel";
         String author = "Tolkien";
+        String description = "Fantasy novel";
         BookStatus status = BookStatus.AVAILABLE;
         when(bookFacade.updateById(id, title, author, description, status)).thenReturn(Optional.empty());
 
@@ -165,5 +165,24 @@ public class BookControllerTest {
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody()).isNull();
+    }
+
+    @Test
+    void getBooks_validParameters_returnsBooks() {
+        // Arrange
+        String title = "The Lord of the Rings";
+        String author = "Tolkien";
+        String description = "Fantasy novel";
+        BookStatus status = BookStatus.AVAILABLE;
+        List<BookDTO> books = new ArrayList<>();
+        books.add(BookDTOFactory.createBook(title, author, description, status));
+        when(bookFacade.findByFilter(title, author, description, status)).thenReturn(books);
+
+        // Act
+        ResponseEntity<List<BookDTO>> response = bookController.getBooks(title, author, description, status);
+
+        // Assert
+        assertThat(response.getBody()).isEqualTo(books);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }
