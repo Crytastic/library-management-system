@@ -8,8 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.openapitools.model.BookStatus;
 
 import java.util.ArrayList;
@@ -17,8 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BookServiceTest {
@@ -72,7 +69,6 @@ public class BookServiceTest {
         assertThat(result).isEmpty();
     }
 
-    @MockitoSettings(strictness = Strictness.LENIENT)
     @Test
     void updateById_bookFound_updatesBook() {
         // Arrange
@@ -195,5 +191,17 @@ public class BookServiceTest {
 
         // Assert
         assertThat(result).isNotNull().hasSize(2).containsExactlyInAnyOrder(book1, book2);
+    }
+
+    @Test
+    void deleteById_singleBookDelete_callsBookRepositoryDelete() {
+        // Arrange
+        Long idToDelete = 1L;
+
+        // Act
+        bookService.deleteById(idToDelete);
+
+        // Assert
+        verify(bookRepository, times(1)).deleteById(idToDelete);
     }
 }
