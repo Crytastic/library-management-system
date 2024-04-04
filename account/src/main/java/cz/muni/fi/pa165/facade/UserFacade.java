@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.facade;
 
 import cz.muni.fi.pa165.data.model.UserDAO;
+import cz.muni.fi.pa165.exception.UnauthorisedException;
 import cz.muni.fi.pa165.service.UserService;
 import org.openapitools.model.UserDTO;
 import org.openapitools.model.UserType;
@@ -61,4 +62,11 @@ public class UserFacade {
         userService.deleteById(id);
     }
 
+    public Optional<UserDTO> updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) throws UnauthorisedException {
+        return userService.updateUser(id, username, password, address, birthdate, userType).map(dao -> new UserDTO()
+                .username(dao.getUsername())
+                .address(dao.getAddress())
+                .birthDate(dao.getBirthDate())
+                .userType(dao.getUserType()));
+    }
 }

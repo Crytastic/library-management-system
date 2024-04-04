@@ -35,7 +35,7 @@ public class UserRepository {
     }
 
     public UserDAO saveUser(String username, String passwordHash, String address, LocalDate birthDate, UserType userType) {
-        UserDAO newUser = new UserDAO(username, passwordHash, userType, address, birthDate);
+        UserDAO newUser = new UserDAO(index, username, passwordHash, userType, address, birthDate);
         users.put(index, newUser);
         index++;
         return newUser;
@@ -55,4 +55,19 @@ public class UserRepository {
         return period.getYears();
     }
 
+    public UserDAO findUserByUsername(String username) {
+        List<UserDAO> optionalUser = users.values()
+                .stream()
+                .filter(user -> user.getUsername().equals(username))
+                .toList();
+        if (optionalUser.isEmpty()) {
+            return null;
+        }
+        return optionalUser.getFirst();
+    }
+
+    public UserDAO updateUser(Long id, UserDAO userToUpdate) {
+        users.put(id, userToUpdate);
+        return users.get(id);
+    }
 }

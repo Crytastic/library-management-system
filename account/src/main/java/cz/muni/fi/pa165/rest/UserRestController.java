@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.rest;
 
+import cz.muni.fi.pa165.exception.UnauthorisedException;
 import cz.muni.fi.pa165.facade.UserFacade;
 import org.openapitools.api.UserApi;
 import org.openapitools.model.UserDTO;
@@ -48,5 +49,15 @@ public class UserRestController implements UserApi {
     @Override
     public ResponseEntity<List<UserDTO>> getAdultUsers() {
         return new ResponseEntity<>(userFacade.findAllAdults(), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<UserDTO> updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) {
+        try {
+            Optional<UserDTO> user = userFacade.updateUser(id, username, password, address, birthdate, userType);
+            return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        } catch (UnauthorisedException e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 }

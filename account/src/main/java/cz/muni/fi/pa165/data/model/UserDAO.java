@@ -18,7 +18,8 @@ public class UserDAO {
 
     private LocalDate birthDate;
 
-    public UserDAO(String username, String passwordHash, UserType userType, String address, LocalDate birthDate) {
+    public UserDAO(Long id, String username, String passwordHash, UserType userType, String address, LocalDate birthDate) {
+        this.id = id;
         this.username = username;
         this.passwordHash = passwordHash;
         this.userType = userType;
@@ -60,5 +61,9 @@ public class UserDAO {
 
     public LocalDate getBirthDate() {
         return birthDate;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
     }
 }
