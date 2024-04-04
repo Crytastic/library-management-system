@@ -42,6 +42,7 @@ public class ReservationRepository {
         return reservations
                 .values()
                 .stream()
-                .filter(reservationDAO -> reservationDAO.getReservedTo().isAfter(currentDateTime)).toList();
+                .filter(reservationDAO -> reservationDAO.getReservedTo().isAfter(currentDateTime) &&
+                        reservationDAO.getReservedFrom().isBefore(currentDateTime)).toList();
     }
 }
