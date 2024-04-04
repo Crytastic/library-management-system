@@ -86,4 +86,13 @@ class UserServiceTest {
                         any(LocalDate.class),
                         any(UserType.class));
     }
+
+    @Test
+    void deleteById_callsUserRepositoryDelete() {
+        Long idToDelete = 1L;
+
+        userService.deleteById(idToDelete);
+
+        verify(userRepository, times(1)).deleteById(idToDelete);
+    }
 }
