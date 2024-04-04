@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 public class ReservationFacade {
 
     ReservationService reservationService;
+
     @Autowired
     public ReservationFacade(ReservationService reservationService) {
         this.reservationService = reservationService;
@@ -33,5 +34,11 @@ public class ReservationFacade {
                 .reservedFrom(reservationDAO.getReservedFrom())
                 .reservedTo(reservationDAO.getReservedTo());
     }
+
+    public ReservationDTO createRental(String book, String reservedBy) {
+        ReservationDAO rentalDAO = reservationService.createRental(book, reservedBy);
+        return convertToDTO(rentalDAO);
+    }
+
 
 }

@@ -15,4 +15,12 @@ public class ReservationRepository {
         return reservations.values().stream().toList();
     }
 
+    public ReservationDAO store(ReservationDAO reservationDAO) {
+        reservationDAO.setId(index);
+        reservations.put(reservationDAO.getId(), reservationDAO);
+        index++;
+        return reservationDAO;
+    }
+
+
 }

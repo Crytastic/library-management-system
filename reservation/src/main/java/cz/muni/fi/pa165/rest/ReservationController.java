@@ -16,10 +16,15 @@ public class ReservationController implements ReservationApi {
 
     ReservationFacade reservationFacade;
 
-
     @Autowired
     public ReservationController(ReservationFacade reservationFacade) {
         this.reservationFacade = reservationFacade;
+    }
+
+    @Override
+    public ResponseEntity<ReservationDTO> createReservation(String book, String reservedBy) {
+        ReservationDTO createdReservation = reservationFacade.createRental(book, reservedBy);
+        return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
     }
 
     @Override

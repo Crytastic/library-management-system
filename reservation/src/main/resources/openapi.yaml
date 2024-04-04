@@ -53,4 +53,27 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ReservationDTO'
+    post:
+      tags:
+        - Reservation
+      summary: Creates new reservation
+      operationId: createReservation
+      parameters:
+        - { name: book,
+            in: query,
+            required: true,
+            schema: { type: string },
+            description: "Title of book" }
+        - { name: reservedBy,
+            in: query,
+            required: true,
+            schema: { type: string },
+            description: "Name of User" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationDTO'
 
