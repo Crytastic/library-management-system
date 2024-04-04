@@ -31,7 +31,7 @@ class UserServiceTest {
     private UserService userService;
 
     @Test
-    void findById_UserFound_ReturnsUser() {
+    void findById_userFound_returnsUser() {
         Mockito.when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.userDAO));
 
         Optional<UserDAO> userDAO = userService.findById(1L);
@@ -41,7 +41,7 @@ class UserServiceTest {
     }
 
     @Test
-    void findById_UserNotFound_ReturnsEmptyOptional() {
+    void findById_userNotFound_returnsEmptyOptional() {
         Mockito.when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         Optional<UserDAO> userDAO = userService.findById(1L);
@@ -50,7 +50,7 @@ class UserServiceTest {
     }
 
     @Test
-    void createUser_ReturnsNewUser() {
+    void createUser_returnsNewUser() {
         String username = "programmer123";
         String passwordHash = "passwordHash";
         UserType userType = UserType.MEMBER;
