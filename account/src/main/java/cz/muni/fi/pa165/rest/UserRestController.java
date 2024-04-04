@@ -3,24 +3,31 @@ package cz.muni.fi.pa165.rest;
 import cz.muni.fi.pa165.facade.UserFacade;
 import org.openapitools.api.UserApi;
 import org.openapitools.model.UserDTO;
+import org.openapitools.model.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 public class UserRestController implements UserApi {
 
-    private final UserFacade accountFacade;
+    private final UserFacade userFacade;
 
-    public UserRestController(@Autowired UserFacade accountFacade) {
-        this.accountFacade = accountFacade;
+    public UserRestController(@Autowired UserFacade userFacade) {
+        this.userFacade = userFacade;
+    }
+
+    @Override
+    public ResponseEntity<UserDTO> createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {
+        return new ResponseEntity<>(userFacade.createUser(username, password, address, birthDate, userType), HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<List<UserDTO>> getUsers() {
-        return new ResponseEntity<>(accountFacade.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(userFacade.findAll(), HttpStatus.OK);
     }
 }

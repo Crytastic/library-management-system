@@ -4,19 +4,26 @@ info:
   description: User microservice of library management system that provides operations with user
   version: 1.0.0
 servers:
-  - url: "http://localhost:8080"
+  - url: "http://localhost:8082"
 tags:
   - name: User
 components:
   schemas:
+    UserType:
+      type: string
+      enum:
+        - Member
+        - Librarian
+
     UserDTO:
       title: "An user"
       description: "User object providing information about user"
       properties:
         username: {type: string, description: "Username of user", example: "xholub"}
         address: {type: string, description: "Address of user", example: "Bratislavská 850/11"}
-        userType: {type: string, description: "Type of user in library", enum: ["Member", "Librarian"], example: "Member"}
-        birthDate: {type: string, format: date, description: "Date of birth of user", example: "2003-06-25" }
+        birthDate: {type: string, format: date, description: "Date of birth of user", example: "2003-06-25"}
+        userType:
+          $ref: '#/components/schemas/UserType'
 paths:
   /api/users:
     get:
@@ -34,3 +41,23 @@ paths:
                 title: UsersResponse
                 items:
                   $ref: '#/components/schemas/UserDTO'
+  /api/user:
+    post:
+      tags:
+        - User
+      summary: Creates new user account
+      operationId: createUser
+      parameters:
+        - { name: username, in: query, required: true, schema: { type: string }, description: "Username of user" }
+        - { name: password, in: query, required: true, schema: { type: string }, description: "Password of user" }
+        - { name: address, in: query, required: true, schema: { type: string }, description: "Address of user" }
+        - { name: birthDate, in: query, required: true, schema: { type: string, format: date }, description: "Date of birth for user" }
+        - { name: userType, in: query, required: true, schema: { $ref: '#/components/schemas/UserType' }, description: "Type of user"}
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDTO'
+
