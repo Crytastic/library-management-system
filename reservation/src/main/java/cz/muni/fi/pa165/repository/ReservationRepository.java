@@ -45,4 +45,13 @@ public class ReservationRepository {
                 .filter(reservationDAO -> reservationDAO.getReservedTo().isAfter(currentDateTime) &&
                         reservationDAO.getReservedFrom().isBefore(currentDateTime)).toList();
     }
+
+    public List<ReservationDAO> findAllExpired() {
+        OffsetDateTime currentDateTime = OffsetDateTime.now();
+        return reservations
+                .values()
+                .stream()
+                .filter(reservationDAO -> reservationDAO.getReservedTo().isBefore(currentDateTime) &&
+                        reservationDAO.getReservedFrom().isBefore(currentDateTime)).toList();
+    }
 }

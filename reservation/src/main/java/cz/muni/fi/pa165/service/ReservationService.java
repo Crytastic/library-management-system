@@ -60,4 +60,8 @@ public class ReservationService {
     public List<ReservationDAO> findAllActive() {
         return reservationRepository.findAllActive();
     }
+
+    public List<ReservationDAO> findAllExpired() {
+        return reservationRepository.findAllExpired();
+    }
 }

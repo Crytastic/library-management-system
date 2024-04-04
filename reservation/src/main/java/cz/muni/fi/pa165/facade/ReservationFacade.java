@@ -61,4 +61,12 @@ public class ReservationFacade {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+
+    public List<ReservationDTO> findAllExpired() {
+        return reservationService
+                .findAllExpired()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
 }
