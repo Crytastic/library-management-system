@@ -25,29 +25,16 @@ public class BookFacade {
         return bookService
                 .findByFilter(title, author, description, status)
                 .stream()
-                .map(dao -> new BookDTO()
-                        .author(dao.getAuthor())
-                        .description(dao.getDescription())
-                        .status(dao.getStatus())
-                        .title(dao.getTitle()))
-                .collect(Collectors.toList());
+                .map(this::convertToDTO).collect(Collectors.toList());
     }
 
     public BookDTO createBook(String title, String description, String author) {
         BookDAO bookDAO = bookService.createBook(title, description, author);
-        return new BookDTO()
-                .title(bookDAO.getTitle())
-                .description(bookDAO.getDescription())
-                .author(bookDAO.getAuthor())
-                .status(bookDAO.getStatus());
+        return convertToDTO(bookDAO);
     }
 
     public Optional<BookDTO> findById(Long id) {
-        return bookService.findById(id).map(dao -> new BookDTO()
-                .title(dao.getTitle())
-                .author(dao.getAuthor())
-                .description(dao.getDescription())
-                .status(dao.getStatus()));
+        return bookService.findById(id).map(this::convertToDTO);
     }
 
     public void deleteById(Long id) {
@@ -55,14 +42,18 @@ public class BookFacade {
     }
 
     public Optional<BookDTO> updateById(Long id, String title, String author, String description, BookStatus status) {
-        return bookService.updateById(id, title, author, description, status).map(dao -> new BookDTO()
-                .title(dao.getTitle())
-                .author(dao.getAuthor())
-                .description(dao.getDescription())
-                .status(dao.getStatus()));
+        return bookService.updateById(id, title, author, description, status).map(this::convertToDTO);
     }
 
     public Optional<List<String>> findBookRentals(Long id) {
         return bookService.findBookRentals(id);
+    }
+
+    private BookDTO convertToDTO(BookDAO bookDAO) {
+        return new BookDTO()
+                .title(bookDAO.getTitle())
+                .author(bookDAO.getAuthor())
+                .description(bookDAO.getDescription())
+                .status(bookDAO.getStatus());
     }
 }
