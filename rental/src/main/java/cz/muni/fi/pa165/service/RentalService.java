@@ -38,7 +38,7 @@ public class RentalService {
     }
 
     public RentalDAO createRental(String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
-        RentalDAO rentalDAO = new RentalDAO(book, rentedBy, borrowDate, expectedReturnDate, false, null, lateReturnWeeklyFine);
+        RentalDAO rentalDAO = new RentalDAO(book, rentedBy, borrowDate, expectedReturnDate, false, null, lateReturnWeeklyFine, false);
         return rentalRepository.store(rentalDAO);
     }
 
@@ -50,7 +50,7 @@ public class RentalService {
         return rentalRepository.deleteById(id);
     }
 
-    public Optional<RentalDAO> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine) {
+    public Optional<RentalDAO> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
         Optional<RentalDAO> optionalRental = rentalRepository.findById(id);
 
         if (optionalRental.isEmpty()) {
@@ -66,6 +66,7 @@ public class RentalService {
         rentalDAO.setReturned(returned != null ? returned : rentalDAO.isReturned());
         rentalDAO.setReturnDate(returnDate != null ? returnDate : rentalDAO.getReturnDate());
         rentalDAO.setLateReturnWeeklyFine(lateReturnWeeklyFine != null ? lateReturnWeeklyFine : rentalDAO.getLateReturnWeeklyFine());
+        rentalDAO.setFineResolved(fineResolved != null ? fineResolved : rentalDAO.isFineResolved());
 
         return rentalRepository.updateById(rentalDAO.getId(), rentalDAO);
     }
@@ -79,17 +80,18 @@ public class RentalService {
         }
 
         RentalDAO rental = optionalRental.get();
+        OffsetDateTime expectedReturnDate = rental.getExpectedReturnDate();
 
-        // TODO: Book returned but not paid
-        if (rental.isReturned()) {
-            return Optional.of(BigDecimal.ZERO);
+        // Book returned but fine not paid
+        if (rental.isReturned() && !rental.isFineResolved()) {
+            OffsetDateTime returnDate = rental.getReturnDate();
+            BigDecimal fine = calculateFine(expectedReturnDate, returnDate, rental);
+            return Optional.of(fine);
         }
 
         // Book not yet returned
         OffsetDateTime currentDate = OffsetDateTime.now();
-        OffsetDateTime expectedReturnDate = rental.getExpectedReturnDate();
         BigDecimal fine = calculateFine(expectedReturnDate, currentDate, rental);
-
         return Optional.of(fine);
     }
 

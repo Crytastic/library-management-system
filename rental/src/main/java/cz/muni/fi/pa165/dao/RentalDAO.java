@@ -13,8 +13,9 @@ public class RentalDAO {
     private OffsetDateTime returnDate;
     // Single currency for simplicity, e.g. EUR
     private BigDecimal lateReturnWeeklyFine;
+    private boolean fineResolved;
 
-    public RentalDAO(String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine) {
+    public RentalDAO(String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, boolean fineResolved) {
         this.book = book;
         this.rentedBy = rentedBy;
         this.borrowDate = borrowDate;
@@ -22,34 +23,35 @@ public class RentalDAO {
         this.returned = returned;
         this.returnDate = returnDate;
         this.lateReturnWeeklyFine = lateReturnWeeklyFine;
+        this.fineResolved = fineResolved;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getBook() {
-        return book;
-    }
-
-    public String getRentedBy() {
-        return rentedBy;
-    }
-
-    public OffsetDateTime getBorrowDate() {
-        return borrowDate;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getBook() {
+        return book;
     }
 
     public void setBook(String book) {
         this.book = book;
     }
 
+    public String getRentedBy() {
+        return rentedBy;
+    }
+
     public void setRentedBy(String rentedBy) {
         this.rentedBy = rentedBy;
+    }
+
+    public OffsetDateTime getBorrowDate() {
+        return borrowDate;
     }
 
     public void setBorrowDate(OffsetDateTime borrowDate) {
@@ -86,5 +88,13 @@ public class RentalDAO {
 
     public void setLateReturnWeeklyFine(BigDecimal lateReturnWeeklyFine) {
         this.lateReturnWeeklyFine = lateReturnWeeklyFine;
+    }
+
+    public boolean isFineResolved() {
+        return fineResolved;
+    }
+
+    public void setFineResolved(boolean fineResolved) {
+        this.fineResolved = fineResolved;
     }
 }

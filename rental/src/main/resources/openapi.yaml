@@ -46,6 +46,10 @@ components:
           format: big decimal
           description: "Weekly fine for late returns in euros"
           example: "1.50"
+        fineResolved:
+          type: boolean
+          description: "Whether the fine for late return is resolved. True if book is returned and fine has been paid (or there is no fine). False otherwise."
+          example: true
 
 paths:
   /api/test:
@@ -168,6 +172,11 @@ paths:
           schema:
             type: number
             format: big decimal
+        - in: query
+          name: fineResolved
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: OK

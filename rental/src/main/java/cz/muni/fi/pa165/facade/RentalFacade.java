@@ -43,8 +43,8 @@ public class RentalFacade {
         return rentalService.deleteById(id);
     }
 
-    public Optional<Rental> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine) {
-        return rentalService.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine).map(this::convertToDTO);
+    public Optional<Rental> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
+        return rentalService.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved).map(this::convertToDTO);
     }
 
     public Optional<BigDecimal> getFineById(Long id) {
@@ -59,6 +59,7 @@ public class RentalFacade {
                 .expectedReturnDate(rentalDAO.getExpectedReturnDate())
                 .returned(rentalDAO.isReturned())
                 .returnDate(rentalDAO.getReturnDate())
-                .lateReturnWeeklyFine(rentalDAO.getLateReturnWeeklyFine());
+                .lateReturnWeeklyFine(rentalDAO.getLateReturnWeeklyFine())
+                .fineResolved(rentalDAO.isFineResolved());
     }
 }
