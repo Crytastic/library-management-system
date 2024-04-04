@@ -24,39 +24,25 @@ public class UserFacade {
 
     public List<UserDTO> findAll(UserType userType) {
         List<UserDAO> users = userService.findAll(userType);
-        return users.stream().map(dao -> new UserDTO()
-                .address(dao.getAddress())
-                .username(dao.getUsername())
-                .birthDate(dao.getBirthDate())
-                .userType(dao.getUserType()))
+        return users.stream()
+                .map(this::convertToDTO)
                 .toList();
     }
 
     public List<UserDTO> findAllAdults() {
         List<UserDAO> users = userService.findAllAdults();
-        return users.stream().map(dao -> new UserDTO()
-                .address(dao.getAddress())
-                .username(dao.getUsername())
-                .birthDate(dao.getBirthDate())
-                .userType(dao.getUserType()))
+        return users.stream()
+                .map(this::convertToDTO)
                 .toList();
     }
 
     public UserDTO createUser(String username, String password, String address, LocalDate birthDate, UserType userType) throws UsernameAlreadyExistsException {
         UserDAO user = userService.createUser(username, password, address, birthDate, userType);
-        return new UserDTO()
-                .username(user.getUsername())
-                .address(user.getAddress())
-                .birthDate(user.getBirthDate())
-                .userType(user.getUserType());
+        return convertToDTO(user);
     }
 
     public Optional<UserDTO> findById(Long id) {
-        return userService.findById(id).map(dao -> new UserDTO()
-                .username(dao.getUsername())
-                .address(dao.getAddress())
-                .birthDate(dao.getBirthDate())
-                .userType(dao.getUserType()));
+        return userService.findById(id).map(this::convertToDTO);
     }
 
     public void deleteById(Long id) {
@@ -64,10 +50,15 @@ public class UserFacade {
     }
 
     public Optional<UserDTO> updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) throws UnauthorisedException {
-        return userService.updateUser(id, username, password, address, birthdate, userType).map(dao -> new UserDTO()
-                .username(dao.getUsername())
-                .address(dao.getAddress())
-                .birthDate(dao.getBirthDate())
-                .userType(dao.getUserType()));
+        return userService.updateUser(id, username, password, address, birthdate, userType)
+                .map(this::convertToDTO);
+    }
+
+    private UserDTO convertToDTO(UserDAO userDAO) {
+        return new UserDTO()
+                .username(userDAO.getUsername())
+                .address(userDAO.getAddress())
+                .birthDate(userDAO.getBirthDate())
+                .userType(userDAO.getUserType());
     }
 }
