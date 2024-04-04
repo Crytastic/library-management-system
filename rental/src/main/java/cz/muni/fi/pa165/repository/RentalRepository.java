@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.repository;
 import cz.muni.fi.pa165.dao.RentalDAO;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;

@@ -41,6 +41,11 @@ components:
           format: date-time
           description: "Date when the book was returned, null If it hasn't been returned yet"
           example: "2024-04-06T08:30:00Z"
+        lateReturnWeeklyFine:
+          type: number
+          format: big decimal
+          description: "Weekly fine for late returns in euros"
+          example: "1.50"
 
 paths:
   /api/test:
@@ -157,6 +162,12 @@ paths:
           schema:
             type: string
             format: date-time
+        - in: query
+          name: lateReturnWeeklyFine
+          required: false
+          schema:
+            type: number
+            format: big decimal
       responses:
         '200':
           description: OK
@@ -185,3 +196,26 @@ paths:
           description: Failed to delete or couldn't find the rental
         '404':
           description: No such rental
+  /api/rentals/{id}/fine:
+    get:
+      tags:
+        - Rental
+      summary: Get fine for a rental by ID
+      operationId: getFineById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: number
+                format: big decimal
+        '404':
+          description: Not found

@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.dao;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 public class RentalDAO {
@@ -10,14 +11,17 @@ public class RentalDAO {
     private OffsetDateTime expectedReturnDate;
     private boolean returned;
     private OffsetDateTime returnDate;
+    // Single currency for simplicity, e.g. EUR
+    private BigDecimal lateReturnWeeklyFine;
 
-    public RentalDAO(String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, boolean returned, OffsetDateTime returnDate) {
+    public RentalDAO(String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine) {
         this.book = book;
         this.rentedBy = rentedBy;
         this.borrowDate = borrowDate;
         this.expectedReturnDate = expectedReturnDate;
         this.returned = returned;
         this.returnDate = returnDate;
+        this.lateReturnWeeklyFine = lateReturnWeeklyFine;
     }
 
     public Long getId() {
@@ -74,5 +78,13 @@ public class RentalDAO {
 
     public void setReturnDate(OffsetDateTime returnDate) {
         this.returnDate = returnDate;
+    }
+
+    public BigDecimal getLateReturnWeeklyFine() {
+        return lateReturnWeeklyFine;
+    }
+
+    public void setLateReturnWeeklyFine(BigDecimal lateReturnWeeklyFine) {
+        this.lateReturnWeeklyFine = lateReturnWeeklyFine;
     }
 }

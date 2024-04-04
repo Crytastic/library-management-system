@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -48,8 +49,8 @@ public class RentalController implements RentalApi {
     }
 
     @Override
-    public ResponseEntity<Rental> updateRental(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate) {
-        Optional<Rental> rental = rentalFacade.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate);
+    public ResponseEntity<Rental> updateRental(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine) {
+        Optional<Rental> rental = rentalFacade.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine);
         return rental.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -62,5 +63,12 @@ public class RentalController implements RentalApi {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @Override
+    public ResponseEntity<BigDecimal> getFineById(Long id) {
+        Optional<BigDecimal> fine = rentalFacade.getFineById(id);
+        return fine.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

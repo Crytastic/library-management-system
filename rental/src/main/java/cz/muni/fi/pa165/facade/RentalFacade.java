@@ -6,6 +6,7 @@ import org.openapitools.model.Rental;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -42,8 +43,12 @@ public class RentalFacade {
         return rentalService.deleteById(id);
     }
 
-    public Optional<Rental> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate) {
-        return rentalService.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate).map(this::convertToDTO);
+    public Optional<Rental> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine) {
+        return rentalService.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine).map(this::convertToDTO);
+    }
+
+    public Optional<BigDecimal> getFineById(Long id) {
+        return rentalService.getFineById(id);
     }
 
     private Rental convertToDTO(RentalDAO rentalDAO) {
@@ -53,6 +58,7 @@ public class RentalFacade {
                 .borrowDate(rentalDAO.getBorrowDate())
                 .expectedReturnDate(rentalDAO.getExpectedReturnDate())
                 .returned(rentalDAO.isReturned())
-                .returnDate(rentalDAO.getReturnDate());
+                .returnDate(rentalDAO.getReturnDate())
+                .lateReturnWeeklyFine(rentalDAO.getLateReturnWeeklyFine());
     }
 }
