@@ -28,8 +28,8 @@ public class BookFacade {
                 .map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    public BookDTO createBook(String title, String description, String author) {
-        BookDAO bookDAO = bookService.createBook(title, description, author);
+    public BookDTO createBook(String title, String author, String description) {
+        BookDAO bookDAO = bookService.createBook(title, author, description);
         return convertToDTO(bookDAO);
     }
 

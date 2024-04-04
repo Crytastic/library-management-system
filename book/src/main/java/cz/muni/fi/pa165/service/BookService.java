@@ -27,7 +27,7 @@ public class BookService {
         return bookRepository.findByFilter(title, author, description, status);
     }
 
-    public BookDAO createBook(String title, String description, String author) {
+    public BookDAO createBook(String title, String author, String description) {
         return bookRepository.store(new BookDAO(title, author, description, BookStatus.AVAILABLE));
     }
 
