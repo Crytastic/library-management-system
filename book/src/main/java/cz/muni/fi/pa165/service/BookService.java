@@ -53,8 +53,7 @@ public class BookService {
         if (description != null) bookDao.setDescription(description);
         if (status != null) bookDao.setStatus(status);
 
-        return bookRepository.updateById(bookDao.getId(), bookDao);
-
+        return bookRepository.updateById(id, bookDao);
     }
 
     public Optional<List<String>> findBookRentals(Long id) {
