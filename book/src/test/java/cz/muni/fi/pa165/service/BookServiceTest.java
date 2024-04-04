@@ -85,4 +85,17 @@ public class BookServiceTest {
         // Assert
         assertThat(result).isPresent().contains(rentals);
     }
+
+    @Test
+    void findBookRentals_bookNotFound_returnsEmpty() {
+        // Arrange
+        Long id = 1L;
+        Mockito.when(bookRepository.findById(id)).thenReturn(Optional.empty());
+
+        // Act
+        Optional<List<String>> result = bookService.findBookRentals(id);
+
+        // Assert
+        assertThat(result).isEmpty();
+    }
 }
