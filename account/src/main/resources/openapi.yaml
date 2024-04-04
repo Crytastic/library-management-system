@@ -82,3 +82,19 @@ paths:
         '404':
           description: Not found
 
+    delete:
+      tags:
+        - User
+      summary: Delete user by id
+      operationId: deleteUser
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No content
+

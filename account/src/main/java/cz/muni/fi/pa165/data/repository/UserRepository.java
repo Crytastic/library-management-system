@@ -34,4 +34,9 @@ public class UserRepository {
         return Optional.ofNullable(users.get(id));
     }
 
+    public void deleteById(Long id) {
+        users.remove(id);
+    }
+
+
 }

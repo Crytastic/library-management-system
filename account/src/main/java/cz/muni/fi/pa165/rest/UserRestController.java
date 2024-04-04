@@ -28,6 +28,13 @@ public class UserRestController implements UserApi {
     }
 
     @Override
+    public ResponseEntity<Void> deleteUser(Long id) {
+        userFacade.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
+
+    @Override
     public ResponseEntity<UserDTO> getUser(Long id) {
         Optional<UserDTO> user = userFacade.findById(id);
         return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));

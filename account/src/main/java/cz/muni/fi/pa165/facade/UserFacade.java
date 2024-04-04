@@ -46,4 +46,9 @@ public class UserFacade {
                 .birthDate(dao.getBirthDate())
                 .userType(dao.getUserType()));
     }
+
+    public void deleteById(Long id) {
+        userService.deleteById(id);
+    }
+
 }
