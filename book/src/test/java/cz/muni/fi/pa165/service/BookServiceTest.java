@@ -10,11 +10,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openapitools.model.BookStatus;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 public class BookServiceTest {
@@ -44,6 +42,23 @@ public class BookServiceTest {
 
         // Act
         Optional<BookDAO> result = bookService.findById(1L);
+
+        // Assert
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void updateById_bookNotFound_returnsEmpty() {
+        // Arrange
+        Long id = 1L;
+        String newTitle = "The Lord of the Rings: The Two Towers";
+        String newAuthor = "J. R. R. Tolkien";
+        String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
+        BookStatus newStatus = BookStatus.RENTED;
+        Mockito.when(bookRepository.findById(id)).thenReturn(Optional.empty());
+
+        // Act
+        Optional<BookDAO> result = bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus);
 
         // Assert
         assertThat(result).isEmpty();
