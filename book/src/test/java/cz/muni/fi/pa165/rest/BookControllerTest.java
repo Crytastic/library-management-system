@@ -124,4 +124,52 @@ public class BookControllerTest {
         assertThat(response.getBody()).isNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
+
+    @Test
+    void updateBook_validIdAndRequestBody_updatesBook() {
+        // Arrange
+        Long id = 1L;
+        String title = "The Lord of the Rings";
+        String author = "Tolkien";
+        String description = "Fantasy novel";
+        BookStatus status = BookStatus.AVAILABLE;
+        BookDTO book = BookDTOFactory.createBook(title, author, description, status);
+
+        String newTitle = "The Lord of the Rings: The Two Towers";
+        String newAuthor = "J. R. R. Tolkien";
+        String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
+        BookStatus newStatus = BookStatus.RENTED;
+        BookDTO updatedBook = BookDTOFactory.createBook(newTitle, newAuthor, newDescription, newStatus);
+
+        when(bookFacade.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(Optional.of(updatedBook));
+
+        // Act
+        ResponseEntity<BookDTO> response = bookController.updateBook(id, newTitle, newAuthor, newDescription, newStatus);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getTitle()).isEqualTo(newTitle);
+        assertThat(response.getBody().getAuthor()).isEqualTo(newAuthor);
+        assertThat(response.getBody().getDescription()).isEqualTo(newDescription);
+        assertThat(response.getBody().getStatus()).isEqualTo(newStatus);
+    }
+
+    @Test
+    void updateBook_invalidId_returnsNotFound() {
+        // Arrange
+        Long id = 1L;
+        String title = "The Lord of the Rings";
+        String description = "Fantasy novel";
+        String author = "Tolkien";
+        BookStatus status = BookStatus.AVAILABLE;
+        when(bookFacade.updateById(id, title, author, description, status)).thenReturn(Optional.empty());
+
+        // Act
+        ResponseEntity<BookDTO> response = bookController.updateBook(id, title, author, description, status);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody()).isNull();
+    }
 }
