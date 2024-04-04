@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.repository;
 import cz.muni.fi.pa165.dao.ReservationDAO;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -34,5 +35,13 @@ public class ReservationRepository {
 
     public void deleteById(Long id) {
         reservations.remove(id);
+    }
+
+    public List<ReservationDAO> findAllActive() {
+        OffsetDateTime currentDateTime = OffsetDateTime.now();
+        return reservations
+                .values()
+                .stream()
+                .filter(reservationDAO -> reservationDAO.getReservedTo().isAfter(currentDateTime)).toList();
     }
 }

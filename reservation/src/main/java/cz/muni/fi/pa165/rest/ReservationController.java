@@ -36,6 +36,11 @@ public class ReservationController implements ReservationApi {
     }
 
     @Override
+    public ResponseEntity<List<ReservationDTO>> getActiveReservations() {
+        return new ResponseEntity<>(reservationFacade.findAllActive(), HttpStatus.OK);
+    }
+
+    @Override
     public ResponseEntity<ReservationDTO> getReservation(Long id) {
         Optional<ReservationDTO> rental = reservationFacade.findById(id);
         return rental.map(value -> new ResponseEntity<>(value, HttpStatus.OK))

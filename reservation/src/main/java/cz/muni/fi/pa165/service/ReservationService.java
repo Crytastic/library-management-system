@@ -56,4 +56,8 @@ public class ReservationService {
     public void  deleteById(Long id) {
         reservationRepository.deleteById(id);
     }
+
+    public List<ReservationDAO> findAllActive() {
+        return reservationRepository.findAllActive();
+    }
 }

@@ -155,3 +155,18 @@ paths:
       responses:
         '204':
           description: No content
+  /api/reservations/active:
+    get:
+      tags:
+        - Reservation
+      summary: Returns all active reservations
+      operationId: getActiveReservations
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReservationDTO'

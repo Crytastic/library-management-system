@@ -53,4 +53,12 @@ public class ReservationFacade {
     public void deleteById(Long id) {
         reservationService.deleteById(id);
     }
+
+    public List<ReservationDTO> findAllActive() {
+        return reservationService
+                .findAllActive()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
 }
