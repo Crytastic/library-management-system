@@ -13,9 +13,9 @@ components:
     BookStatus:
       type: string
       enum:
-        - Available
-        - Reserved
-        - Rented
+        - AVAILABLE
+        - RESERVED
+        - RENTED
     BookDTO:
       title: "A book"
       description: "Book object"
