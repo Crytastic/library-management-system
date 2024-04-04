@@ -25,18 +25,6 @@ public class RentalService {
         return rentalRepository.findAll();
     }
 
-    public RentalDAO createRental(String book, String rentedBy) {
-        return createRental(book, rentedBy, getDefaultExpectedReturnDate(), getDefaultLateReturnWeeklyFine());
-    }
-
-    public RentalDAO createRental(String book, String rentedBy, BigDecimal lateReturnWeeklyFine) {
-        return createRental(book, rentedBy, getDefaultExpectedReturnDate(), lateReturnWeeklyFine);
-    }
-
-    public RentalDAO createRental(String book, String rentedBy, OffsetDateTime expectedReturnDate) {
-        return createRental(book, rentedBy, expectedReturnDate, getDefaultLateReturnWeeklyFine());
-    }
-
     public RentalDAO createRental(String book, String rentedBy, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
         if (expectedReturnDate == null) {
             expectedReturnDate = getDefaultExpectedReturnDate();
