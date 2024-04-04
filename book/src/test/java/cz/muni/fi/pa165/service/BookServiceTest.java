@@ -156,4 +156,20 @@ public class BookServiceTest {
         // Assert
         assertThat(result).isEmpty();
     }
+
+    @Test
+    void findByFilter_anyBooksExist_returnsAllBooks() {
+        // Arrange
+        String author = "J. R. R. Tolkien";
+        BookDAO book1 = new BookDAO("The Lord of the Rings: The Fellowship of the Ring", author, "Fantasy novel", BookStatus.AVAILABLE);
+        BookDAO book2 = new BookDAO("The Hobbit", author, "Fantasy novel", BookStatus.AVAILABLE);
+        List<BookDAO> allBooks = List.of(book1, book2);
+        Mockito.when(bookRepository.findByFilter(null, null, null, null)).thenReturn(allBooks);
+
+        // Act
+        List<BookDAO> result = bookService.findByFilter(null, null, null, null);
+
+        // Assert
+        assertThat(result).isNotNull().hasSize(2).containsExactlyInAnyOrder(book1, book2);
+    }
 }
