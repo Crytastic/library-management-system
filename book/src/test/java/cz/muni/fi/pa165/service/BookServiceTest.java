@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.openapitools.model.BookStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,6 +95,35 @@ public class BookServiceTest {
 
         // Act
         Optional<List<String>> result = bookService.findBookRentals(id);
+
+        // Assert
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void findByFilter_authorExists_returnsBooks() {
+        // Arrange
+        String author = "J. R. R. Tolkien";
+        BookDAO book1 = new BookDAO("The Lord of the Rings: The Fellowship of the Ring", author, "Fantasy novel", BookStatus.AVAILABLE);
+        BookDAO book2 = new BookDAO("The Hobbit", author, "Fantasy novel", BookStatus.AVAILABLE);
+        List<BookDAO> booksByAuthor = List.of(book1, book2);
+        Mockito.when(bookRepository.findByFilter(null, author, null, null)).thenReturn(booksByAuthor);
+
+        // Act
+        List<BookDAO> result = bookService.findByFilter(null, author, null, null);
+
+        // Assert
+        assertThat(result).isNotNull().hasSize(2).containsExactlyInAnyOrder(book1, book2);
+    }
+
+    @Test
+    void findByFilter_authorDoesNotExist_returnsEmptyList() {
+        // Arrange
+        String author = "J. K. Rowling";
+        Mockito.when(bookRepository.findByFilter(null, author, null, null)).thenReturn(new ArrayList<>());
+
+        // Act
+        List<BookDAO> result = bookService.findByFilter(null, author, null, null);
 
         // Assert
         assertThat(result).isEmpty();
