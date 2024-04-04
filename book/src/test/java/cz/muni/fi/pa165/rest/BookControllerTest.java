@@ -129,12 +129,6 @@ public class BookControllerTest {
     void updateBook_validIdAndRequestBody_updatesBook() {
         // Arrange
         Long id = 1L;
-        String title = "The Lord of the Rings";
-        String author = "Tolkien";
-        String description = "Fantasy novel";
-        BookStatus status = BookStatus.AVAILABLE;
-        BookDTO book = BookDTOFactory.createBook(title, author, description, status);
-
         String newTitle = "The Lord of the Rings: The Two Towers";
         String newAuthor = "J. R. R. Tolkien";
         String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
