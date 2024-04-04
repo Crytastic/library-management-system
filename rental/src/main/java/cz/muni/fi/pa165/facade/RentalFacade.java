@@ -2,7 +2,7 @@ package cz.muni.fi.pa165.facade;
 
 import cz.muni.fi.pa165.dao.RentalDAO;
 import cz.muni.fi.pa165.service.RentalService;
-import org.openapitools.model.Rental;
+import org.openapitools.model.RentalDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ public class RentalFacade {
         this.rentalService = rentalService;
     }
 
-    public List<Rental> findAll() {
+    public List<RentalDTO> findAll() {
         return rentalService
                 .findAll()
                 .stream()
@@ -30,12 +30,12 @@ public class RentalFacade {
                 .collect(Collectors.toList());
     }
 
-    public Rental createRental(String book, String rentedBy) {
+    public RentalDTO createRental(String book, String rentedBy) {
         RentalDAO rentalDAO = rentalService.createRental(book, rentedBy);
         return convertToDTO(rentalDAO);
     }
 
-    public Optional<Rental> findById(Long id) {
+    public Optional<RentalDTO> findById(Long id) {
         return rentalService.findById(id).map(this::convertToDTO);
     }
 
@@ -43,7 +43,7 @@ public class RentalFacade {
         return rentalService.deleteById(id);
     }
 
-    public Optional<Rental> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
+    public Optional<RentalDTO> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
         return rentalService.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved).map(this::convertToDTO);
     }
 
@@ -51,8 +51,8 @@ public class RentalFacade {
         return rentalService.getFineById(id);
     }
 
-    private Rental convertToDTO(RentalDAO rentalDAO) {
-        return new Rental()
+    private RentalDTO convertToDTO(RentalDAO rentalDAO) {
+        return new RentalDTO()
                 .book(rentalDAO.getBook())
                 .rentedBy(rentalDAO.getRentedBy())
                 .borrowDate(rentalDAO.getBorrowDate())

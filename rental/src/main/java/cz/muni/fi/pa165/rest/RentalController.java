@@ -2,7 +2,7 @@ package cz.muni.fi.pa165.rest;
 
 import cz.muni.fi.pa165.facade.RentalFacade;
 import org.openapitools.api.RentalApi;
-import org.openapitools.model.Rental;
+import org.openapitools.model.RentalDTO;
 import org.openapitools.model.RentalTestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,26 +31,26 @@ public class RentalController implements RentalApi {
     }
 
     @Override
-    public ResponseEntity<List<Rental>> getRentals() {
+    public ResponseEntity<List<RentalDTO>> getRentals() {
         return new ResponseEntity<>(rentalFacade.findAll(), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Rental> createRental(String book, String rentedBy) {
-        Rental createdRental = rentalFacade.createRental(book, rentedBy);
+    public ResponseEntity<RentalDTO> createRental(String book, String rentedBy) {
+        RentalDTO createdRental = rentalFacade.createRental(book, rentedBy);
         return new ResponseEntity<>(createdRental, HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<Rental> getRental(Long id) {
-        Optional<Rental> rental = rentalFacade.findById(id);
+    public ResponseEntity<RentalDTO> getRental(Long id) {
+        Optional<RentalDTO> rental = rentalFacade.findById(id);
         return rental.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @Override
-    public ResponseEntity<Rental> updateRental(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
-        Optional<Rental> rental = rentalFacade.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
+    public ResponseEntity<RentalDTO> updateRental(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
+        Optional<RentalDTO> rental = rentalFacade.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
         return rental.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

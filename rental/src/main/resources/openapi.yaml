@@ -10,7 +10,7 @@ tags:
 
 components:
   schemas:
-    Rental:
+    RentalDTO:
       title: "A rental"
       description: "Represents a single rental of a book in a library"
       properties:
@@ -84,7 +84,7 @@ paths:
                 type: array
                 title: RentalsResponse
                 items:
-                  $ref: '#/components/schemas/Rental'
+                  $ref: '#/components/schemas/RentalDTO'
     post:
       tags:
         - Rental
@@ -99,7 +99,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Rental'
+                $ref: '#/components/schemas/RentalDTO'
   /api/rentals/{id}:
     get:
       tags:
@@ -119,7 +119,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Rental'
+                $ref: '#/components/schemas/RentalDTO'
     patch:
       tags:
         - Rental
@@ -182,7 +182,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Rental'
+                $ref: '#/components/schemas/RentalDTO'
         '404':
           description: Not found
     delete:
