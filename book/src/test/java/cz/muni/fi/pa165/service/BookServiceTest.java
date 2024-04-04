@@ -204,4 +204,24 @@ public class BookServiceTest {
         // Assert
         verify(bookRepository, times(1)).deleteById(idToDelete);
     }
+
+    @Test
+    void createBook_returnsCreatedBook() {
+        // Arrange
+        String title = "The Lord of the Rings";
+        String description = "Fantasy novel";
+        String author = "J.R.R. Tolkien";
+        BookDAO createdBook = new BookDAO(title, author, description, BookStatus.AVAILABLE);
+        when(bookRepository.store(any(BookDAO.class))).thenReturn(createdBook);
+
+        // Act
+        BookDAO result = bookService.createBook(title, description, author);
+
+        // Assert
+        assertThat(result).isNotNull().isEqualTo(createdBook);
+        assertThat(result.getTitle()).isEqualTo(title);
+        assertThat(result.getAuthor()).isEqualTo(author);
+        assertThat(result.getDescription()).isEqualTo(description);
+        verify(bookRepository, times(1)).store(any(BookDAO.class));
+    }
 }
