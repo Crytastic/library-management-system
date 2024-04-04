@@ -12,6 +12,8 @@ import org.openapitools.model.BookStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -86,6 +88,37 @@ public class BookControllerTest {
 
         // Act
         ResponseEntity<BookDTO> response = bookController.getBook(id);
+
+        // Assert
+        assertThat(response.getBody()).isNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void getBookRentals_validId_returnsRentals() {
+        // Arrange
+        Long id = 1L;
+        List<String> rentals = new ArrayList<>();
+        rentals.add("Rental 1");
+        rentals.add("Rental 2");
+        when(bookFacade.findBookRentals(id)).thenReturn(Optional.of(rentals));
+
+        // Act
+        ResponseEntity<List<String>> response = bookController.getBookRentals(id);
+
+        // Assert
+        assertThat(response.getBody()).isEqualTo(rentals);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void getBookRentals_invalidId_returnsNotFound() {
+        // Arrange
+        Long id = 1L;
+        when(bookFacade.findBookRentals(id)).thenReturn(Optional.empty());
+
+        // Act
+        ResponseEntity<List<String>> response = bookController.getBookRentals(id);
 
         // Assert
         assertThat(response.getBody()).isNull();
