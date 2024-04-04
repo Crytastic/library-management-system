@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -30,4 +31,9 @@ public class UserService {
                 .toString();
         return userRepository.saveUser(username, passwordHashed, address, birthDate, userType);
     }
+
+    public Optional<UserDAO> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
 }

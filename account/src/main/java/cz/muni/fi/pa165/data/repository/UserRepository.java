@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class UserRepository {
@@ -28,4 +29,9 @@ public class UserRepository {
         index++;
         return newUser;
     }
+
+    public Optional<UserDAO> findById(Long id) {
+        return Optional.ofNullable(users.get(id));
+    }
+
 }

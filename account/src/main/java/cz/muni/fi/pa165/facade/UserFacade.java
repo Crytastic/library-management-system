@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserFacade {
@@ -36,5 +37,13 @@ public class UserFacade {
                 .address(user.getAddress())
                 .birthDate(user.getBirthDate())
                 .userType(user.getUserType());
+    }
+
+    public Optional<UserDTO> findById(Long id) {
+        return userService.findById(id).map(dao -> new UserDTO()
+                .username(dao.getUsername())
+                .address(dao.getAddress())
+                .birthDate(dao.getBirthDate())
+                .userType(dao.getUserType()));
     }
 }

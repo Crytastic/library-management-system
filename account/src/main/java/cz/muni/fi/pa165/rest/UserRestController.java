@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UserRestController implements UserApi {
@@ -27,7 +28,15 @@ public class UserRestController implements UserApi {
     }
 
     @Override
+    public ResponseEntity<UserDTO> getUser(Long id) {
+        Optional<UserDTO> user = userFacade.findById(id);
+        return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @Override
     public ResponseEntity<List<UserDTO>> getUsers() {
         return new ResponseEntity<>(userFacade.findAll(), HttpStatus.OK);
     }
+
+
 }

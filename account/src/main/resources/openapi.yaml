@@ -12,9 +12,8 @@ components:
     UserType:
       type: string
       enum:
-        - Member
-        - Librarian
-
+        - MEMBER
+        - LIBRARIAN
     UserDTO:
       title: "An user"
       description: "User object providing information about user"
@@ -41,7 +40,6 @@ paths:
                 title: UsersResponse
                 items:
                   $ref: '#/components/schemas/UserDTO'
-  /api/user:
     post:
       tags:
         - User
@@ -49,7 +47,7 @@ paths:
       operationId: createUser
       parameters:
         - { name: username, in: query, required: true, schema: { type: string }, description: "Username of user" }
-        - { name: password, in: query, required: true, schema: { type: string }, description: "Password of user" }
+        - { name: password, in: query, required: true, schema: { type: string, format: "password" }, description: "Password of user" }
         - { name: address, in: query, required: true, schema: { type: string }, description: "Address of user" }
         - { name: birthDate, in: query, required: true, schema: { type: string, format: date }, description: "Date of birth for user" }
         - { name: userType, in: query, required: true, schema: { $ref: '#/components/schemas/UserType' }, description: "Type of user"}
@@ -60,4 +58,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserDTO'
+
+  /api/users/{id}:
+    get:
+      tags:
+        - User
+      summary: Get user by id
+      operationId: getUser
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDTO'
+        '404':
+          description: Not found
 
