@@ -36,8 +36,8 @@ public class RentalController implements RentalApi {
     }
 
     @Override
-    public ResponseEntity<RentalDTO> createRental(String book, String rentedBy) {
-        RentalDTO createdRental = rentalFacade.createRental(book, rentedBy);
+    public ResponseEntity<RentalDTO> createRental(String book, String rentedBy, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
+        RentalDTO createdRental = rentalFacade.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine);
         return new ResponseEntity<>(createdRental, HttpStatus.CREATED);
     }
 

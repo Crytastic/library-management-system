@@ -30,8 +30,8 @@ public class RentalFacade {
                 .collect(Collectors.toList());
     }
 
-    public RentalDTO createRental(String book, String rentedBy) {
-        RentalDAO rentalDAO = rentalService.createRental(book, rentedBy);
+    public RentalDTO createRental(String book, String rentedBy, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
+        RentalDAO rentalDAO = rentalService.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine);
         return convertToDTO(rentalDAO);
     }
 

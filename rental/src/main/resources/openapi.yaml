@@ -90,8 +90,26 @@ paths:
       summary: Creates new rental
       operationId: createRental
       parameters:
-        - { name: book, in: query, required: true, schema: { type: string }, description: "Title of book" }
-        - { name: rentedBy, in: query, required: true, schema: { type: string }, description: "Name of renter" }
+        - { name: book,
+            in: query,
+            required: true,
+            schema: { type: string },
+            description: "Title of book" }
+        - { name: rentedBy,
+            in: query,
+            required: true,
+            schema: { type: string },
+            description: "Name of renter" }
+        - { name: expectedReturnDate,
+            in: query,
+            required: false,
+            schema: { type: string, format: date-time },
+            description: "Expected return date. Three months from now If not specified." }
+        - { name: lateReturnWeeklyFine,
+            in: query,
+            required: false,
+            schema: { type: number },
+            description: "Late return weekly fine in euros. 1 EUR if not specified." }
       responses:
         "201":
           description: Created
