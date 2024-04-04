@@ -18,5 +18,24 @@ components:
         reservedBy: {type: string, description: "User that created this reservation", example: "Franta Palica"}
         reservedFrom: {type: string, format: date-time, description: "Date when reservation was created", example: "2024-04-03T10:15:30Z" }
         reservedTo: {type: string, format: date-time, description: "Date when the reservation was/will be cancelled", example: "2024-04-03T10:15:30Z"}
-paths: {}
+
+
+paths:
+  /api/test:
+    get:
+      tags:
+        - Reservation
+      summary: Returns test message response
+      operationId: test
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: ReservationTestResponse
+                properties:
+                  message:
+                    type: string
 

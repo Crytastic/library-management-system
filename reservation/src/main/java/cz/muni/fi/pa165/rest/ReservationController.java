@@ -1,11 +1,15 @@
 package cz.muni.fi.pa165.rest;
 
 import cz.muni.fi.pa165.facade.ReservationFacade;
+import org.openapitools.api.ReservationApi;
+import org.openapitools.model.ReservationTestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class ReservationController {
+public class ReservationController implements ReservationApi {
 
     ReservationFacade reservationFacade;
 
@@ -13,5 +17,10 @@ public class ReservationController {
     @Autowired
     public ReservationController(ReservationFacade reservationFacade) {
         this.reservationFacade = reservationFacade;
+    }
+
+    @Override
+    public ResponseEntity<ReservationTestResponse> test() {
+        return new ResponseEntity<>(new ReservationTestResponse().message("Service running"), HttpStatus.OK);
     }
 }
