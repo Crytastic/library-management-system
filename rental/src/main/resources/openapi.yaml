@@ -93,7 +93,6 @@ paths:
       parameters:
         - { name: book, in: query, required: true, schema: { type: string }, description: "Title of book" }
         - { name: rentedBy, in: query, required: true, schema: { type: string }, description: "Name of renter" }
-        - { name: borrowDate, in: query, required: true, schema: { type: string, format: date-time }, description: "Borrow date" }
       responses:
         "201":
           description: Created

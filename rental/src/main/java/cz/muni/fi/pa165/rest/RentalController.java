@@ -36,8 +36,8 @@ public class RentalController implements RentalApi {
     }
 
     @Override
-    public ResponseEntity<Rental> createRental(String book, String rentedBy, OffsetDateTime borrowDate) {
-        Rental createdRental = rentalFacade.createRental(book, rentedBy, borrowDate);
+    public ResponseEntity<Rental> createRental(String book, String rentedBy) {
+        Rental createdRental = rentalFacade.createRental(book, rentedBy);
         return new ResponseEntity<>(createdRental, HttpStatus.CREATED);
     }
 

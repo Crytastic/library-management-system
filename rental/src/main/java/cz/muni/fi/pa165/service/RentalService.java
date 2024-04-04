@@ -25,20 +25,20 @@ public class RentalService {
         return rentalRepository.findAll();
     }
 
-    public RentalDAO createRental(String book, String rentedBy, OffsetDateTime borrowDate) {
-        return createRental(book, rentedBy, borrowDate, getDefaultExpectedReturnDate(), getDefaultLateReturnWeeklyFine());
+    public RentalDAO createRental(String book, String rentedBy) {
+        return createRental(book, rentedBy, getDefaultExpectedReturnDate(), getDefaultLateReturnWeeklyFine());
     }
 
-    public RentalDAO createRental(String book, String rentedBy, OffsetDateTime borrowDate, BigDecimal lateReturnWeeklyFine) {
-        return createRental(book, rentedBy, borrowDate, getDefaultExpectedReturnDate(), lateReturnWeeklyFine);
+    public RentalDAO createRental(String book, String rentedBy, BigDecimal lateReturnWeeklyFine) {
+        return createRental(book, rentedBy, getDefaultExpectedReturnDate(), lateReturnWeeklyFine);
     }
 
-    public RentalDAO createRental(String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate) {
-        return createRental(book, rentedBy, borrowDate, expectedReturnDate, getDefaultLateReturnWeeklyFine());
+    public RentalDAO createRental(String book, String rentedBy, OffsetDateTime expectedReturnDate) {
+        return createRental(book, rentedBy, expectedReturnDate, getDefaultLateReturnWeeklyFine());
     }
 
-    public RentalDAO createRental(String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
-        RentalDAO rentalDAO = new RentalDAO(book, rentedBy, borrowDate, expectedReturnDate, false, null, lateReturnWeeklyFine, false);
+    private RentalDAO createRental(String book, String rentedBy, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
+        RentalDAO rentalDAO = new RentalDAO(book, rentedBy, OffsetDateTime.now(), expectedReturnDate, false, null, lateReturnWeeklyFine, false);
         return rentalRepository.store(rentalDAO);
     }
 
