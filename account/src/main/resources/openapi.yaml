@@ -106,4 +106,19 @@ paths:
         '204':
           description: No content
 
-
+  /api/users/adults:
+    get:
+      tags:
+        - User
+      summary: Returns all adults users
+      operationId: getAdultUsers
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                title: UsersResponse
+                items:
+                  $ref: '#/components/schemas/UserDTO'

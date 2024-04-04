@@ -25,6 +25,10 @@ public class UserService {
         return userRepository.findAll(userType);
     }
 
+    public List<UserDAO> findAllAdults() {
+        return userRepository.findAllAdults();
+    }
+
     public UserDAO createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {
         String passwordHashed = Hashing.sha256()
                 .hashString(password, StandardCharsets.UTF_8)

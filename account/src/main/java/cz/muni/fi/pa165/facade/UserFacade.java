@@ -30,6 +30,16 @@ public class UserFacade {
                 .toList();
     }
 
+    public List<UserDTO> findAllAdults() {
+        List<UserDAO> users = userService.findAllAdults();
+        return users.stream().map(dao -> new UserDTO()
+                .address(dao.getAddress())
+                .username(dao.getUsername())
+                .birthDate(dao.getBirthDate())
+                .userType(dao.getUserType()))
+                .toList();
+    }
+
     public UserDTO createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {
         UserDAO user = userService.createUser(username, password, address, birthDate, userType);
         return new UserDTO()

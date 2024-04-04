@@ -5,6 +5,7 @@ import org.openapitools.model.UserType;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +18,19 @@ public class UserRepository {
 
     private static Long index = 1L;
 
+    private static final int ADULT_AGE = 18;
+
     public List<UserDAO> findAll(UserType userType) {
         return users.values()
                 .stream()
                 .filter(user -> userType == null || user.getUserType().equals(userType))
+                .toList();
+    }
+
+    public List<UserDAO> findAllAdults() {
+        return users.values()
+                .stream()
+                .filter(user -> getAge(user.getBirthDate()) >= ADULT_AGE)
                 .toList();
     }
 
@@ -39,5 +49,10 @@ public class UserRepository {
         users.remove(id);
     }
 
+    private int getAge(LocalDate birthDate) {
+        LocalDate currentDate = LocalDate.now();
+        Period period = Period.between(birthDate, currentDate);
+        return period.getYears();
+    }
 
 }
