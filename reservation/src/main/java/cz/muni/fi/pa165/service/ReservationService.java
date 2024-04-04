@@ -53,4 +53,7 @@ public class ReservationService {
 
     }
 
+    public void  deleteById(Long id) {
+        reservationRepository.deleteById(id);
+    }
 }

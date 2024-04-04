@@ -50,4 +50,7 @@ public class ReservationFacade {
         return reservationService.updateById(id, book, reservedBy, reservedFrom, reservedTo).map(this::convertToDTO);
     }
 
+    public void deleteById(Long id) {
+        reservationService.deleteById(id);
+    }
 }

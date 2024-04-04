@@ -31,4 +31,8 @@ public class ReservationRepository {
         reservations.put(id, reservationDAO);
         return Optional.ofNullable(reservationDAO);
     }
+
+    public void deleteById(Long id) {
+        reservations.remove(id);
+    }
 }

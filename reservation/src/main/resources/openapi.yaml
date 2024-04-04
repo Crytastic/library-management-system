@@ -140,3 +140,18 @@ paths:
                 $ref: '#/components/schemas/ReservationDTO'
         '404':
           description: Not found
+    delete:
+      tags:
+        - Reservation
+      summary: Delete reservation by id
+      operationId: deleteReservation
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No content

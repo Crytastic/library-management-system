@@ -30,6 +30,12 @@ public class ReservationController implements ReservationApi {
     }
 
     @Override
+    public ResponseEntity<Void> deleteReservation(Long id) {
+        reservationFacade.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Override
     public ResponseEntity<ReservationDTO> getReservation(Long id) {
         Optional<ReservationDTO> rental = reservationFacade.findById(id);
         return rental.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
