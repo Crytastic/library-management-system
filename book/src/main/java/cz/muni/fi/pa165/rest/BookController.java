@@ -48,7 +48,7 @@ public class BookController implements BookApi {
 
     @Override
     public ResponseEntity<List<BookDTO>> getBooks(String title, String author, String description, BookStatus status) {
-            return new ResponseEntity<>(bookFacade.findByFilter(title, author, description, status), HttpStatus.OK);
+        return new ResponseEntity<>(bookFacade.findByFilter(title, author, description, status), HttpStatus.OK);
     }
 
     @Override
