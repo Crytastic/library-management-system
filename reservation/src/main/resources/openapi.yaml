@@ -77,3 +77,24 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReservationDTO'
 
+  /api/reservations/{id}:
+    get:
+      tags:
+        - Reservation
+      summary: Get reservation by id
+      operationId: getReservation
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationDTO'
+

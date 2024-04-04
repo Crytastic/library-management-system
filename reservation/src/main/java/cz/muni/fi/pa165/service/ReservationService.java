@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReservationService {
@@ -28,5 +29,9 @@ public class ReservationService {
 
     private OffsetDateTime getDefaultReservationCancelDate() {
         return OffsetDateTime.now().plusDays(3);
+    }
+
+    public Optional<ReservationDAO> findById(Long id) {
+        return reservationRepository.findById(id);
     }
 }

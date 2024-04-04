@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class ReservationController implements ReservationApi {
@@ -25,6 +26,13 @@ public class ReservationController implements ReservationApi {
     public ResponseEntity<ReservationDTO> createReservation(String book, String reservedBy) {
         ReservationDTO createdReservation = reservationFacade.createRental(book, reservedBy);
         return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<ReservationDTO> getReservation(Long id) {
+        Optional<ReservationDTO> rental = reservationFacade.findById(id);
+        return rental.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @Override
