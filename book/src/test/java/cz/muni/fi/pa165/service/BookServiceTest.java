@@ -8,6 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.openapitools.model.BookStatus;
 
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -67,6 +70,30 @@ public class BookServiceTest {
 
         // Assert
         assertThat(result).isEmpty();
+    }
+
+    @MockitoSettings(strictness = Strictness.LENIENT)
+    @Test
+    void updateById_bookFound_updatesBook() {
+        // Arrange
+        Long id = 1L;
+        String newTitle = "The Lord of the Rings: The Two Towers";
+        String newAuthor = "J. R. R. Tolkien";
+        String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
+        BookStatus newStatus = BookStatus.RENTED;
+        BookDAO existingBook = new BookDAO("The Lord of the Rings", "Tolkien", "Fantasy novel", BookStatus.AVAILABLE);
+        when(bookRepository.findById(id)).thenReturn(Optional.of(existingBook));
+        when(bookRepository.updateById(id, existingBook)).thenReturn(Optional.of(existingBook));
+
+        // Act
+        Optional<BookDAO> result = bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus);
+
+        // Assert
+        assertThat(result).isPresent().contains(existingBook);
+        assertThat(result.get().getTitle()).isEqualTo(newTitle);
+        assertThat(result.get().getAuthor()).isEqualTo(newAuthor);
+        assertThat(result.get().getDescription()).isEqualTo(newDescription);
+        assertThat(result.get().getStatus()).isEqualTo(newStatus);
     }
 
     @Test
