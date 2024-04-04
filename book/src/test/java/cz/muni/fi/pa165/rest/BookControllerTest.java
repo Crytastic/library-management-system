@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BookControllerTest {
@@ -41,5 +41,18 @@ public class BookControllerTest {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody()).isEqualTo(createdBook);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    void deleteBook_validId_deletesBook() {
+        // Arrange
+        Long id = 1L;
+
+        // Act
+        ResponseEntity<Void> response = bookController.deleteBook(id);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        verify(bookFacade, times(1)).deleteById(id);
     }
 }
