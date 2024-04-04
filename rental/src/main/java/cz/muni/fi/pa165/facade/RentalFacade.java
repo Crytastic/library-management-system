@@ -42,14 +42,17 @@ public class RentalFacade {
         return rentalService.deleteById(id);
     }
 
-    public Optional<Rental> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate) {
-        return rentalService.updateById(id, book, rentedBy, borrowDate).map(this::convertToDTO);
+    public Optional<Rental> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, boolean returned, OffsetDateTime returnDate) {
+        return rentalService.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate).map(this::convertToDTO);
     }
 
     private Rental convertToDTO(RentalDAO rentalDAO) {
         return new Rental()
                 .book(rentalDAO.getBook())
                 .rentedBy(rentalDAO.getRentedBy())
-                .borrowDate(rentalDAO.getBorrowDate());
+                .borrowDate(rentalDAO.getBorrowDate())
+                .expectedReturnDate(rentalDAO.getExpectedReturnDate())
+                .returned(rentalDAO.isReturned())
+                .returnDate(rentalDAO.getReturnDate());
     }
 }

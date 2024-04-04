@@ -25,8 +25,15 @@ public class RentalService {
     }
 
     public RentalDAO createRental(String book, String rentedBy, OffsetDateTime borrowDate) {
-        return rentalRepository.store(new RentalDAO(book, rentedBy, borrowDate));
+        OffsetDateTime expectedReturnDate = borrowDate.plusMonths(3);
+        return createRental(book, rentedBy, borrowDate, expectedReturnDate);
     }
+
+    public RentalDAO createRental(String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate) {
+        RentalDAO rentalDAO = new RentalDAO(book, rentedBy, borrowDate, expectedReturnDate, false, null);
+        return rentalRepository.store(rentalDAO);
+    }
+
 
     public Optional<RentalDAO> findById(Long id) {
         return rentalRepository.findById(id);
@@ -36,7 +43,7 @@ public class RentalService {
         return rentalRepository.deleteById(id);
     }
 
-    public Optional<RentalDAO> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate) {
+    public Optional<RentalDAO> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, boolean returned, OffsetDateTime returnDate) {
         Optional<RentalDAO> optionalRental = rentalRepository.findById(id);
 
         if (optionalRental.isEmpty()) {
@@ -45,9 +52,14 @@ public class RentalService {
 
         RentalDAO rentalDAO = optionalRental.get();
 
-        if (book != null) rentalDAO.setBook(book);
-        if (rentedBy != null) rentalDAO.setRentedBy(rentedBy);
-        if (borrowDate != null) rentalDAO.setBorrowDate(borrowDate);
+        rentalDAO.setBook(book != null ? book : rentalDAO.getBook());
+        rentalDAO.setRentedBy(rentedBy != null ? rentedBy : rentalDAO.getRentedBy());
+        rentalDAO.setBorrowDate(borrowDate != null ? borrowDate : rentalDAO.getBorrowDate());
+        rentalDAO.setExpectedReturnDate(expectedReturnDate != null ? expectedReturnDate : rentalDAO.getExpectedReturnDate());
+        if (returned) {
+            rentalDAO.setReturned(true);
+            rentalDAO.setReturnDate(returnDate != null ? returnDate : rentalDAO.getReturnDate());
+        }
 
         return rentalRepository.updateById(rentalDAO.getId(), rentalDAO);
     }

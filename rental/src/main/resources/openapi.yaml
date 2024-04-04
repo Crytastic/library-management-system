@@ -17,7 +17,7 @@ components:
         book:
           type: string
           description: "Title of the book being rented"
-          example: "The Lords of the Rings: The Two Towers"
+          example: "The Lord of the Rings: The Two Towers"
         rentedBy:
           type: string
           description: "Name of the person renting the book"
@@ -27,6 +27,20 @@ components:
           format: date-time
           description: "Date when the book was borrowed"
           example: "2024-04-03T10:15:30Z"
+        expectedReturnDate:
+          type: string
+          format: date-time
+          description: "Date when the book is expected to be returned"
+          example: "2024-07-03T10:15:30Z"
+        returned:
+          type: boolean
+          description: "Indicates whether the book has been returned"
+          example: false
+        returnDate:
+          type: string
+          format: date-time
+          description: "Date when the book was returned, null If it hasn't been returned yet"
+          example: "2024-04-06T08:30:00Z"
 
 paths:
   /api/test:
@@ -122,6 +136,23 @@ paths:
             type: string
         - in: query
           name: borrowDate
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: expectedReturnDate
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: returned
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: returnDate
           required: false
           schema:
             type: string
