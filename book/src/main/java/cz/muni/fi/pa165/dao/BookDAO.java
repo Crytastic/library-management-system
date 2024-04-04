@@ -4,13 +4,9 @@ import org.openapitools.model.BookStatus;
 
 public class BookDAO {
     Long id;
-
     String title;
-
     String author;
-
     String description;
-
     BookStatus status;
 
     public BookDAO(String title, String author, String description, BookStatus status) {
