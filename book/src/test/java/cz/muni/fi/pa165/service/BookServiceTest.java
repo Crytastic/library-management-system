@@ -128,4 +128,32 @@ public class BookServiceTest {
         // Assert
         assertThat(result).isEmpty();
     }
+
+    @Test
+    void findByFilter_booksAvailable_returnsAvailableBooks() {
+        // Arrange
+        String author = "J. R. R. Tolkien";
+        BookDAO book1 = new BookDAO("The Lord of the Rings: The Fellowship of the Ring", author, "Fantasy novel", BookStatus.AVAILABLE);
+        BookDAO book2 = new BookDAO("The Hobbit", author, "Fantasy novel", BookStatus.AVAILABLE);
+        List<BookDAO> availableBooks = List.of(book1, book2);
+        Mockito.when(bookRepository.findByFilter(null, null, null, BookStatus.AVAILABLE)).thenReturn(availableBooks);
+
+        // Act
+        List<BookDAO> result = bookService.findByFilter(null, null, null, BookStatus.AVAILABLE);
+
+        // Assert
+        assertThat(result).isNotNull().hasSize(2).containsExactlyInAnyOrder(book1, book2);
+    }
+
+    @Test
+    void findByFilter_noBooksAvailable_returnsEmptyList() {
+        // Arrange
+        Mockito.when(bookRepository.findByFilter(null, null, null, BookStatus.AVAILABLE)).thenReturn(new ArrayList<>());
+
+        // Act
+        List<BookDAO> result = bookService.findByFilter(null, null, null, BookStatus.AVAILABLE);
+
+        // Assert
+        assertThat(result).isEmpty();
+    }
 }
