@@ -12,6 +12,8 @@ import org.openapitools.model.BookStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -54,5 +56,39 @@ public class BookControllerTest {
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         verify(bookFacade, times(1)).deleteById(id);
+    }
+
+    @Test
+    void getBook_validId_returnsBook() {
+        // Arrange
+        Long id = 1L;
+        String title = "The Lord of the Rings";
+        String description = "Fantasy novel";
+        String author = "J.R.R. Tolkien";
+        BookStatus status = BookStatus.AVAILABLE;
+        BookDTO book = BookDTOFactory.createBook(title, description, author, status);
+        when(bookFacade.findById(id)).thenReturn(Optional.of(book));
+
+        // Act
+        ResponseEntity<BookDTO> response = bookController.getBook(id);
+
+        // Assert
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).isEqualTo(book);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void getBook_invalidId_returnsNotFound() {
+        // Arrange
+        Long id = 1L;
+        when(bookFacade.findById(id)).thenReturn(Optional.empty());
+
+        // Act
+        ResponseEntity<BookDTO> response = bookController.getBook(id);
+
+        // Assert
+        assertThat(response.getBody()).isNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 }
