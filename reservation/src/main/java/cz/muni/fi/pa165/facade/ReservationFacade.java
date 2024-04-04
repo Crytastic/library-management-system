@@ -6,6 +6,7 @@ import org.openapitools.model.ReservationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,4 +45,9 @@ public class ReservationFacade {
     public Optional<ReservationDTO> findById(Long id) {
         return reservationService.findById(id).map(this::convertToDTO);
     }
+
+    public Optional<ReservationDTO> updateById(Long id, String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
+        return reservationService.updateById(id, book, reservedBy, reservedFrom, reservedTo).map(this::convertToDTO);
+    }
+
 }

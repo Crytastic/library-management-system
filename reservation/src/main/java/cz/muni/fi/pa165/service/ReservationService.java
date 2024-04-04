@@ -34,4 +34,23 @@ public class ReservationService {
     public Optional<ReservationDAO> findById(Long id) {
         return reservationRepository.findById(id);
     }
+
+    public Optional<ReservationDAO> updateById(Long id, String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
+        Optional<ReservationDAO> optionalReservation = reservationRepository.findById(id);
+
+        if (optionalReservation.isEmpty()) {
+            return Optional.empty();
+        }
+
+        ReservationDAO reservationDAO = optionalReservation.get();
+
+        if (book != null) reservationDAO.setBook(book);
+        if (reservedBy != null) reservationDAO.setReservedBy(reservedBy);
+        if (reservedFrom != null) reservationDAO.setReservedFrom(reservedFrom);
+        if (reservedTo != null) reservationDAO.setReservedTo(reservedTo);
+
+        return reservationRepository.updateById(id, reservationDAO);
+
+    }
+
 }

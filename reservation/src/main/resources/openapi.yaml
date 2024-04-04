@@ -97,4 +97,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReservationDTO'
-
+    patch:
+      tags:
+        - Reservation
+      summary: Update an existing reservation
+      operationId: updateReservation
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          name: book
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: reservedBy
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: reservedFrom
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: reservedTo
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationDTO'
+        '404':
+          description: Not found

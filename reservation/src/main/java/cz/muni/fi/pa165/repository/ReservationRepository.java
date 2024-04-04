@@ -27,6 +27,8 @@ public class ReservationRepository {
         return Optional.ofNullable(reservations.get(id));
     }
 
-
-
+    public Optional<ReservationDAO> updateById(Long id, ReservationDAO reservationDAO) {
+        reservations.put(id, reservationDAO);
+        return Optional.ofNullable(reservationDAO);
+    }
 }
