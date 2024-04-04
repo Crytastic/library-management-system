@@ -41,8 +41,8 @@ public class UserRestController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<List<UserDTO>> getUsers() {
-        return new ResponseEntity<>(userFacade.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<UserDTO>> getUsers(UserType userType) {
+        return new ResponseEntity<>(userFacade.findAll(userType), HttpStatus.OK);
     }
 
 

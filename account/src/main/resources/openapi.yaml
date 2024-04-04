@@ -30,6 +30,14 @@ paths:
         - User
       summary: Returns all users
       operationId: getUsers
+      parameters:
+        - in: query
+          name: userType
+          required: false
+          description: "Equals match"
+          schema:
+            $ref: '#/components/schemas/UserType'
+
       responses:
         "200":
           description: OK
@@ -97,4 +105,5 @@ paths:
       responses:
         '204':
           description: No content
+
 

@@ -21,8 +21,8 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<UserDAO> findAll() {
-        return userRepository.findAll();
+    public List<UserDAO> findAll(UserType userType) {
+        return userRepository.findAll(userType);
     }
 
     public UserDAO createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {

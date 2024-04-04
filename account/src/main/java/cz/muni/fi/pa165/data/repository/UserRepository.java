@@ -17,9 +17,10 @@ public class UserRepository {
 
     private static Long index = 1L;
 
-    public List<UserDAO> findAll() {
+    public List<UserDAO> findAll(UserType userType) {
         return users.values()
                 .stream()
+                .filter(user -> userType == null || user.getUserType().equals(userType))
                 .toList();
     }
 

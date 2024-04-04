@@ -20,8 +20,8 @@ public class UserFacade {
         this.userService = userService;
     }
 
-    public List<UserDTO> findAll() {
-        List<UserDAO> users = userService.findAll();
+    public List<UserDTO> findAll(UserType userType) {
+        List<UserDAO> users = userService.findAll(userType);
         return users.stream().map(dao -> new UserDTO()
                 .address(dao.getAddress())
                 .username(dao.getUsername())
