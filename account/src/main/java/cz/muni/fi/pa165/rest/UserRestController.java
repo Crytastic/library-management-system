@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.rest;
 
 import cz.muni.fi.pa165.exception.UnauthorisedException;
+import cz.muni.fi.pa165.exception.UsernameAlreadyExistsException;
 import cz.muni.fi.pa165.facade.UserFacade;
 import org.openapitools.api.UserApi;
 import org.openapitools.model.UserDTO;
@@ -25,7 +26,12 @@ public class UserRestController implements UserApi {
 
     @Override
     public ResponseEntity<UserDTO> createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {
-        return new ResponseEntity<>(userFacade.createUser(username, password, address, birthDate, userType), HttpStatus.CREATED);
+        try {
+            return new ResponseEntity<>(userFacade
+                    .createUser(username, password, address, birthDate, userType), HttpStatus.CREATED);
+        } catch (UsernameAlreadyExistsException e) {
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
     @Override

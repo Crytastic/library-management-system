@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.facade;
 
 import cz.muni.fi.pa165.data.model.UserDAO;
 import cz.muni.fi.pa165.exception.UnauthorisedException;
+import cz.muni.fi.pa165.exception.UsernameAlreadyExistsException;
 import cz.muni.fi.pa165.service.UserService;
 import org.openapitools.model.UserDTO;
 import org.openapitools.model.UserType;
@@ -41,7 +42,7 @@ public class UserFacade {
                 .toList();
     }
 
-    public UserDTO createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {
+    public UserDTO createUser(String username, String password, String address, LocalDate birthDate, UserType userType) throws UsernameAlreadyExistsException {
         UserDAO user = userService.createUser(username, password, address, birthDate, userType);
         return new UserDTO()
                 .username(user.getUsername())

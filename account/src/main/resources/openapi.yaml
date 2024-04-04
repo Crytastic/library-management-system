@@ -66,6 +66,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserDTO'
+        "422":
+          description: User with your username already exists
 
   /api/users/{id}:
     get:

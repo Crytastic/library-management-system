@@ -4,6 +4,7 @@ import com.google.common.hash.Hashing;
 import cz.muni.fi.pa165.data.model.UserDAO;
 import cz.muni.fi.pa165.data.repository.UserRepository;
 import cz.muni.fi.pa165.exception.UnauthorisedException;
+import cz.muni.fi.pa165.exception.UsernameAlreadyExistsException;
 import io.micrometer.observation.ObservationFilter;
 import org.openapitools.model.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,10 @@ public class UserService {
         return userRepository.findAllAdults();
     }
 
-    public UserDAO createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {
+    public UserDAO createUser(String username, String password, String address, LocalDate birthDate, UserType userType) throws UsernameAlreadyExistsException {
+        if (userRepository.findUserByUsername(username) != null) {
+            throw new UsernameAlreadyExistsException();
+        }
         String passwordHashed = createPasswordHash(password);
         return userRepository.saveUser(username, passwordHashed, address, birthDate, userType);
     }
