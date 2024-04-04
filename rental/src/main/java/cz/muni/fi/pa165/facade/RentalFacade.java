@@ -42,7 +42,7 @@ public class RentalFacade {
         return rentalService.deleteById(id);
     }
 
-    public Optional<Rental> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, boolean returned, OffsetDateTime returnDate) {
+    public Optional<Rental> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate) {
         return rentalService.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate).map(this::convertToDTO);
     }
 

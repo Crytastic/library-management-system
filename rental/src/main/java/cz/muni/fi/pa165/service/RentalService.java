@@ -41,7 +41,7 @@ public class RentalService {
         return rentalRepository.deleteById(id);
     }
 
-    public Optional<RentalDAO> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, boolean returned, OffsetDateTime returnDate) {
+    public Optional<RentalDAO> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate) {
         Optional<RentalDAO> optionalRental = rentalRepository.findById(id);
 
         if (optionalRental.isEmpty()) {
@@ -54,10 +54,8 @@ public class RentalService {
         rentalDAO.setRentedBy(rentedBy != null ? rentedBy : rentalDAO.getRentedBy());
         rentalDAO.setBorrowDate(borrowDate != null ? borrowDate : rentalDAO.getBorrowDate());
         rentalDAO.setExpectedReturnDate(expectedReturnDate != null ? expectedReturnDate : rentalDAO.getExpectedReturnDate());
-        if (returned) {
-            rentalDAO.setReturned(true);
-            rentalDAO.setReturnDate(returnDate != null ? returnDate : rentalDAO.getReturnDate());
-        }
+        rentalDAO.setReturned(returned != null ? returned : rentalDAO.isReturned());
+        rentalDAO.setReturnDate(returnDate != null ? returnDate : rentalDAO.getReturnDate());
 
         return rentalRepository.updateById(rentalDAO.getId(), rentalDAO);
     }
