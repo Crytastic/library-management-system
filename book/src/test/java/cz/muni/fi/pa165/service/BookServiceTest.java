@@ -2,22 +2,29 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.dao.BookDAO;
 import cz.muni.fi.pa165.repository.BookRepository;
+import cz.muni.fi.pa165.stubs.RentalServiceStub;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.openapitools.model.BookStatus;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 public class BookServiceTest {
     @Mock
     private BookRepository bookRepository;
+    @Mock
+    RentalServiceStub rentalServiceStub;
 
     @InjectMocks
     private BookService bookService;
@@ -62,5 +69,20 @@ public class BookServiceTest {
 
         // Assert
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void findBookRentals_bookFound_returnsRentals() {
+        // Arrange
+        Long id = 1L;
+        List<String> rentals = List.of("Rental 1", "Rental 2");
+        Mockito.when(rentalServiceStub.apiCallToRentalServiceToFindBookRentals(id)).thenReturn(rentals);
+        Mockito.when(bookRepository.findById(id)).thenReturn(Optional.of(new BookDAO("", "", "", BookStatus.AVAILABLE)));
+
+        // Act
+        Optional<List<String>> result = bookService.findBookRentals(id);
+
+        // Assert
+        assertThat(result).isPresent().contains(rentals);
     }
 }
