@@ -34,12 +34,12 @@ class UserServiceTest {
 
     @Test
     void findById_userFound_returnsUser() {
-        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.userDAO));
+        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.firstMemberDAO));
 
         Optional<UserDAO> userDAO = userService.findById(1L);
 
         assertThat(userDAO).isPresent();
-        assertThat(userDAO.get()).isEqualTo(TestDataFactory.userDAO);
+        assertThat(userDAO.get()).isEqualTo(TestDataFactory.firstMemberDAO);
     }
 
     @Test
