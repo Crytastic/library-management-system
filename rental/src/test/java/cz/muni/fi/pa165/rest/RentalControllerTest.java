@@ -22,6 +22,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+/**
+ * @author Sophia Zápotočná
+ */
 @ExtendWith(MockitoExtension.class)
 class RentalControllerTest {
     @Mock
