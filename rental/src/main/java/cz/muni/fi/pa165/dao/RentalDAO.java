@@ -3,6 +3,11 @@ package cz.muni.fi.pa165.dao;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
+/**
+ * This class encapsulates information about a rental.
+ *
+ * @author Maxmilián Šeffer
+ */
 public class RentalDAO {
     private Long id;
     private String book;

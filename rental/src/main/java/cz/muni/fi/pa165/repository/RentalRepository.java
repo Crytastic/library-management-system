@@ -7,6 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository layer for managing rentals.
+ * Provides methods for storing, retrieving and updating, rentals.
+ *
+ * @author Maxmilán Šeffer
+ */
 @Repository
 public class RentalRepository {
     private final HashMap<Long, RentalDAO> rentals = new HashMap<>();
