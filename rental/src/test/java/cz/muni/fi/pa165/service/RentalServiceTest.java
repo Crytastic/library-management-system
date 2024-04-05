@@ -12,6 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -78,6 +80,22 @@ class RentalServiceTest {
 
         verify(rentalRepository, times(1)).deleteById(idToDelete);
     }
+
+    @Test
+    void findAll_rentalsReturned_returnsRentals() {
+        List<RentalDAO> rentals = new ArrayList<>();
+        rentals.add(TestDataFactory.activeRentalDAO);
+        rentals.add(TestDataFactory.inActiveRentalDAO);
+        Mockito.when(rentalRepository.findAll()).thenReturn(rentals);
+
+        List<RentalDAO> listOfRentals = rentalService.findAll();
+
+        assertThat(listOfRentals)
+                .isNotNull()
+                .hasSize(2)
+                .containsExactlyInAnyOrder(TestDataFactory.activeRentalDAO, TestDataFactory.inActiveRentalDAO);
+    }
+
 
 
 
