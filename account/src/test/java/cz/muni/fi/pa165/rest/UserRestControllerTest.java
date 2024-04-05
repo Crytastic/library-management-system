@@ -15,9 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -148,6 +151,44 @@ class UserRestControllerTest {
 
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody()).isEqualTo(user);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void findAll_userTypeMember_returnsUsersAndOkStatus() {
+        String username = "programmer123";
+        UserType userType = UserType.MEMBER;
+        String address = "Botanická 68a";
+        LocalDate birthDate = LocalDate.parse("2000-02-02");
+        UserDTO user = new UserDTO().username(username).userType(userType).address(address).birthDate(birthDate);
+        List<UserDTO> users = new ArrayList<>();
+        users.add(user);
+
+        Mockito.when(userFacade.findAll(any(UserType.class))).thenReturn(users);
+
+        ResponseEntity<List<UserDTO>> response = userRestController.getUsers(UserType.MEMBER);
+
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).isEqualTo(users);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void findAllAdults_returnsUsersAndOkStatus() {
+        String username = "programmer123";
+        UserType userType = UserType.MEMBER;
+        String address = "Botanická 68a";
+        LocalDate birthDate = LocalDate.parse("2000-02-02");
+        UserDTO user = new UserDTO().username(username).userType(userType).address(address).birthDate(birthDate);
+        List<UserDTO> users = new ArrayList<>();
+        users.add(user);
+
+        Mockito.when(userFacade.findAllAdults()).thenReturn(users);
+
+        ResponseEntity<List<UserDTO>> response = userRestController.getAdultUsers();
+
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).isEqualTo(users);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
