@@ -1,34 +1,41 @@
 @startuml
 
+
+class User {
+Long id
+String username
+String passwordHash
+String address
+UserType userType
+LocalDate birthDate
+}
+
+class Reservation {
+Long id;
+String book;
+String reservedBy;
+OffsetDateTime reservedFrom;
+OffsetDateTime reservedTo;
+}
+
+class Rental {
+Long id;
+String book;
+String rentedBy;
+OffsetDateTime borrowDate;
+OffsetDateTime expectedReturnDate;
+boolean returned;
+OffsetDateTime returnDate;
+BigDecimal lateReturnWeeklyFine;
+boolean fineResolved;
+}
+
 class Book {
+Long id
 String title
 String author
 String description
 BookStatus status
-}
-
-class User {
-String name
-UserType type
-}
-
-class Reservation {
-Book book
-User reservedBy
-Date reservedUntil
-}
-
-class Rental {
-Book book
-User rentedBy
-Date borrowDate
-Date returnDate
-}
-
-class Fine {
-Rental rental
-Float amount
-Boolean paid
 }
 
 enum UserType {
@@ -44,6 +51,5 @@ AVAILABLE
 
 Book -- BookStatus
 User -- UserType
-
 
 @enduml
