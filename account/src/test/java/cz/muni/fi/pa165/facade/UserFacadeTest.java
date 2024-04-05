@@ -15,6 +15,8 @@ import org.openapitools.model.UserDTO;
 import org.openapitools.model.UserType;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -212,6 +214,35 @@ class UserFacadeTest {
                 updatedUser.getAddress(), updatedUser.getBirthDate(), null));
     }
 
+    @Test
+    void findAll_userTypeMember_returnsUsers() {
+        List<UserDAO> users = new ArrayList<>();
+        users.add(TestDataFactory.firstMemberDAO);
+        users.add(TestDataFactory.secondMemberDAO);
+
+        Mockito.when(userService.findAll(UserType.MEMBER)).thenReturn(users);
+
+        assertThat(userFacade.findAll(UserType.MEMBER))
+                .isNotNull()
+                .hasSize(2)
+                .containsExactlyInAnyOrder(convertToDTO(TestDataFactory.firstMemberDAO), convertToDTO(TestDataFactory.secondMemberDAO));
+        verify(userService, times(1)).findAll(UserType.MEMBER);
+    }
+
+    @Test
+    void findAllAdults_returnsUsers() {
+        List<UserDAO> users = new ArrayList<>();
+        users.add(TestDataFactory.firstMemberDAO);
+        users.add(TestDataFactory.secondMemberDAO);
+
+        Mockito.when(userService.findAllAdults()).thenReturn(users);
+
+        assertThat(userFacade.findAllAdults())
+                .isNotNull()
+                .hasSize(2)
+                .containsExactlyInAnyOrder(convertToDTO(TestDataFactory.firstMemberDAO), convertToDTO(TestDataFactory.secondMemberDAO));
+        verify(userService, times(1)).findAllAdults();
+    }
 
     // Will be replaced by mapper in the future
     private UserDTO convertToDTO(UserDAO userDAO) {
