@@ -254,6 +254,7 @@ class UserServiceTest {
                 .isNotNull()
                 .hasSize(2)
                 .containsExactlyInAnyOrder(TestDataFactory.firstMemberDAO, TestDataFactory.secondMemberDAO);
+        verify(userRepository, times(1)).findAll(UserType.MEMBER);
     }
 
     @Test
@@ -262,11 +263,12 @@ class UserServiceTest {
         users.add(TestDataFactory.firstMemberDAO);
         users.add(TestDataFactory.secondMemberDAO);
 
-        Mockito.when(userRepository.findAll(UserType.MEMBER)).thenReturn(users);
+        Mockito.when(userRepository.findAllAdults()).thenReturn(users);
 
-        assertThat(userService.findAll(UserType.MEMBER))
+        assertThat(userService.findAllAdults())
                 .isNotNull()
                 .hasSize(2)
                 .containsExactlyInAnyOrder(TestDataFactory.firstMemberDAO, TestDataFactory.secondMemberDAO);
+        verify(userRepository, times(1)).findAllAdults();
     }
 }
