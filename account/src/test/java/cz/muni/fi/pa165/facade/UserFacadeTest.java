@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.facade;
 
 import cz.muni.fi.pa165.data.model.UserDAO;
+import cz.muni.fi.pa165.exceptions.UnauthorisedException;
 import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
 import cz.muni.fi.pa165.service.UserService;
 import cz.muni.fi.pa165.util.TestDataFactory;
@@ -105,6 +106,112 @@ class UserFacadeTest {
 
         verify(userService, times(1)).deleteById(idToDelete);
     }
+
+    @Test
+    void updateUser_incorrectUsername_throwsUnauthorisedException() {
+        UserDAO testUserDAO = TestDataFactory.firstMemberDAO;
+        Mockito.when(userService.updateUser(
+                TestDataFactory.secondMemberDAO.getId(),
+                "IncorrectUserName",
+                testUserDAO.getPasswordHash(),
+                "Nová Adresa 123, Brno",
+                null,
+                null)).thenThrow(UnauthorisedException.class);
+
+        assertThrows(UnauthorisedException.class, () ->
+                userFacade.updateUser(
+                        TestDataFactory.secondMemberDAO.getId(),
+                        "IncorrectUserName",
+                        testUserDAO.getPasswordHash(),
+                        "Nová Adresa 123, Brno",
+                        null,
+                        null));
+    }
+
+    @Test
+    void updateUser_incorrectPassword_throwsUnauthorisedException() {
+        UserDAO testUserDAO = TestDataFactory.firstMemberDAO;
+        Mockito.when(userService.updateUser(TestDataFactory.secondMemberDAO.getId(), testUserDAO.getUsername(), "incorrectPassword", "Nová Adresa 123, Brno", null, null)).thenThrow(UnauthorisedException.class);
+
+        assertThrows(UnauthorisedException.class, () ->
+                userFacade.updateUser(TestDataFactory.secondMemberDAO.getId(), testUserDAO.getUsername(), "incorrectPassword", "Nová Adresa 123, Brno", null, null));
+    }
+
+    @Test
+    void updateUser_userUpdatesNotExistingUser_returnsEmptyOptional() {
+        UserDAO actor = TestDataFactory.firstLibrarianDAO;
+        String actorPassword = TestDataFactory.firstLibrarianDAOPassword;
+        Long notExistingId = 20L;
+
+        Mockito.when(userService.updateUser(notExistingId, actor.getUsername(), actorPassword, "Nová Adresa 123, Brno", null, null)).thenReturn(Optional.empty());
+
+        assertThat(userFacade.updateUser(notExistingId, actor.getUsername(), actorPassword, "Nová Adresa 123, Brno", null, null)).isEmpty();
+    }
+
+    @Test
+    void updateUser_librarianUpdatesExistingUser_returnsUpdatedUser() {
+        UserDAO actor = TestDataFactory.firstLibrarianDAO;
+        String actorPassword = TestDataFactory.firstLibrarianDAOPassword;
+
+        UserDAO userToBeUpdated = TestDataFactory.firstLibrarianDAO;
+        UserDAO updatedUser = TestDataFactory.firstLibrarianDAO;
+        updatedUser.setAddress("Nová Adresa 132, Brno");
+        updatedUser.setBirthDate(LocalDate.parse("1999-12-12"));
+
+        Mockito.when(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword, updatedUser.getAddress(), updatedUser.getBirthDate(), null)).thenReturn(Optional.of(updatedUser));
+
+        assertThat(userFacade.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
+                updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isPresent().contains(convertToDTO(updatedUser));
+    }
+
+    @Test
+    void updateUser_memberUpdatesHimself_returnsUpdatedUser() {
+        UserDAO actor = TestDataFactory.firstMemberDAO;
+        String actorPassword = TestDataFactory.firstMemberDAOPassword;
+
+        UserDAO userToBeUpdated = TestDataFactory.firstMemberDAO;
+        UserDAO updatedUser = TestDataFactory.firstMemberDAO;
+        updatedUser.setAddress("Nová Adresa 132, Brno");
+        updatedUser.setBirthDate(LocalDate.parse("1999-12-12"));
+
+        Mockito.when(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword, updatedUser.getAddress(), updatedUser.getBirthDate(), null)).thenReturn(Optional.of(updatedUser));
+
+        assertThat(userFacade.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
+                updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isPresent().contains(convertToDTO(updatedUser));
+    }
+
+    @Test
+    void updateUser_memberUpdatesTypeOnHimself_throwsUnauthorizedException() {
+        UserDAO actor = TestDataFactory.firstMemberDAO;
+        String actorPassword = TestDataFactory.firstMemberDAOPassword;
+
+        UserDAO updatedUser = TestDataFactory.secondMemberDAO;
+        updatedUser.setUserType(UserType.LIBRARIAN);
+
+        Mockito.when(userService.updateUser(actor.getId(), actor.getUsername(), actorPassword,
+                updatedUser.getAddress(), updatedUser.getBirthDate(), updatedUser.getUserType())).thenThrow(UnauthorisedException.class);
+
+        assertThrows(UnauthorisedException.class, () -> userFacade.updateUser(actor.getId(), actor.getUsername(), actorPassword,
+                updatedUser.getAddress(), updatedUser.getBirthDate(), updatedUser.getUserType()));
+    }
+
+    @Test
+    void updateUser_memberUpdatesOtherUser_throwsUnauthorizedException() {
+        UserDAO actor = TestDataFactory.firstMemberDAO;
+        String actorPassword = TestDataFactory.firstMemberDAOPassword;
+
+        UserDAO userToBeUpdated = TestDataFactory.secondMemberDAO;
+        UserDAO updatedUser = TestDataFactory.secondMemberDAO;
+        updatedUser.setAddress("Nová Adresa 132, Brno");
+        updatedUser.setBirthDate(LocalDate.parse("1999-12-12"));
+
+        Mockito.when(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
+                updatedUser.getAddress(), updatedUser.getBirthDate(), null)).thenThrow(UnauthorisedException.class);
+
+        assertThrows(UnauthorisedException.class, () -> userFacade.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
+                updatedUser.getAddress(), updatedUser.getBirthDate(), null));
+    }
+
 
     // Will be replaced by mapper in the future
     private UserDTO convertToDTO(UserDAO userDAO) {
