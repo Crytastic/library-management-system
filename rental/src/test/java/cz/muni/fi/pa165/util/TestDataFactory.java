@@ -16,42 +16,6 @@ public class TestDataFactory {
     public static RentalDAO activeRentalLateDAO = getActiveLateRentalDAOFactory();
     public static RentalDAO inActiveRentalLateDAO = getInActiveLateRentalDAOFactory();
 
-    public static RentalDTO activeRentalDTO = getActiveRentalDTOFactory();
-
-    public static RentalDTO inActiveRentalDTO = getInActiveRentalDTOFactory();
-
-
-
-    private static RentalDTO getActiveRentalDTOFactory() {
-        OffsetDateTime borrowDate = OffsetDateTime.of(2024, 4, 1, 12, 0, 0, 0, ZoneOffset.UTC);
-        OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 5, 1, 12, 0, 0, 0, ZoneOffset.UTC);
-
-        return new RentalDTO()
-                .book("Active test book")
-                .rentedBy("Rental creator")
-                .borrowDate(borrowDate)
-                .expectedReturnDate(expectedReturnDate)
-                .returned(false)
-                .returnDate(null)
-                .lateReturnWeeklyFine(new BigDecimal(1))
-                .fineResolved(false);
-    }
-
-    private static RentalDTO getInActiveRentalDTOFactory() {
-        OffsetDateTime borrowDate = OffsetDateTime.of(2024, 3, 1, 12, 0, 0, 0, ZoneOffset.UTC);
-        OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 4, 1, 12, 0, 0, 0, ZoneOffset.UTC);
-
-        return new RentalDTO()
-                .book("Inactive test book")
-                .rentedBy("Rental creator")
-                .borrowDate(borrowDate)
-                .expectedReturnDate(expectedReturnDate)
-                .returned(true)
-                .returnDate(expectedReturnDate)
-                .lateReturnWeeklyFine(new BigDecimal(3))
-                .fineResolved(true);
-    }
-
     private static RentalDAO getInActiveRentalDAOFactory() {
         OffsetDateTime borrowDate = OffsetDateTime.of(2024, 3, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 4, 1, 12, 0, 0, 0, ZoneOffset.UTC);
