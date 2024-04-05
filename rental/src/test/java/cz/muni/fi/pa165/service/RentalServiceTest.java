@@ -70,6 +70,15 @@ class RentalServiceTest {
         verify(rentalRepository, times(1)).store(any(RentalDAO.class));
     }
 
+    @Test
+    void deleteById_rentalDeleted_callsRentalRepositoryOneTime() {
+        Long idToDelete = 1L;
+
+        rentalService.deleteById(idToDelete);
+
+        verify(rentalRepository, times(1)).deleteById(idToDelete);
+    }
+
 
 
 
