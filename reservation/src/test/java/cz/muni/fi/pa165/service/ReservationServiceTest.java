@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.dao.ReservationDAO;
 import cz.muni.fi.pa165.repository.ReservationRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,49 +26,52 @@ class ReservationServiceTest {
     @InjectMocks
     private ReservationService reservationService;
 
+    private ReservationDAO reservationDAO;
+    private List<ReservationDAO> reservationDAOList;
+
+    @BeforeEach
+    void setUp() {
+        reservationDAO = new ReservationDAO("The Lord of the Rings", "Franta Vopršálek", OffsetDateTime.now(), OffsetDateTime.now().plusDays(3));
+        reservationDAOList = Arrays.asList(
+                new ReservationDAO("Active Book 1", "User 1", OffsetDateTime.now(), OffsetDateTime.now().plusDays(3)),
+                new ReservationDAO("Active Book 2", "User 2", OffsetDateTime.now(), OffsetDateTime.now().plusDays(5))
+        );
+    }
 
     @Test
     void findById_existingId_callsReservationRepositoryFindById() {
         // Arrange
         Long id = 1L;
-        ReservationDAO foundReservation = new ReservationDAO("The Lord of the Rings", "Franta Vopršálek", OffsetDateTime.now(), OffsetDateTime.now().plusDays(3));
-        when(reservationRepository.findById(id)).thenReturn(Optional.of(foundReservation));
+        when(reservationRepository.findById(id)).thenReturn(Optional.of(reservationDAO));
 
         // Act
         Optional<ReservationDAO> result = reservationService.findById(id);
 
         // Assert
-        assertThat(result).isPresent().contains(foundReservation);
+        assertThat(result).isPresent().contains(reservationDAO);
         verify(reservationRepository, times(1)).findById(id);
     }
 
     @Test
     void findAll_validReservations_callsReservationRepositoryFindAll() {
         // Arrange
-        List<ReservationDAO> expectedReservations = Arrays.asList(
-                new ReservationDAO("Book 1", "User 1", OffsetDateTime.now(), OffsetDateTime.now().plusDays(3)),
-                new ReservationDAO("Book 2", "User 2", OffsetDateTime.now(), OffsetDateTime.now().plusDays(5))
-        );
-        when(reservationRepository.findAll()).thenReturn(expectedReservations);
+        when(reservationRepository.findAll()).thenReturn(reservationDAOList);
 
         // Act
         List<ReservationDAO> result = reservationService.findAll();
 
         // Assert
-        assertThat(result).isEqualTo(expectedReservations);
+        assertThat(result).isEqualTo(reservationDAOList);
         verify(reservationRepository, times(1)).findAll();
     }
 
     @Test
     void createReservation_validReservation_callsReservationRepositoryStore() {
         // Arrange
-        String book = "The Hobbit";
-        String reservedBy = "Bilbo Baggins";
-        ReservationDAO reservationDAO = new ReservationDAO(book, reservedBy, OffsetDateTime.now(), OffsetDateTime.now().plusDays(3));
         when(reservationRepository.store(any(ReservationDAO.class))).thenReturn(reservationDAO);
 
         // Act
-        ReservationDAO result = reservationService.createReservation(book, reservedBy);
+        ReservationDAO result = reservationService.createReservation("The Lord of the Rings", "Franta Vopršálek");
 
         // Assert
         assertThat(result).isEqualTo(reservationDAO);
@@ -82,19 +86,18 @@ class ReservationServiceTest {
         String newReservedBy = "Updated User";
         OffsetDateTime newReservedFrom = OffsetDateTime.now().plusDays(1);
         OffsetDateTime newReservedTo = OffsetDateTime.now().plusDays(4);
-        ReservationDAO originalReservation = new ReservationDAO("Original Book", "Original User", OffsetDateTime.now(), OffsetDateTime.now().plusDays(3));
-        when(reservationRepository.findById(id)).thenReturn(Optional.of(originalReservation));
-        when(reservationRepository.updateById(eq(id), any(ReservationDAO.class))).thenReturn(Optional.of(originalReservation));
+        when(reservationRepository.findById(id)).thenReturn(Optional.of(reservationDAO));
+        when(reservationRepository.updateById(eq(id), any(ReservationDAO.class))).thenReturn(Optional.of(reservationDAO));
 
         // Act
         Optional<ReservationDAO> result = reservationService.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);
 
         // Assert
-        assertThat(result).isPresent().contains(originalReservation);
-        assertThat(originalReservation.getBook()).isEqualTo(newBook);
-        assertThat(originalReservation.getReservedBy()).isEqualTo(newReservedBy);
-        assertThat(originalReservation.getReservedFrom()).isEqualTo(newReservedFrom);
-        assertThat(originalReservation.getReservedTo()).isEqualTo(newReservedTo);
+        assertThat(result).isPresent().contains(reservationDAO);
+        assertThat(reservationDAO.getBook()).isEqualTo(newBook);
+        assertThat(reservationDAO.getReservedBy()).isEqualTo(newReservedBy);
+        assertThat(reservationDAO.getReservedFrom()).isEqualTo(newReservedFrom);
+        assertThat(reservationDAO.getReservedTo()).isEqualTo(newReservedTo);
         verify(reservationRepository, times(1)).updateById(eq(id), any(ReservationDAO.class));
     }
 
@@ -127,34 +130,34 @@ class ReservationServiceTest {
     @Test
     void findAllActive_callsReservationRepositoryFindAllActive() {
         // Arrange
-        List<ReservationDAO> expectedReservations = Arrays.asList(
+        List<ReservationDAO> activeReservations = Arrays.asList(
                 new ReservationDAO("Active Book 1", "User 1", OffsetDateTime.now(), OffsetDateTime.now().plusDays(3)),
                 new ReservationDAO("Active Book 2", "User 2", OffsetDateTime.now(), OffsetDateTime.now().plusDays(5))
         );
-        when(reservationRepository.findAllActive()).thenReturn(expectedReservations);
+        when(reservationRepository.findAllActive()).thenReturn(activeReservations);
 
         // Act
         List<ReservationDAO> result = reservationService.findAllActive();
 
         // Assert
-        assertThat(result).isEqualTo(expectedReservations);
+        assertThat(result).isEqualTo(activeReservations);
         verify(reservationRepository, times(1)).findAllActive();
     }
 
     @Test
     void findAllExpired_callsReservationRepositoryFindAllExpired() {
         // Arrange
-        List<ReservationDAO> expectedReservations = Arrays.asList(
+        List<ReservationDAO> expiredReservations = Arrays.asList(
                 new ReservationDAO("Expired Book 1", "User 1", OffsetDateTime.now().minusDays(5), OffsetDateTime.now().minusDays(2)),
                 new ReservationDAO("Expired Book 2", "User 2", OffsetDateTime.now().minusDays(3), OffsetDateTime.now().minusDays(1))
         );
-        when(reservationRepository.findAllExpired()).thenReturn(expectedReservations);
+        when(reservationRepository.findAllExpired()).thenReturn(expiredReservations);
 
         // Act
         List<ReservationDAO> result = reservationService.findAllExpired();
 
         // Assert
-        assertThat(result).isEqualTo(expectedReservations);
+        assertThat(result).isEqualTo(expiredReservations);
         verify(reservationRepository, times(1)).findAllExpired();
     }
 }
