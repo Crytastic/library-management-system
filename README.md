@@ -22,6 +22,26 @@ To run the microservices, you first need to install dependencies:
 Each microservice is a standalone executable module and can be run from inside their respective
 directories: ```mvn spring-boot:run```
 
+### Rental Microservice
+
+#### Overview
+
+Facilitates operations related to book rentals. It provides functionalities for creating, updating, retrieving, and
+deleting rentals. This microservice manages information about book rentals, including details such as the book title,
+the person renting the book, dates of borrowing and expected return, and any associated fines.
+
+It's accessible at [http://localhost:8080](http://localhost:8080). Also, via GUI
+on http://localhost:8080/swagger-ui/index.html#/.
+
+#### Endpoints
+
+- **GET /api/rentals:** Retrieve all rentals.
+- **POST /api/rentals:** Create a new rental.
+- **GET /api/rentals/{id}:** Retrieve a rental by its ID.
+- **PATCH /api/rentals/{id}:** Update an existing rental.
+- **DELETE /api/rentals/{id}:** Delete a rental by its ID.
+- **GET /api/rentals/{id}/fine:** Retrieve the fine associated with a rental by its ID.
+
 ### Reservation Microservice
 
 #### Overview
@@ -43,7 +63,7 @@ It's accessible at http://localhost:8081. Also, via GUI on http://localhost:8081
 
 #### Overview
 
-The Account microservice allows users to create, manage and delete (own) account. 
+The Account microservice allows users to create, manage and delete (own) account.
 Librarians can list and manage all accounts.
 It's accessible at http://localhost:8082. Also, via GUI on http://localhost:8082/swagger-ui/index.html#/.
 
@@ -62,7 +82,7 @@ It's accessible at http://localhost:8082. Also, via GUI on http://localhost:8082
 
 The Book microservice allows users to retrieve, create, delete and update books. It also provides some additional
 functionality, such as enumerating rentals of a specific book.
-It's accessible at http://localhost:8080. Also, via GUI on http://localhost:8080/swagger-ui/index.html#/.
+It's accessible at http://localhost:8083. Also, via GUI on http://localhost:8083/swagger-ui/index.html#/.
 
 #### Endpoints
 
