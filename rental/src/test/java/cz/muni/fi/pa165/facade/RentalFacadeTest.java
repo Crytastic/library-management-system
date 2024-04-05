@@ -84,4 +84,13 @@ class RentalFacadeTest {
                 any(BigDecimal.class));
     }
 
+    @Test
+    void deleteById_rentalDeleted_callsRentalRepositoryOneTime() {
+        Long idToDelete = 1L;
+
+        rentalFacade.deleteById(idToDelete);
+
+        verify(rentalService, times(1)).deleteById(idToDelete);
+    }
+
 }
