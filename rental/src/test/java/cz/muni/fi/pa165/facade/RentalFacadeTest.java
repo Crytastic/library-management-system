@@ -177,6 +177,7 @@ class RentalFacadeTest {
 
     private RentalDTO convertToDTO(RentalDAO rentalDAO) {
         return new RentalDTO()
+                .id(rentalDAO.getId())
                 .book(rentalDAO.getBook())
                 .rentedBy(rentalDAO.getRentedBy())
                 .borrowDate(rentalDAO.getBorrowDate())
