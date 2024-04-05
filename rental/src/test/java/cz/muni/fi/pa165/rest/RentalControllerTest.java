@@ -13,10 +13,10 @@ import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class RentalControllerTest {
@@ -57,7 +57,24 @@ class RentalControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
+    @Test
+    void createRental_rentalCreated_returnsNewRentalAndCreatedStatus() {
+        String book = "Rented book";
+        String rentedBy = "User";
+        OffsetDateTime expectedReturnDate = OffsetDateTime
+                .of(2024, 5, 1, 12, 0, 0, 0, ZoneOffset.UTC);
+        BigDecimal lateReturnWeeklyFine = new BigDecimal(100);
+        RentalDTO rental = new RentalDTO().book(book).rentedBy(rentedBy).expectedReturnDate(expectedReturnDate)
+                .lateReturnWeeklyFine(lateReturnWeeklyFine);
 
+        Mockito.when(rentalFacade.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine)).thenReturn(rental);
 
+        ResponseEntity<RentalDTO> response = rentalController
+                .createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine);
+
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).isEqualTo(rental);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
 
 }
