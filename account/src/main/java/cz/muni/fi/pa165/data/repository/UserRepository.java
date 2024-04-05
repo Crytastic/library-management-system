@@ -17,14 +17,11 @@ import java.util.Optional;
  *
  * @author Sophia Zápotočná
  */
-
 @Repository
 public class UserRepository {
 
     private Map<Long, UserDAO> users = new HashMap<>();
-
     private static Long index = 1L;
-
     private static final int ADULT_AGE = 18;
 
     public List<UserDAO> findAll(UserType userType) {

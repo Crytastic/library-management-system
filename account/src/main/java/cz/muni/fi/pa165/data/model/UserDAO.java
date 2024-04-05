@@ -10,17 +10,11 @@ import java.time.LocalDate;
  * @author Sophia Zápotočná
  */
 public class UserDAO {
-
     private Long id;
-
     private String username;
-
     private String passwordHash;
-
     private String address;
-
     private UserType userType;
-
     private LocalDate birthDate;
 
     public UserDAO(Long id, String username, String passwordHash, UserType userType, String address, LocalDate birthDate) {

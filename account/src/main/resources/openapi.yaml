@@ -18,9 +18,9 @@ components:
       title: "An user"
       description: "User object providing information about user"
       properties:
-        username: {type: string, description: "Username of user", example: "xholub"}
-        address: {type: string, description: "Address of user", example: "Bratislavská 850/11"}
-        birthDate: {type: string, format: date, description: "Date of birth of user", example: "2003-06-25"}
+        username: { type: string, description: "Username of user", example: "xholub" }
+        address: { type: string, description: "Address of user", example: "Bratislavská 850/11" }
+        birthDate: { type: string, format: date, description: "Date of birth of user", example: "2003-06-25" }
         userType:
           $ref: '#/components/schemas/UserType'
 paths:
@@ -58,7 +58,7 @@ paths:
         - { name: password, in: query, required: true, schema: { type: string, format: "password" }, description: "Password of user" }
         - { name: address, in: query, required: true, schema: { type: string }, description: "Address of user" }
         - { name: birthDate, in: query, required: true, schema: { type: string, format: date }, description: "Date of birth for user" }
-        - { name: userType, in: query, required: true, schema: { $ref: '#/components/schemas/UserType' }, description: "Type of user"}
+        - { name: userType, in: query, required: true, schema: { $ref: '#/components/schemas/UserType' }, description: "Type of user" }
       responses:
         "201":
           description: Created

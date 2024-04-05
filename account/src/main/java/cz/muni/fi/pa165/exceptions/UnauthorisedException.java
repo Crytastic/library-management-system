@@ -20,5 +20,4 @@ public class UnauthorisedException extends RuntimeException {
     public UnauthorisedException(Throwable cause) {
         super(cause);
     }
-
 }

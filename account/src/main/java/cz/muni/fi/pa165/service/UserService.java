@@ -21,7 +21,6 @@ import java.util.Optional;
  *
  * @author Sophia Zápotočná
  */
-
 @Service
 public class UserService {
 
