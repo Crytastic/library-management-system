@@ -4,7 +4,7 @@ info:
   description: Reservation microservice of library management system that provides operations on reservations
   version: 1.0.0
 servers:
-  - url: "http://localhost:8084"
+  - url: "http://localhost:8081"
 tags:
   - name: Reservation
 

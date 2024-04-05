@@ -49,6 +49,7 @@ public class BookFacade {
         return bookService.findBookRentals(id);
     }
 
+    // Will be replaced by mapper in the future
     private BookDTO convertToDTO(BookDAO bookDAO) {
         return new BookDTO()
                 .id(bookDAO.getId())

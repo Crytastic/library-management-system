@@ -52,7 +52,7 @@ class UserFacadeTest {
     void findById_userNotFound_returnsEmptyOptional() {
         Mockito.when(userService.findById(1L)).thenReturn(Optional.empty());
 
-        Optional<UserDAO> userDAO = userService.findById(1L);
+        Optional<UserDTO> userDAO = userFacade.findById(1L);
 
         assertThat(userDAO).isEmpty();
     }
