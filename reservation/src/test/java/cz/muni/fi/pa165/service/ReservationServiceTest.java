@@ -111,4 +111,16 @@ class ReservationServiceTest {
         assertThat(result).isEmpty();
         verify(reservationRepository, never()).updateById(anyLong(), any(ReservationDAO.class));
     }
+
+    @Test
+    void deleteById_validId_callsReservationRepositoryDeleteById() {
+        // Arrange
+        Long id = 1L;
+
+        // Act
+        reservationService.deleteById(id);
+
+        // Assert
+        verify(reservationRepository, times(1)).deleteById(id);
+    }
 }
