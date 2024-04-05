@@ -9,6 +9,12 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service layer for managing book reservations.
+ * Provides methods to interact with reservations.
+ *
+ * @author Martin Suchánek
+ */
 @Service
 public class ReservationService {
 

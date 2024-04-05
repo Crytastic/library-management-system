@@ -11,6 +11,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Facade layer for managing book reservations.
+ * Provides methods for interacting with reservations.
+ *
+ * @author Martin Suchánek
+ */
 @Service
 public class ReservationFacade {
 

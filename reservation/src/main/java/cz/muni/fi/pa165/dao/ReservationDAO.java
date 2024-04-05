@@ -4,17 +4,17 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.OffsetDateTime;
 
+/**
+ * This class encapsulates information about a reservation of a book.
+ *
+ * @author Martin Suchánek
+ */
 public class ReservationDAO {
-
     private Long id;
-
     private String book;
-
     private String reservedBy;
-
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime reservedFrom;
-
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime reservedTo;
 

@@ -8,6 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository layer for managing book reservations.
+ * Provides methods for storing, retrieving, updating, and deleting reservations.
+ *
+ * @author Martin Suchánek
+ */
 @Repository
 public class ReservationRepository {
     private final HashMap<Long, ReservationDAO> reservations = new HashMap<>();

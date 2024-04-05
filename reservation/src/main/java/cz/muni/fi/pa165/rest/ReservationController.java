@@ -13,6 +13,12 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * REST controller layer for managing reservations.
+ * Handles HTTP requests related to reservation management.
+ *
+ * @author Martin Suchánek
+ */
 @RestController
 public class ReservationController implements ReservationApi {
 
