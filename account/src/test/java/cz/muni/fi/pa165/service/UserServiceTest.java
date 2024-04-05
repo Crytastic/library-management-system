@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
@@ -73,18 +72,13 @@ class UserServiceTest {
                 any(UserType.class))
         ).thenReturn(testUserDAO);
 
-
-        assertThatCode(
-                () -> {
-                    UserDAO userDAO = userService.createUser(username, passwordHash, address, birthDate, userType);
-                    assertThat(userDAO.getUsername()).isEqualTo(username);
-                    assertThat(userDAO.getAddress()).isEqualTo(address);
-                    assertThat(userDAO.getPasswordHash()).isEqualTo(passwordHash);
-                    assertThat(userDAO.getBirthDate()).isEqualTo(birthDate);
-                    assertThat(userDAO.getUserType()).isEqualTo(userType);
-                    assertThat(userDAO.getId()).isEqualTo(id);
-                }
-        ).doesNotThrowAnyException();
+        UserDAO userDAO = userService.createUser(username, passwordHash, address, birthDate, userType);
+        assertThat(userDAO.getUsername()).isEqualTo(username);
+        assertThat(userDAO.getAddress()).isEqualTo(address);
+        assertThat(userDAO.getPasswordHash()).isEqualTo(passwordHash);
+        assertThat(userDAO.getBirthDate()).isEqualTo(birthDate);
+        assertThat(userDAO.getUserType()).isEqualTo(userType);
+        assertThat(userDAO.getId()).isEqualTo(id);
 
         verify(userRepository, times(1))
                 .saveUser(anyString(),
