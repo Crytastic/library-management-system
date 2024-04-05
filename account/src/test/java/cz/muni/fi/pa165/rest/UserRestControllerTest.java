@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.rest;
 
+import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
 import cz.muni.fi.pa165.facade.UserFacade;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,6 +52,40 @@ class UserRestControllerTest {
 
         assertThat(response.getBody()).isNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void createUser_usernameNotExists_returnsNewUserAndCreatedStatus() {
+        String username = "programmer123";
+        String password = "password";
+        UserType userType = UserType.MEMBER;
+        String address = "Botanická 68a";
+        LocalDate birthDate = LocalDate.parse("2000-02-02");
+        UserDTO user = new UserDTO().username(username).userType(userType).birthDate(birthDate).address(address);
+
+        Mockito.when(userFacade.createUser(username, password, address, birthDate, userType)).thenReturn(user);
+
+        ResponseEntity<UserDTO> response = userRestController.createUser(username, password, address, birthDate, userType);
+
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).isEqualTo(user);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    void createUser_usernameExists_returnsUnprocessableEntityStatus() {
+        String username = "programmer123";
+        String password = "password";
+        UserType userType = UserType.MEMBER;
+        String address = "Botanická 68a";
+        LocalDate birthDate = LocalDate.parse("2000-02-02");
+
+        Mockito.when(userFacade.createUser(username, password, address, birthDate, userType)).thenThrow(UsernameAlreadyExistsException.class);
+
+        ResponseEntity<UserDTO> response = userRestController.createUser(username, password, address, birthDate, userType);
+
+        assertThat(response.getBody()).isNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
 }
