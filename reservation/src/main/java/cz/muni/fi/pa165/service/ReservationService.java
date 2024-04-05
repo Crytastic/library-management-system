@@ -13,6 +13,7 @@ import java.util.Optional;
 public class ReservationService {
 
     ReservationRepository reservationRepository;
+
     @Autowired
     public ReservationService(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
@@ -22,7 +23,7 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public ReservationDAO createRental(String book, String reservedBy) {
+    public ReservationDAO createReservation(String book, String reservedBy) {
         ReservationDAO reservationDAO = new ReservationDAO(book, reservedBy, OffsetDateTime.now(), getDefaultReservationCancelDate());
         return reservationRepository.store(reservationDAO);
     }
@@ -53,7 +54,7 @@ public class ReservationService {
 
     }
 
-    public void  deleteById(Long id) {
+    public void deleteById(Long id) {
         reservationRepository.deleteById(id);
     }
 

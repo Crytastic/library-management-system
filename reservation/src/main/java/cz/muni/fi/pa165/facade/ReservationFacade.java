@@ -37,9 +37,9 @@ public class ReservationFacade {
                 .reservedTo(reservationDAO.getReservedTo());
     }
 
-    public ReservationDTO createRental(String book, String reservedBy) {
-        ReservationDAO rentalDAO = reservationService.createRental(book, reservedBy);
-        return convertToDTO(rentalDAO);
+    public ReservationDTO createReservation(String book, String reservedBy) {
+        ReservationDAO reservationDAO = reservationService.createReservation(book, reservedBy);
+        return convertToDTO(reservationDAO);
     }
 
     public Optional<ReservationDTO> findById(Long id) {

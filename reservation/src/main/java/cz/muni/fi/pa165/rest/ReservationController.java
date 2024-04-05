@@ -25,7 +25,7 @@ public class ReservationController implements ReservationApi {
 
     @Override
     public ResponseEntity<ReservationDTO> createReservation(String book, String reservedBy) {
-        ReservationDTO createdReservation = reservationFacade.createRental(book, reservedBy);
+        ReservationDTO createdReservation = reservationFacade.createReservation(book, reservedBy);
         return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
     }
 
@@ -47,8 +47,8 @@ public class ReservationController implements ReservationApi {
 
     @Override
     public ResponseEntity<ReservationDTO> getReservation(Long id) {
-        Optional<ReservationDTO> rental = reservationFacade.findById(id);
-        return rental.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+        Optional<ReservationDTO> reservation = reservationFacade.findById(id);
+        return reservation.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
@@ -64,8 +64,8 @@ public class ReservationController implements ReservationApi {
 
     @Override
     public ResponseEntity<ReservationDTO> updateReservation(Long id, String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
-        Optional<ReservationDTO> rental = reservationFacade.updateById(id, book, reservedBy, reservedFrom, reservedTo);
-        return rental.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+        Optional<ReservationDTO> reservation = reservationFacade.updateById(id, book, reservedBy, reservedFrom, reservedTo);
+        return reservation.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
