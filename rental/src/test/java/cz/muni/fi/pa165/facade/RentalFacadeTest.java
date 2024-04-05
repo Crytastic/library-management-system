@@ -14,6 +14,8 @@ import org.openapitools.model.RentalDTO;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -91,6 +93,21 @@ class RentalFacadeTest {
         rentalFacade.deleteById(idToDelete);
 
         verify(rentalService, times(1)).deleteById(idToDelete);
+    }
+
+    @Test
+    void findAll_rentalsReturned_returnsRentals() {
+        List<RentalDAO> rentals = new ArrayList<>();
+        rentals.add(TestDataFactory.activeRentalDAO);
+        rentals.add(TestDataFactory.inActiveRentalDAO);
+        Mockito.when(rentalService.findAll()).thenReturn(rentals);
+
+        List<RentalDTO> listOfRentals = rentalFacade.findAll();
+
+        assertThat(listOfRentals)
+                .isNotNull()
+                .hasSize(2)
+                .containsExactlyInAnyOrder(TestDataFactory.activeRentalDTO, TestDataFactory.inActiveRentalDTO);
     }
 
 }
