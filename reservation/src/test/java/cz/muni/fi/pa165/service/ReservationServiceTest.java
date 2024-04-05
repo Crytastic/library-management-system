@@ -73,4 +73,42 @@ class ReservationServiceTest {
         assertThat(result).isEqualTo(reservationDAO);
         verify(reservationRepository, times(1)).store(any(ReservationDAO.class));
     }
+
+    @Test
+    void updateById_existingId_callsReservationRepositoryUpdateById() {
+        // Arrange
+        Long id = 1L;
+        String newBook = "Updated Book";
+        String newReservedBy = "Updated User";
+        OffsetDateTime newReservedFrom = OffsetDateTime.now().plusDays(1);
+        OffsetDateTime newReservedTo = OffsetDateTime.now().plusDays(4);
+        ReservationDAO originalReservation = new ReservationDAO("Original Book", "Original User", OffsetDateTime.now(), OffsetDateTime.now().plusDays(3));
+        when(reservationRepository.findById(id)).thenReturn(Optional.of(originalReservation));
+        when(reservationRepository.updateById(eq(id), any(ReservationDAO.class))).thenReturn(Optional.of(originalReservation));
+
+        // Act
+        Optional<ReservationDAO> result = reservationService.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);
+
+        // Assert
+        assertThat(result).isPresent().contains(originalReservation);
+        assertThat(originalReservation.getBook()).isEqualTo(newBook);
+        assertThat(originalReservation.getReservedBy()).isEqualTo(newReservedBy);
+        assertThat(originalReservation.getReservedFrom()).isEqualTo(newReservedFrom);
+        assertThat(originalReservation.getReservedTo()).isEqualTo(newReservedTo);
+        verify(reservationRepository, times(1)).updateById(eq(id), any(ReservationDAO.class));
+    }
+
+    @Test
+    void updateById_nonExistingId_returnsEmptyOptional() {
+        // Arrange
+        Long id = 1L;
+        when(reservationRepository.findById(id)).thenReturn(Optional.empty());
+
+        // Act
+        Optional<ReservationDAO> result = reservationService.updateById(id, "New Book", "New User", OffsetDateTime.now(), OffsetDateTime.now().plusDays(3));
+
+        // Assert
+        assertThat(result).isEmpty();
+        verify(reservationRepository, never()).updateById(anyLong(), any(ReservationDAO.class));
+    }
 }
