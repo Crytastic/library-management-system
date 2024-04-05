@@ -14,6 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.openapitools.model.UserType;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -240,4 +242,17 @@ class UserServiceTest {
         verify(userRepository, times(0)).updateUser(userToBeUpdated.getId(), updatedUser);
     }
 
+    @Test
+    void findAll_userTypeMember_returnsUsers() {
+        List<UserDAO> users = new ArrayList<>();
+        users.add(TestDataFactory.firstMemberDAO);
+        users.add(TestDataFactory.secondMemberDAO);
+
+        Mockito.when(userRepository.findAll(UserType.MEMBER)).thenReturn(users);
+
+        assertThat(userService.findAll(UserType.MEMBER))
+                .isNotNull()
+                .hasSize(2)
+                .containsExactlyInAnyOrder(TestDataFactory.firstMemberDAO, TestDataFactory.secondMemberDAO);
+    }
 }
