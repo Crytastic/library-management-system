@@ -110,34 +110,69 @@ class RentalFacadeTest {
                         convertToDTO(TestDataFactory.inActiveRentalDAO));
     }
 
-    @Test
-    void updateById_oneItemChanged_returnsUpdatedRental() {
-        String changedBook = "New changed book facade";
-        RentalDAO updatedRental = TestDataFactory.activeRentalDAO;
+//    @Test
+////    void updateById_oneItemChanged_returnsUpdatedRental() {
+////        String changedBook = "New changed book facade";
+////        RentalDAO updatedRental = TestDataFactory.activeRentalDAO;
+////        updatedRental.setBook(changedBook);
+////
+////        Mockito.when(rentalService.updateById(updatedRental.getId(), changedBook, null, null,
+////                        null, null, null, null, null))
+////                .thenReturn(Optional.of(updatedRental));
+////
+////        Optional<RentalDTO> updatedDto = rentalFacade.updateById(updatedRental.getId(), changedBook, null, null,
+////                null, null, null, null, null);
+////
+////
+////        RentalDTO activeRentalDTO = convertToDTO(TestDataFactory.activeRentalDAO);
+////
+////
+////        verify(rentalService, times(1)).findById(updatedRental.getId());
+////        verify(rentalService, times(1)).updateById(updatedRental.getId(), changedBook, null, null,
+////                null, null, null, null, null);
+////    }
 
-        Mockito.when(rentalService.updateById(updatedRental.getId(), changedBook, null, null,
-                        null, null, null, null, null))
+    @Test
+    void updateById_validParameters_callsUpdateByIdOnService() {
+        RentalDAO updatedRental = new RentalDAO(
+                "Inactive test book",
+                "Rental creator",
+                OffsetDateTime.now(),
+                OffsetDateTime.now(),
+                true,
+                OffsetDateTime.now(),
+                new BigDecimal(3),
+                true);
+        updatedRental.setId(3L);
+
+        Mockito.when(rentalService.updateById(
+                        updatedRental.getId(),
+                        updatedRental.getBook(),
+                        updatedRental.getRentedBy(),
+                        updatedRental.getBorrowDate(),
+                        updatedRental.getExpectedReturnDate(),
+                        updatedRental.isReturned(),
+                        updatedRental.getReturnDate(),
+                        updatedRental.getLateReturnWeeklyFine(),
+                        updatedRental.isFineResolved()))
                 .thenReturn(Optional.of(updatedRental));
 
-        Optional<RentalDTO> updatedDto = rentalFacade.updateById(updatedRental.getId(), changedBook, null, null,
-                null, null, null, null, null);
+        Optional<RentalDTO> updatedDto = rentalFacade.updateById(
+                updatedRental.getId(),
+                updatedRental.getBook(),
+                updatedRental.getRentedBy(),
+                updatedRental.getBorrowDate(),
+                updatedRental.getExpectedReturnDate(),
+                updatedRental.isReturned(),
+                updatedRental.getReturnDate(),
+                updatedRental.getLateReturnWeeklyFine(),
+                updatedRental.isFineResolved());
 
 
-        RentalDTO activeRentalDTO = convertToDTO(TestDataFactory.activeRentalDAO);
-        assertThat(updatedDto).isPresent();
-        assertThat(updatedDto.get().getBook()).isEqualTo(changedBook);
-        assertThat(updatedDto.get().getRentedBy()).isEqualTo(activeRentalDTO.getRentedBy());
-        assertThat(updatedDto.get().getBorrowDate()).isEqualTo(activeRentalDTO.getBorrowDate());
-        assertThat(updatedDto.get().getReturnDate()).isEqualTo(activeRentalDTO.getReturnDate());
-        assertThat(updatedDto.get().getExpectedReturnDate())
-                .isEqualTo(activeRentalDTO.getExpectedReturnDate());
-        assertThat(updatedDto.get().getLateReturnWeeklyFine())
-                .isEqualTo(activeRentalDTO.getLateReturnWeeklyFine());
-        assertThat(updatedDto.get().getReturned()).isEqualTo(activeRentalDTO.getReturned());
-        assertThat(updatedDto.get().getFineResolved()).isEqualTo(activeRentalDTO.getFineResolved());
+        assertThat(updatedDto).isPresent().contains(convertToDTO(updatedRental));
 
-        verify(rentalService, times(1)).findById(updatedRental.getId());
-        verify(rentalService, times(1)).updateById(updatedRental.getId(),
+        verify(rentalService, times(1)).updateById(
+                updatedRental.getId(),
                 updatedRental.getBook(),
                 updatedRental.getRentedBy(),
                 updatedRental.getBorrowDate(),
