@@ -58,7 +58,7 @@ class UserFacadeTest {
     }
 
     @Test
-    void createUser_usernameNotExists_returnsNewUser() {
+    void createUser_usernameNotExists_callsUserServiceCreateUserAndReturnsNewUser() {
         String username = "programmer123";
         String passwordHash = "passwordHash";
         UserType userType = UserType.MEMBER;
@@ -104,7 +104,7 @@ class UserFacadeTest {
     }
 
     @Test
-    void deleteById_singleUserDelete_callsUserRepositoryDelete() {
+    void deleteById_singleUserDelete_callsUserServiceDelete() {
         Long idToDelete = 1L;
 
         userFacade.deleteById(idToDelete);
@@ -218,7 +218,7 @@ class UserFacadeTest {
     }
 
     @Test
-    void findAll_userTypeMember_returnsUsers() {
+    void findAll_userTypeMember_callsUserServiceFindAllAndReturnsUsers() {
         List<UserDAO> users = new ArrayList<>();
         users.add(TestDataFactory.firstMemberDAO);
         users.add(TestDataFactory.secondMemberDAO);
@@ -233,7 +233,7 @@ class UserFacadeTest {
     }
 
     @Test
-    void findAllAdults_returnsUsers() {
+    void findAllAdults_callsUserServiceFindAllAdultsAndReturnsUsers() {
         List<UserDAO> users = new ArrayList<>();
         users.add(TestDataFactory.firstMemberDAO);
         users.add(TestDataFactory.secondMemberDAO);
