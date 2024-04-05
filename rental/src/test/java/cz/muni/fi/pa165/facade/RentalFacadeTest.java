@@ -110,28 +110,6 @@ class RentalFacadeTest {
                         convertToDTO(TestDataFactory.inActiveRentalDAO));
     }
 
-//    @Test
-////    void updateById_oneItemChanged_returnsUpdatedRental() {
-////        String changedBook = "New changed book facade";
-////        RentalDAO updatedRental = TestDataFactory.activeRentalDAO;
-////        updatedRental.setBook(changedBook);
-////
-////        Mockito.when(rentalService.updateById(updatedRental.getId(), changedBook, null, null,
-////                        null, null, null, null, null))
-////                .thenReturn(Optional.of(updatedRental));
-////
-////        Optional<RentalDTO> updatedDto = rentalFacade.updateById(updatedRental.getId(), changedBook, null, null,
-////                null, null, null, null, null);
-////
-////
-////        RentalDTO activeRentalDTO = convertToDTO(TestDataFactory.activeRentalDAO);
-////
-////
-////        verify(rentalService, times(1)).findById(updatedRental.getId());
-////        verify(rentalService, times(1)).updateById(updatedRental.getId(), changedBook, null, null,
-////                null, null, null, null, null);
-////    }
-
     @Test
     void updateById_validParameters_callsUpdateByIdOnService() {
         RentalDAO updatedRental = new RentalDAO(
@@ -181,6 +159,17 @@ class RentalFacadeTest {
                 updatedRental.getReturnDate(),
                 updatedRental.getLateReturnWeeklyFine(),
                 updatedRental.isFineResolved());
+    }
+
+    @Test
+    void getFineById_validRental_callsGetFineByIdOnService() {
+        Mockito.when(rentalService.getFineById(1L)).thenReturn(Optional.of(BigDecimal.ZERO));
+
+        Optional<BigDecimal> fine = rentalFacade.getFineById(1L);
+
+        assertThat(fine).isPresent();
+        assertThat(fine.get()).isEqualTo(BigDecimal.ZERO);
+        verify(rentalService, times(1)).getFineById(1L);
     }
 
     private RentalDTO convertToDTO(RentalDAO rentalDAO) {
