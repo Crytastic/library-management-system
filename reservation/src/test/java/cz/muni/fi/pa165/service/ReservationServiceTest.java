@@ -123,4 +123,38 @@ class ReservationServiceTest {
         // Assert
         verify(reservationRepository, times(1)).deleteById(id);
     }
+
+    @Test
+    void findAllActive_callsReservationRepositoryFindAllActive() {
+        // Arrange
+        List<ReservationDAO> expectedReservations = Arrays.asList(
+                new ReservationDAO("Active Book 1", "User 1", OffsetDateTime.now(), OffsetDateTime.now().plusDays(3)),
+                new ReservationDAO("Active Book 2", "User 2", OffsetDateTime.now(), OffsetDateTime.now().plusDays(5))
+        );
+        when(reservationRepository.findAllActive()).thenReturn(expectedReservations);
+
+        // Act
+        List<ReservationDAO> result = reservationService.findAllActive();
+
+        // Assert
+        assertThat(result).isEqualTo(expectedReservations);
+        verify(reservationRepository, times(1)).findAllActive();
+    }
+
+    @Test
+    void findAllExpired_callsReservationRepositoryFindAllExpired() {
+        // Arrange
+        List<ReservationDAO> expectedReservations = Arrays.asList(
+                new ReservationDAO("Expired Book 1", "User 1", OffsetDateTime.now().minusDays(5), OffsetDateTime.now().minusDays(2)),
+                new ReservationDAO("Expired Book 2", "User 2", OffsetDateTime.now().minusDays(3), OffsetDateTime.now().minusDays(1))
+        );
+        when(reservationRepository.findAllExpired()).thenReturn(expectedReservations);
+
+        // Act
+        List<ReservationDAO> result = reservationService.findAllExpired();
+
+        // Assert
+        assertThat(result).isEqualTo(expectedReservations);
+        verify(reservationRepository, times(1)).findAllExpired();
+    }
 }
