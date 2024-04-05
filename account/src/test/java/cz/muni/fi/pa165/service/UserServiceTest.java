@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.UserDAO;
 import cz.muni.fi.pa165.data.repository.UserRepository;
+import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
 import cz.muni.fi.pa165.util.TestDataFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -50,7 +52,7 @@ class UserServiceTest {
     }
 
     @Test
-    void createUser_returnsNewUser() {
+    void createUser_usernameNotExists_returnsNewUser() {
         String username = "programmer123";
         String passwordHash = "passwordHash";
         UserType userType = UserType.MEMBER;
@@ -88,11 +90,24 @@ class UserServiceTest {
     }
 
     @Test
-    void deleteById_callsUserRepositoryDelete() {
-        Long idToDelete = 1L;
+    void createUser_usernameExists_throwsUsernameAlreadyExistsException() {
+        String username = "programmer123";
+        String passwordHash = "passwordHash";
+        UserType userType = UserType.MEMBER;
+        String address = "Botanická 68a";
+        LocalDate birthDate = LocalDate.parse("2000-02-02");
+        Long id = 1L;
+        UserDAO testUserDAO = new UserDAO(id, username, passwordHash, userType, address, birthDate);
+        Mockito.when(userRepository.findUserByUsername(anyString())).thenReturn(testUserDAO);
 
-        userService.deleteById(idToDelete);
+        assertThrows(UsernameAlreadyExistsException.class,
+                () -> userService.createUser(username, passwordHash, address, birthDate, userType));
 
-        verify(userRepository, times(1)).deleteById(idToDelete);
+        verify(userRepository, times(0))
+                .saveUser(anyString(),
+                        anyString(),
+                        anyString(),
+                        any(LocalDate.class),
+                        any(UserType.class));
     }
 }
