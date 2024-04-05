@@ -9,7 +9,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
+/**
+ * Repository layer for managing books.
+ * Provides methods for storing, retrieving and updating, books.
+ *
+ * @author Martin Suchánek
+ */
 @Repository
 public class BookRepository {
     private final HashMap<Long, BookDAO> books = new HashMap<>();

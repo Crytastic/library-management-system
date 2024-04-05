@@ -10,6 +10,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service layer for managing books.
+ * Provides methods to interact with books.
+ *
+ * @author Sophia Zápotočná
+ */
 @Service
 public class BookService {
 

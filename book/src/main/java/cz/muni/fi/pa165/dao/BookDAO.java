@@ -2,6 +2,11 @@ package cz.muni.fi.pa165.dao;
 
 import org.openapitools.model.BookStatus;
 
+/**
+ * This class encapsulates information about a book.
+ *
+ * @author Martin Suchánek
+ */
 public class BookDAO {
     Long id;
     String title;
