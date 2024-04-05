@@ -14,46 +14,63 @@ User <|.. "Registered user"
 User <|.. Anonymous
 
 rectangle "Library Management System" {
-  usecase "Add book"
-  usecase "Remove book"
-  usecase "Update book"
 
-  usecase "Search books"
-  usecase "Display book detail"
-
+  usecase "List reservations"
   usecase "Reserve book"
-  usecase "Borrow book"
-  usecase "Return book"
+  usecase "Show reservation details"
+  usecase "Update reservation details"
+  usecase "Remove reservation"
 
-  usecase "Show borrowed books"
-  usecase "Show fines"
-
-  usecase "Manage account"
+  usecase "List accounts"
+  usecase "Create account"
+  usecase "Show account details"
+  usecase "Update account details"
+  usecase "Delete account"
   usecase "Manage accounts"
 
-  usecase "Configure fine"
-  usecase "Update Member fine status"
+  usecase "List books"
+  usecase "Create book"
+  usecase "Show book details"
+  usecase "Update book details"
+  usecase "Remove book"
 
-  usecase "Create account"
+  usecase "List rentals"
+  usecase "Rent book"
+  usecase "Show rental details"
+  usecase "Update rental details"
+  usecase "Remove rental"
+
+  usecase "Configure fine"
+
+
 }
 
 Anonymous --> "Create account"
 
-User --> "Search books"
-User --> "Display book detail"
+User --> "List books"
+User --> "Show book details"
 
-Librarian --> "Add book"
-Librarian --> "Remove book"
-Librarian --> "Update book"
+Librarian --> "Update reservation details"
+Librarian --> "Remove reservation"
+Librarian --> "List accounts"
+Librarian --> "Create account"
 Librarian --> "Manage accounts"
+Librarian --> "Create book"
+Librarian --> "Remove book"
+Librarian --> "Update book details"
 Librarian --> "Configure fine"
-Librarian --> "Update Member fine status"
+Librarian --> "Update rental details"
+Librarian --> "Remove rental"
 
+"Registered user" --> "List reservations"
 "Registered user" --> "Reserve book"
-"Registered user" --> "Borrow book"
-"Registered user" --> "Return book"
-"Registered user" --> "Show borrowed books"
-"Registered user" --> "Show fines"
-"Registered user" --> "Manage account"
+"Registered user" --> "Show reservation details"
+"Registered user" --> "Show account details"
+"Registered user" --> "Update account details"
+"Registered user" --> "Delete account"
+"Registered user" --> "List rentals"
+"Registered user" --> "Rent book"
+"Registered user" --> "Show rental details"
+
 
 @enduml
