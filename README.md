@@ -48,8 +48,19 @@ For more details on the Library Management System and its microservices, refer t
 
 ### Account
 
-tbd
+#### Overview
 
+The Account microservice allows users to create accounts inside library management system.
+It's accessible at http://localhost:8082. Also, via GUI on http://localhost:8082/swagger-ui/index.html#/.
+
+#### Endpoints
+
+- **GET /api/users:** Retrieve all users.
+- **POST /api/users:** Create a new user.
+- **GET /api/users/{id}:** Retrieve a user by its ID.
+- **PATCH /api/users/{id}:** Update an existing user.
+- **DELETE /api/users/{id}:** Delete a user by its ID.
+- **GET /api/users/adults:** Retrieve all adults.
 ### Book
 
 tbd
