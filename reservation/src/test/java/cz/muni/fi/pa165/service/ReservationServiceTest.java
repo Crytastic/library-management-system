@@ -57,4 +57,20 @@ class ReservationServiceTest {
         assertThat(result).isEqualTo(expectedReservations);
         verify(reservationRepository, times(1)).findAll();
     }
+
+    @Test
+    void createReservation_validReservation_callsReservationRepositoryStore() {
+        // Arrange
+        String book = "The Hobbit";
+        String reservedBy = "Bilbo Baggins";
+        ReservationDAO reservationDAO = new ReservationDAO(book, reservedBy, OffsetDateTime.now(), OffsetDateTime.now().plusDays(3));
+        when(reservationRepository.store(any(ReservationDAO.class))).thenReturn(reservationDAO);
+
+        // Act
+        ReservationDAO result = reservationService.createReservation(book, reservedBy);
+
+        // Assert
+        assertThat(result).isEqualTo(reservationDAO);
+        verify(reservationRepository, times(1)).store(any(ReservationDAO.class));
+    }
 }
