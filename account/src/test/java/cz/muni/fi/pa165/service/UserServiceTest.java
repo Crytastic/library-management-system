@@ -110,4 +110,18 @@ class UserServiceTest {
                         any(LocalDate.class),
                         any(UserType.class));
     }
+
+
+
+        @Test
+        void deleteById_singleUserDelete_callsUserRepositoryDelete() {
+            // Arrange
+            Long idToDelete = 1L;
+
+            // Act
+            userService.deleteById(idToDelete);
+
+            // Assert
+            verify(userRepository, times(1)).deleteById(idToDelete);
+        }
 }
