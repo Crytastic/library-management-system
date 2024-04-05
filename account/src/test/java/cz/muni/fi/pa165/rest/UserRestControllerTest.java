@@ -17,6 +17,8 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class UserRestControllerTest {
@@ -87,5 +89,15 @@ class UserRestControllerTest {
         assertThat(response.getBody()).isNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
     }
+
+    @Test
+    void deleteById_singleUserDelete_callsUserRepositoryDelete() {
+        Long idToDelete = 1L;
+
+        userRestController.deleteUser(idToDelete);
+
+        verify(userFacade, times(1)).deleteById(idToDelete);
+    }
+
 
 }
