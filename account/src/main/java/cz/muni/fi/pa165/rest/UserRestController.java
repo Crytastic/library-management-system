@@ -15,6 +15,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * REST controller layer for managing users.
+ * Handles HTTP requests related to users account management.
+ *
+ * @author Sophia Zápotočná
+ */
+
 @RestController
 public class UserRestController implements UserApi {
 

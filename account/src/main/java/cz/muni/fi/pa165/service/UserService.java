@@ -15,6 +15,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Service layer for managing user account.
+ * Provides methods to interact with user account.
+ *
+ * @author Sophia Zápotočná
+ */
+
 @Service
 public class UserService {
 

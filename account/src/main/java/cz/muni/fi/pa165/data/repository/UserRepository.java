@@ -11,6 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Repository layer for managing user account.
+ * Provides methods for storing, retrieving and updating, user account.
+ *
+ * @author Sophia Zápotočná
+ */
+
 @Repository
 public class UserRepository {
 

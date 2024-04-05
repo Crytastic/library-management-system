@@ -4,6 +4,12 @@ import org.openapitools.model.UserType;
 
 import java.time.LocalDate;
 
+/**
+ * This class encapsulates information about a user account.
+ *
+ * @author Sophia Zápotočná
+ */
+
 public class UserDAO {
 
     private Long id;

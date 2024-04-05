@@ -1,5 +1,10 @@
 package cz.muni.fi.pa165.exceptions;
 
+/**
+ * Custom exception dealing with system unauthorized state
+ *
+ * @author Sophia Zápotočná
+ */
 public class UnauthorisedException extends RuntimeException {
     public UnauthorisedException() {
     }

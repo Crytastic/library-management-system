@@ -1,8 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
 import cz.muni.fi.pa165.data.model.UserDAO;
-import cz.muni.fi.pa165.exceptions.UnauthorisedException;
-import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
 import cz.muni.fi.pa165.service.UserService;
 import org.openapitools.model.UserDTO;
 import org.openapitools.model.UserType;
@@ -12,6 +10,13 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+/**
+ * Facade layer for managing user account.
+ * Provides methods for interacting with user account properties.
+ *
+ * @author Sophia Zápotočná
+ */
 
 @Service
 public class UserFacade {
