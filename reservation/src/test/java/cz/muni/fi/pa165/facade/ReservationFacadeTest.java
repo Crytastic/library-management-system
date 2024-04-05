@@ -31,10 +31,12 @@ class ReservationFacadeTest {
     private ReservationFacade reservationFacade;
 
     private ReservationDAO reservationDAO;
+    private ReservationDAO expiredReservationDAO;
 
     @BeforeEach
     void setUp() {
         reservationDAO = new ReservationDAO("The Lord of the Rings", "John Doe", OffsetDateTime.now(), OffsetDateTime.now().plusDays(1));
+        expiredReservationDAO = new ReservationDAO("The Hobbit", "Franta Vopršálek", OffsetDateTime.now().minusDays(4), OffsetDateTime.now().minusDays(1));
     }
 
     @Test
@@ -110,6 +112,10 @@ class ReservationFacadeTest {
 
         // Assert
         assertThat(result).isPresent();
+        assertThat(result.get().getBook()).isEqualTo(reservationDAO.getBook());
+        assertThat(result.get().getReservedBy()).isEqualTo(reservationDAO.getReservedBy());
+        assertThat(result.get().getReservedFrom()).isEqualTo(reservationDAO.getReservedFrom());
+        assertThat(result.get().getReservedTo()).isEqualTo(reservationDAO.getReservedTo());
         verify(reservationService, times(1)).updateById(id, reservationDAO.getBook(), reservationDAO.getReservedBy(), reservedFrom, reservedTo);
     }
 
@@ -153,6 +159,10 @@ class ReservationFacadeTest {
 
         // Assert
         assertThat(result).hasSize(1);
+        assertThat(result.getFirst().getBook()).isEqualTo(reservationDAO.getBook());
+        assertThat(result.getFirst().getReservedBy()).isEqualTo(reservationDAO.getReservedBy());
+        assertThat(result.getFirst().getReservedFrom()).isEqualTo(reservationDAO.getReservedFrom());
+        assertThat(result.getFirst().getReservedTo()).isEqualTo(reservationDAO.getReservedTo());
         verify(reservationService, times(1)).findAllActive();
     }
 
@@ -160,7 +170,7 @@ class ReservationFacadeTest {
     void findAllExpired_validReservations_returnsListOfExpiredReservations() {
         // Arrange
         List<ReservationDAO> expiredReservations = new ArrayList<>();
-        expiredReservations.add(reservationDAO);
+        expiredReservations.add(expiredReservationDAO);
         when(reservationService.findAllExpired()).thenReturn(expiredReservations);
 
         // Act
@@ -168,6 +178,10 @@ class ReservationFacadeTest {
 
         // Assert
         assertThat(result).hasSize(1);
+        assertThat(result.getFirst().getBook()).isEqualTo(expiredReservationDAO.getBook());
+        assertThat(result.getFirst().getReservedBy()).isEqualTo(expiredReservationDAO.getReservedBy());
+        assertThat(result.getFirst().getReservedFrom()).isEqualTo(expiredReservationDAO.getReservedFrom());
+        assertThat(result.getFirst().getReservedTo()).isEqualTo(expiredReservationDAO.getReservedTo());
         verify(reservationService, times(1)).findAllExpired();
     }
 }
