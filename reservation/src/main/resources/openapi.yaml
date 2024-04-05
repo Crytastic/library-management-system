@@ -14,11 +14,11 @@ components:
       title: "A reservation"
       description: "Reservation object"
       properties:
-        book: {type: string, description: "Book that is part of the reservation", example: "Java tutorial" }    # will be changed for id or reference in future
-        reservedBy: {type: string, description: "User that created this reservation", example: "Franta Palica"} # will be changed for id or reference in future
-        reservedFrom: {type: string, format: date-time, description: "Date when reservation was created", example: "2024-04-03T10:15:30Z" }
-        reservedTo: {type: string, format: date-time, description: "Date when the reservation was/will be cancelled", example: "2024-04-03T10:15:30Z"}
-
+        id: { type: integer, format: int64, description: "Id of reservation", example: 23 }
+        book: { type: string, description: "Book that is part of the reservation", example: "Java tutorial" }    # will be changed for id or reference in future
+        reservedBy: { type: string, description: "User that created this reservation", example: "Franta Palica" } # will be changed for id or reference in future
+        reservedFrom: { type: string, format: date-time, description: "Date when reservation was created", example: "2024-04-03T10:15:30Z" }
+        reservedTo: { type: string, format: date-time, description: "Date when the reservation was/will be cancelled", example: "2024-04-03T10:15:30Z" }
 
 paths:
   /api/test:

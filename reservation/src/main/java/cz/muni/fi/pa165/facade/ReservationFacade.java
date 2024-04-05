@@ -37,6 +37,7 @@ public class ReservationFacade {
 
     private ReservationDTO convertToDTO(ReservationDAO reservationDAO) {
         return new ReservationDTO()
+                .id(reservationDAO.getId())
                 .book(reservationDAO.getBook())
                 .reservedBy(reservationDAO.getReservedBy())
                 .reservedFrom(reservationDAO.getReservedFrom())
