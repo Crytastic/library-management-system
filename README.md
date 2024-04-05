@@ -39,14 +39,7 @@ It's accessible at http://localhost:8084. Also, via GUI on http://localhost:8084
 - **GET /api/reservations/active:** Retrieve all active reservations.
 - **GET /api/reservations/expired:** Retrieve all expired reservations.
 
-## Diagrams
-
-- **Use Case Diagram:** Illustrates the various interactions between users and the system.
-- **Class Diagram for the DTOs:** Defines the data transfer objects used within the system.
-
-For more details on the Library Management System and its microservices, refer to the project documentation.
-
-### Account
+### Account Microservice
 
 #### Overview
 
@@ -61,27 +54,36 @@ It's accessible at http://localhost:8082. Also, via GUI on http://localhost:8082
 - **PATCH /api/users/{id}:** Update an existing user.
 - **DELETE /api/users/{id}:** Delete a user by its ID.
 - **GET /api/users/adults:** Retrieve all adults.
-### Book
 
-tbd
+### Book Microservice
 
-### Catalogue
+#### Overview
 
-tbd
+The Book microservice allows users to retrieve, create, delete and update books. It also provides some additional
+functionality, such as enumerating rentals of a specific book.
+It's accessible at http://localhost:8080. Also, via GUI on http://localhost:8080/swagger-ui/index.html#/.
 
-### Fine
+#### Endpoints
 
-tbd
+- **GET /api/books:** Retrieves all books that match the provided filter.
+- **POST /api/books:** Creates a new book.
+- **GET /api/books/{id}:** Retrieves a book by its ID.
+- **PATCH /api/books/{id}:** Updates an existing book.
+- **DELETE /api/books/{id}:** Deletes a book by its ID.
+- **GET /api/books/{id}/rentals:** Retrieves all rentals of a specific book.
 
-### Rental
+## Diagrams
 
-tbd
+- **Use Case Diagram:** Illustrates the various interactions between users and the system.
+- **Class Diagram for the DTOs:** Defines the data transfer objects used within the system.
 
-## Use Case Diagram
+For more details on the Library Management System and its microservices, refer to the project documentation.
+
+### Use Case Diagram
 
 ![](./puml/useCaseDiagram.png "Use case diagram of library management system")
 
-## Class Diagram for the DTOs
+### Class Diagram for the DTOs
 
 ![](./puml/classDiagram.png "Class diagram defining DTOs of library management system")
 
