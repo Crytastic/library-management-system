@@ -43,7 +43,8 @@ It's accessible at http://localhost:8084. Also, via GUI on http://localhost:8084
 
 #### Overview
 
-The Account microservice allows users to create accounts inside library management system.
+The Account microservice allows users to create, manage and delete (own) account. 
+Librarians can list and manage all accounts.
 It's accessible at http://localhost:8082. Also, via GUI on http://localhost:8082/swagger-ui/index.html#/.
 
 #### Endpoints
