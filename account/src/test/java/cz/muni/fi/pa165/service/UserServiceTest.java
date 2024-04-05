@@ -24,6 +24,9 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+/**
+ * @author Martin Suchánek
+ */
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 

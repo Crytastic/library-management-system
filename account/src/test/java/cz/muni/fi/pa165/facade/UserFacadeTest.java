@@ -26,6 +26,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+/**
+ * @author Martin Suchánek
+ */
 @ExtendWith(MockitoExtension.class)
 class UserFacadeTest {
     @Mock

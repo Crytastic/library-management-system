@@ -7,6 +7,9 @@ import org.openapitools.model.UserType;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
+/**
+ * @author Martin Suchánek
+ */
 public class TestDataFactory {
     public static String firstMemberDAOPassword = "firstMemberDAOPasswordHash";
 
