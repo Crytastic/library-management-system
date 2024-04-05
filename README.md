@@ -27,7 +27,7 @@ directories: ```mvn spring-boot:run```
 #### Overview
 
 The Reservation microservice allows users to create reservations on available books.
-It's accessible at http://localhost:8084. Also, via GUI on http://localhost:8084/swagger-ui/index.html#/.
+It's accessible at http://localhost:8081. Also, via GUI on http://localhost:8081/swagger-ui/index.html#/.
 
 #### Endpoints
 
