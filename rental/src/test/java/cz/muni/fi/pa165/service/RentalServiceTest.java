@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.dao.RentalDAO;
 import cz.muni.fi.pa165.repository.RentalRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -204,4 +204,62 @@ class RentalServiceTest {
         verify(rentalRepository, times(0)).updateById(nonExistingId, updatedRental);
     }
 
+    @Test
+    void getFineById_rentalNotFound_returnsEmptyOptional() {
+        Long nonExistingId = 11L;
+        Mockito.when(rentalRepository.findById(nonExistingId)).thenReturn(Optional.empty());
+
+        Optional<BigDecimal> fine = rentalService.getFineById(nonExistingId);
+
+        assertThat(fine).isEmpty();
+        verify(rentalRepository, times(1)).findById(nonExistingId);
+    }
+
+    @Test
+    void getFineById_bookReturnedFinePaid_returnsZeroFine() {
+        RentalDAO inActiveRental = TestDataFactory.inActiveRentalDAO;
+        Mockito.when(rentalRepository.findById(inActiveRental.getId())).thenReturn(Optional.of(inActiveRental));
+
+        Optional<BigDecimal> fine = rentalService.getFineById(inActiveRental.getId());
+
+        assertThat(fine).isPresent();
+        assertThat(fine.get()).isEqualTo(BigDecimal.ZERO);
+        verify(rentalRepository, times(1)).findById(inActiveRental.getId());
+    }
+
+    @Test
+    void getFineById_bookReturnedFineNotPaid_returnsSomeFine() {
+        RentalDAO inActiveRental = TestDataFactory.inActiveRentalLateDAO;
+        Mockito.when(rentalRepository.findById(inActiveRental.getId())).thenReturn(Optional.of(inActiveRental));
+
+        Optional<BigDecimal> fine = rentalService.getFineById(inActiveRental.getId());
+
+        assertThat(fine).isPresent();
+        assertThat(fine.get()).isEqualTo(new BigDecimal(12));
+        verify(rentalRepository, times(1)).findById(inActiveRental.getId());
+    }
+
+    @Test
+    void getFineById_bookNotReturnedStillHaveTime_returnsZeroFine() {
+        RentalDAO activeRental = TestDataFactory.activeRentalDAO;
+        Mockito.when(rentalRepository.findById(activeRental.getId())).thenReturn(Optional.of(activeRental));
+
+        Optional<BigDecimal> fine = rentalService.getFineById(activeRental.getId());
+
+        assertThat(fine).isPresent();
+        assertThat(fine.get()).isEqualTo(BigDecimal.ZERO);
+        verify(rentalRepository, times(1)).findById(activeRental.getId());
+    }
+
+    @Test
+    void getFineById_bookNotReturnedNowIsLate_returnsSomeFine() {
+        RentalDAO activeRental = TestDataFactory.activeRentalLateDAO;
+        Mockito.when(rentalRepository.findById(activeRental.getId())).thenReturn(Optional.of(activeRental));
+
+        Optional<BigDecimal> fine = rentalService.getFineById(activeRental.getId());
+
+        assertThat(fine).isPresent();
+        assertThat(fine.get()).isEqualTo(new BigDecimal(5));
+        verify(rentalRepository, times(1)).findById(activeRental.getId());
+    }
 }
