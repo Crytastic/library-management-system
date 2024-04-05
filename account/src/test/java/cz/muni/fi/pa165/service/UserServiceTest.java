@@ -18,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
@@ -130,7 +131,7 @@ class UserServiceTest {
         Mockito.when(userRepository.findUserByUsername(anyString())).thenReturn(null);
 
         assertThrows(UnauthorisedException.class, () ->
-                userService.updateUser(TestDataFactory.secondMemberDAO.getId(), "IncorrectUserName",testUserDAO.getPasswordHash(),"Nová Adresa 123, Brno", null, null));
+                userService.updateUser(TestDataFactory.secondMemberDAO.getId(), "IncorrectUserName", testUserDAO.getPasswordHash(), "Nová Adresa 123, Brno", null, null));
 
         verify(userRepository, times(0)).updateUser(TestDataFactory.secondMemberDAO.getId(), testUserDAO);
 
@@ -142,7 +143,7 @@ class UserServiceTest {
         Mockito.when(userRepository.findUserByUsername(anyString())).thenReturn(TestDataFactory.secondMemberDAO);
 
         assertThrows(UnauthorisedException.class, () ->
-                userService.updateUser(TestDataFactory.secondMemberDAO.getId(), testUserDAO.getUsername(), "incorrectPassword","Nová Adresa 123, Brno", null, null));
+                userService.updateUser(TestDataFactory.secondMemberDAO.getId(), testUserDAO.getUsername(), "incorrectPassword", "Nová Adresa 123, Brno", null, null));
 
         verify(userRepository, times(0)).updateUser(TestDataFactory.secondMemberDAO.getId(), testUserDAO);
     }
@@ -163,6 +164,7 @@ class UserServiceTest {
         verify(userRepository, times(1)).findById(notExistingId);
         verify(userRepository, times(0)).updateUser(eq(notExistingId), any(UserDAO.class));
     }
+
     @Test
     void updateUser_librarianUpdatesExistingUser_returnsUpdatedUser() {
         UserDAO actor = TestDataFactory.firstLibrarianDAO;
@@ -218,13 +220,14 @@ class UserServiceTest {
 
         Mockito.when(userRepository.findUserByUsername(actor.getUsername())).thenReturn(actor);
 
-        assertThrows(UnauthorisedException.class, () ->  userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
+        assertThrows(UnauthorisedException.class, () -> userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
                 updatedUser.getAddress(), updatedUser.getBirthDate(), updatedUser.getUserType()));
 
         verify(userRepository, times(1)).findUserByUsername(actor.getUsername());
         verify(userRepository, times(0)).findById(userToBeUpdated.getId());
         verify(userRepository, times(0)).updateUser(userToBeUpdated.getId(), updatedUser);
     }
+
     @Test
     void updateUser_memberUpdatesOtherUser_throwsUnauthorizedException() {
         UserDAO actor = TestDataFactory.firstMemberDAO;
@@ -237,7 +240,7 @@ class UserServiceTest {
 
         Mockito.when(userRepository.findUserByUsername(actor.getUsername())).thenReturn(actor);
 
-        assertThrows(UnauthorisedException.class, () ->  userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
+        assertThrows(UnauthorisedException.class, () -> userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
                 updatedUser.getAddress(), updatedUser.getBirthDate(), null));
 
         verify(userRepository, times(1)).findUserByUsername(actor.getUsername());
