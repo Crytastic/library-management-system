@@ -3,9 +3,8 @@ package cz.muni.fi.pa165.service;
 import com.google.common.hash.Hashing;
 import cz.muni.fi.pa165.data.model.UserDAO;
 import cz.muni.fi.pa165.data.repository.UserRepository;
-import cz.muni.fi.pa165.exception.UnauthorisedException;
-import cz.muni.fi.pa165.exception.UsernameAlreadyExistsException;
-import io.micrometer.observation.ObservationFilter;
+import cz.muni.fi.pa165.exceptions.UnauthorisedException;
+import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
 import org.openapitools.model.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +32,7 @@ public class UserService {
         return userRepository.findAllAdults();
     }
 
-    public UserDAO createUser(String username, String password, String address, LocalDate birthDate, UserType userType) throws UsernameAlreadyExistsException {
+    public UserDAO createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {
         if (userRepository.findUserByUsername(username) != null) {
             throw new UsernameAlreadyExistsException();
         }
@@ -61,7 +60,7 @@ public class UserService {
      * The LIBRARIANS can change any of parameters of any USER.
      * The MEMBERS can change only themselves, they can not change a type of user.
      */
-    public Optional<UserDAO> updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) throws UnauthorisedException {
+    public Optional<UserDAO> updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) {
         UserDAO userByUsername = userRepository.findUserByUsername(username);
         if (userByUsername == null || !userByUsername.getPasswordHash().equals(createPasswordHash(password))) {
             throw new UnauthorisedException();

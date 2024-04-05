@@ -1,6 +1,6 @@
-package cz.muni.fi.pa165.exception;
+package cz.muni.fi.pa165.exceptions;
 
-public class UsernameAlreadyExistsException extends Exception {
+public class UsernameAlreadyExistsException extends RuntimeException {
     public UsernameAlreadyExistsException() {
     }
 

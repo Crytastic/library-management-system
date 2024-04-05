@@ -1,7 +1,7 @@
 package cz.muni.fi.pa165.rest;
 
-import cz.muni.fi.pa165.exception.UnauthorisedException;
-import cz.muni.fi.pa165.exception.UsernameAlreadyExistsException;
+import cz.muni.fi.pa165.exceptions.UnauthorisedException;
+import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
 import cz.muni.fi.pa165.facade.UserFacade;
 import org.openapitools.api.UserApi;
 import org.openapitools.model.UserDTO;

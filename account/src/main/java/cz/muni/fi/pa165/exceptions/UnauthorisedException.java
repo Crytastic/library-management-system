@@ -1,6 +1,6 @@
-package cz.muni.fi.pa165.exception;
+package cz.muni.fi.pa165.exceptions;
 
-public class UnauthorisedException extends Exception {
+public class UnauthorisedException extends RuntimeException {
     public UnauthorisedException() {
     }
 
