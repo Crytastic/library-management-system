@@ -95,12 +95,14 @@ class UserRestControllerTest {
     }
 
     @Test
-    void deleteById_singleUserDelete_callsUserRepositoryDelete() {
+    void deleteById_singleUserDelete_callsUserFacadeDeleteAndReturnsNoContentStatus() {
         Long idToDelete = 1L;
 
-        userRestController.deleteUser(idToDelete);
+        ResponseEntity<Void> response = userRestController.deleteUser(idToDelete);
 
         verify(userFacade, times(1)).deleteById(idToDelete);
+        assertThat(response.getBody()).isNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
     @Test
