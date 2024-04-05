@@ -4,7 +4,6 @@
 class User {
 Long id
 String username
-String passwordHash
 String address
 UserType userType
 LocalDate birthDate
