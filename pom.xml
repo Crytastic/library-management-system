@@ -104,7 +104,6 @@
     <module>reservation</module>
     <module>book</module>
     <module>rental</module>
-    <module>fine</module>
     <module>account</module>
   </modules>
 
