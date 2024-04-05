@@ -56,7 +56,7 @@ class UserServiceTest {
     }
 
     @Test
-    void createUser_usernameNotExists_returnsNewUser() {
+    void createUser_usernameNotExists_callsUserRepositorySaveUserAndReturnsNewUser() {
         String username = "programmer123";
         String passwordHash = "passwordHash";
         UserType userType = UserType.MEMBER;
@@ -89,7 +89,7 @@ class UserServiceTest {
     }
 
     @Test
-    void createUser_usernameExists_throwsUsernameAlreadyExistsException() {
+    void createUser_usernameExists_notCallsUserRepositorySaveUserAndThrowsUsernameAlreadyExistsException() {
         String username = "programmer123";
         String passwordHash = "passwordHash";
         UserType userType = UserType.MEMBER;
@@ -120,7 +120,7 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUser_incorrectUsername_throwsUnauthorisedException() {
+    void updateUser_incorrectUsername_notCallsUserRepositoryUpdateUserAndThrowsUnauthorisedException() {
         UserDAO testUserDAO = TestDataFactory.firstMemberDAO;
         Mockito.when(userRepository.findUserByUsername(anyString())).thenReturn(null);
 
@@ -132,7 +132,7 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUser_incorrectPassword_throwsUnauthorisedException() {
+    void updateUser_incorrectPassword_notCallsUserRepositoryUpdateUserAndThrowsUnauthorisedException() {
         UserDAO testUserDAO = TestDataFactory.firstMemberDAO;
         Mockito.when(userRepository.findUserByUsername(anyString())).thenReturn(TestDataFactory.secondMemberDAO);
 
@@ -143,7 +143,7 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUser_userUpdatesNotExistingUser_returnsEmptyOptional() {
+    void updateUser_userUpdatesNotExistingUser_notCallsUserRepositoryUpdateUserAndReturnsEmptyOptional() {
         UserDAO actor = TestDataFactory.firstLibrarianDAO;
         String actorPassword = TestDataFactory.firstLibrarianDAOPassword;
         Long notExistingId = 20L;
@@ -160,7 +160,7 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUser_librarianUpdatesExistingUser_returnsUpdatedUser() {
+    void updateUser_librarianUpdatesExistingUser_callsMultipleUserRepositoryMethodsAndReturnsUpdatedUser() {
         UserDAO actor = TestDataFactory.firstLibrarianDAO;
         String actorPassword = TestDataFactory.firstLibrarianDAOPassword;
 
@@ -182,7 +182,7 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUser_memberUpdatesHimself_returnsUpdatedUser() {
+    void updateUser_memberUpdatesHimself_callsMultipleUserRepositoryMethodsAndReturnsUpdatedUser() {
         UserDAO actor = TestDataFactory.firstMemberDAO;
         String actorPassword = TestDataFactory.firstMemberDAOPassword;
 
@@ -204,7 +204,7 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUser_memberUpdatesTypeOnHimself_throwsUnauthorizedException() {
+    void updateUser_memberUpdatesTypeOnHimself_callsOnlyUserRepositoryFindUserByUsernameAndThrowsUnauthorizedException() {
         UserDAO actor = TestDataFactory.firstMemberDAO;
         String actorPassword = TestDataFactory.firstMemberDAOPassword;
 
@@ -223,7 +223,7 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUser_memberUpdatesOtherUser_throwsUnauthorizedException() {
+    void updateUser_memberUpdatesOtherUser_callsOnlyUserRepositoryFindUserByUsernameAndThrowsUnauthorizedException() {
         UserDAO actor = TestDataFactory.firstMemberDAO;
         String actorPassword = TestDataFactory.firstMemberDAOPassword;
 
@@ -243,7 +243,7 @@ class UserServiceTest {
     }
 
     @Test
-    void findAll_userTypeMember_returnsUsers() {
+    void findAll_userTypeMember_callsUserRepositoryFindAllAndReturnsUsers() {
         List<UserDAO> users = new ArrayList<>();
         users.add(TestDataFactory.firstMemberDAO);
         users.add(TestDataFactory.secondMemberDAO);
@@ -258,7 +258,7 @@ class UserServiceTest {
     }
 
     @Test
-    void findAllAdults_returnsUsers() {
+    void findAllAdults_callsUserRepositoryFindAllAdultsAndReturnsUsers() {
         List<UserDAO> users = new ArrayList<>();
         users.add(TestDataFactory.firstMemberDAO);
         users.add(TestDataFactory.secondMemberDAO);
