@@ -11,6 +11,12 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service layer for managing rental.
+ * Provides methods to interact with rental.
+ *
+ * @author Maxmilián Šeffer
+ */
 @Service
 public class RentalService {
 

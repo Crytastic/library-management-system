@@ -22,6 +22,9 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+/**
+ * @author Sophia Zápotočná
+ */
 @ExtendWith(MockitoExtension.class)
 class RentalServiceTest {
     @Mock

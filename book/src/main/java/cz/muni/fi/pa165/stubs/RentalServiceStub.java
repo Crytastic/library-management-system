@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Custom stub of RentalService
+ *
+ * @author Martin Suchánek
+ */
 @Service
 public class RentalServiceStub {
     public List<String> apiCallToRentalServiceToFindBookRentals(Long id) {

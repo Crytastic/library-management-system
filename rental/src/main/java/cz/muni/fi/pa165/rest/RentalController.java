@@ -14,6 +14,12 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * REST controller layer for managing rentals.
+ * Handles HTTP requests related to rentals management.
+ *
+ * @author Maxmilián Šeffer
+ */
 @Controller
 public class RentalController implements RentalApi {
 

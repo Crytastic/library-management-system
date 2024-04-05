@@ -14,6 +14,7 @@ components:
       title: "A rental"
       description: "Represents a single rental of a book in a library"
       properties:
+        id: { type: integer, format: int64, description: "ID of user", example: 24 }
         book:
           type: string
           description: "Title of the book being rented"

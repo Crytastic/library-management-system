@@ -13,6 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * REST controller layer for managing books.
+ * Handles HTTP requests related to books.
+ *
+ * @author Martin Suchánek
+ */
 @RestController
 public class BookController implements BookApi {
 

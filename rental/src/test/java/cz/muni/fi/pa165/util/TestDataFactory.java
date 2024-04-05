@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
+/**
+ * @author Sophia Zápotočná
+ */
 @Component
 public class TestDataFactory {
 
