@@ -97,6 +97,15 @@ class UserFacadeTest {
                 () -> userFacade.createUser(username, passwordHash, address, birthDate, userType));
     }
 
+    @Test
+    void deleteById_singleUserDelete_callsUserRepositoryDelete() {
+        Long idToDelete = 1L;
+
+        userFacade.deleteById(idToDelete);
+
+        verify(userService, times(1)).deleteById(idToDelete);
+    }
+
     // Will be replaced by mapper in the future
     private UserDTO convertToDTO(UserDAO userDAO) {
         return new UserDTO()
