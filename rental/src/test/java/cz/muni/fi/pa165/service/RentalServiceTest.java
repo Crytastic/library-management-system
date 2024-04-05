@@ -2,7 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.dao.RentalDAO;
 import cz.muni.fi.pa165.repository.RentalRepository;
-import org.junit.jupiter.api.BeforeEach;
+import cz.muni.fi.pa165.util.TestDataFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

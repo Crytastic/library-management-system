@@ -1,4 +1,4 @@
-package cz.muni.fi.pa165.service;
+package cz.muni.fi.pa165.util;
 
 import cz.muni.fi.pa165.dao.RentalDAO;
 import org.springframework.stereotype.Component;
