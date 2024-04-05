@@ -1,0 +1,189 @@
+openapi: 3.0.1
+info:
+  title: Reservation microservice of library management system
+  description: Reservation microservice of library management system that provides operations on reservations
+  version: 1.0.0
+servers:
+  - url: "http://localhost:8084"
+tags:
+  - name: Reservation
+
+components:
+  schemas:
+    ReservationDTO:
+      title: "A reservation"
+      description: "Reservation object"
+      properties:
+        id: { type: integer, format: int64, description: "Id of reservation", example: 23 }
+        book: { type: string, description: "Book that is part of the reservation", example: "Java tutorial" }    # will be changed for id or reference in future
+        reservedBy: { type: string, description: "User that created this reservation", example: "Franta Palica" } # will be changed for id or reference in future
+        reservedFrom: { type: string, format: date-time, description: "Date when reservation was created", example: "2024-04-03T10:15:30Z" }
+        reservedTo: { type: string, format: date-time, description: "Date when the reservation was/will be cancelled", example: "2024-04-03T10:15:30Z" }
+
+paths:
+  /api/test:
+    get:
+      tags:
+        - Reservation
+      summary: Returns test message response
+      operationId: test
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: ReservationTestResponse
+                properties:
+                  message:
+                    type: string
+  /api/reservations:
+    get:
+      tags:
+        - Reservation
+      summary: Returns all reservations
+      operationId: getReservations
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReservationDTO'
+    post:
+      tags:
+        - Reservation
+      summary: Creates new reservation
+      operationId: createReservation
+      parameters:
+        - { name: book,
+            in: query,
+            required: true,
+            schema: { type: string },     # will be changed for id or reference in future
+            description: "Title of book" }
+        - { name: reservedBy,
+            in: query,
+            required: true,
+            schema: { type: string },     # will be changed for id or reference in future
+            description: "Name of User" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationDTO'
+
+  /api/reservations/{id}:
+    get:
+      tags:
+        - Reservation
+      summary: Get reservation by id
+      operationId: getReservation
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationDTO'
+    patch:
+      tags:
+        - Reservation
+      summary: Update an existing reservation
+      operationId: updateReservation
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          name: book
+          required: false
+          schema:
+            type: string     # will be changed for id or reference in future
+        - in: query
+          name: reservedBy
+          required: false
+          schema:
+            type: string     # will be changed for id or reference in future
+        - in: query
+          name: reservedFrom
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: reservedTo
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationDTO'
+        '404':
+          description: Not found
+    delete:
+      tags:
+        - Reservation
+      summary: Delete reservation by id
+      operationId: deleteReservation
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No content
+
+  /api/reservations/active:
+    get:
+      tags:
+        - Reservation
+      summary: Returns all active reservations
+      operationId: getActiveReservations
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReservationDTO'
+
+  /api/reservations/expired:
+    get:
+      tags:
+        - Reservation
+      summary: Returns all expired reservations
+      operationId: getExpiredReservations
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReservationDTO'
