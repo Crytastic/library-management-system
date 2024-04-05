@@ -9,7 +9,6 @@ import java.time.LocalDate;
  *
  * @author Sophia Zápotočná
  */
-
 public class UserDAO {
 
     private Long id;
