@@ -250,6 +250,7 @@ class UserFacadeTest {
     // Will be replaced by mapper in the future
     private UserDTO convertToDTO(UserDAO userDAO) {
         return new UserDTO()
+                .id(userDAO.getId())
                 .username(userDAO.getUsername())
                 .address(userDAO.getAddress())
                 .birthDate(userDAO.getBirthDate())
