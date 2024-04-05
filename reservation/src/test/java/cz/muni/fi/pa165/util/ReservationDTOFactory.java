@@ -4,6 +4,9 @@ import org.openapitools.model.ReservationDTO;
 
 import java.time.OffsetDateTime;
 
+/**
+ * @author Maxmilián Šeffer
+ */
 public class ReservationDTOFactory {
     public static ReservationDTO createReservation(String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
         ReservationDTO reservationDTO = new ReservationDTO();

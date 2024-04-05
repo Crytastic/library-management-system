@@ -18,6 +18,9 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+/**
+ * @author Maxmilián Šeffer
+ */
 @ExtendWith(MockitoExtension.class)
 class ReservationFacadeTest {
 
