@@ -255,4 +255,18 @@ class UserServiceTest {
                 .hasSize(2)
                 .containsExactlyInAnyOrder(TestDataFactory.firstMemberDAO, TestDataFactory.secondMemberDAO);
     }
+
+    @Test
+    void findAllAdults_returnsUsers() {
+        List<UserDAO> users = new ArrayList<>();
+        users.add(TestDataFactory.firstMemberDAO);
+        users.add(TestDataFactory.secondMemberDAO);
+
+        Mockito.when(userRepository.findAll(UserType.MEMBER)).thenReturn(users);
+
+        assertThat(userService.findAll(UserType.MEMBER))
+                .isNotNull()
+                .hasSize(2)
+                .containsExactlyInAnyOrder(TestDataFactory.firstMemberDAO, TestDataFactory.secondMemberDAO);
+    }
 }
