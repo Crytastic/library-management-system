@@ -9,6 +9,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,5 +39,22 @@ class ReservationServiceTest {
         // Assert
         assertThat(result).isPresent().contains(foundReservation);
         verify(reservationRepository, times(1)).findById(id);
+    }
+
+    @Test
+    void findAll_validReservations_callsReservationRepositoryFindAll() {
+        // Arrange
+        List<ReservationDAO> expectedReservations = Arrays.asList(
+                new ReservationDAO("Book 1", "User 1", OffsetDateTime.now(), OffsetDateTime.now().plusDays(3)),
+                new ReservationDAO("Book 2", "User 2", OffsetDateTime.now(), OffsetDateTime.now().plusDays(5))
+        );
+        when(reservationRepository.findAll()).thenReturn(expectedReservations);
+
+        // Act
+        List<ReservationDAO> result = reservationService.findAll();
+
+        // Assert
+        assertThat(result).isEqualTo(expectedReservations);
+        verify(reservationRepository, times(1)).findAll();
     }
 }
