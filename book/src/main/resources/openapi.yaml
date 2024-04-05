@@ -20,6 +20,7 @@ components:
       title: "A book"
       description: "Book object"
       properties:
+        id: { type: integer, format: int64, description: "Id of book", example: 23 }
         title: { type: string, description: "Book title / name", example: "Java tutorial" }
         author: { type: string, description: "Author name", example: "Bruno Rossi" }
         description: { type: string, description: "Description of the book", example: "It is *** hard" }

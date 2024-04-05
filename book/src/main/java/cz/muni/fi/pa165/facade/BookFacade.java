@@ -51,6 +51,7 @@ public class BookFacade {
 
     private BookDTO convertToDTO(BookDAO bookDAO) {
         return new BookDTO()
+                .id(bookDAO.getId())
                 .title(bookDAO.getTitle())
                 .author(bookDAO.getAuthor())
                 .description(bookDAO.getDescription())
