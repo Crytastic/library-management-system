@@ -58,6 +58,7 @@ public class UserFacade {
                 .map(this::convertToDTO);
     }
 
+    // Will be replaced by mapper in the future
     private UserDTO convertToDTO(UserDAO userDAO) {
         return new UserDTO()
                 .id(userDAO.getId())
