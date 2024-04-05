@@ -78,7 +78,11 @@ public class RentalService {
         OffsetDateTime expectedReturnDate = rental.getExpectedReturnDate();
 
         // Book returned but fine not paid
-        if (rental.isReturned() && !rental.isFineResolved()) {
+        if (rental.isReturned()) {
+            if (rental.isFineResolved()) {
+                return Optional.of(BigDecimal.ZERO);
+            }
+
             OffsetDateTime returnDate = rental.getReturnDate();
             BigDecimal fine = calculateFine(expectedReturnDate, returnDate, rental);
             return Optional.of(fine);
