@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  rental:
+    build:
+      context: ./rental
+      dockerfile: DockerFile
+    ports:
+      - "8080:8080"
+  reservation:
+    build:
+      context: ./reservation/
+      dockerfile: DockerFile
+    ports:
+      - "8081:8081"
+  account:
+    build:
+      context: ./account/
+      dockerfile: DockerFile
+    ports:
+      - "8082:8082"
+  book:
+    build:
+      context: ./book
+      dockerfile: DockerFile
+    ports:
+      - "8083:8083"
+
