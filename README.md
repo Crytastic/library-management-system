@@ -19,8 +19,12 @@ If this limit is not kept, there is a fine set during the borrowing process for 
 To run the microservices, you first need to install dependencies:
 ```mvn clean install```
 
-Each microservice is a standalone executable module and can be run from inside their respective
-directories: ```mvn spring-boot:run```
+Then you can either run each microservice as standalone executable module from inside
+their respective path directories: ```mvn spring-boot:run``` 
+
+or
+
+Run all microservices at once via containerization: ```podman-compose up -d``` /  ```docker-compose up -d```
 
 ### Rental Microservice
 
