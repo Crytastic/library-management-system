@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.facade;
 
 import cz.muni.fi.pa165.dao.ReservationDAO;
 import cz.muni.fi.pa165.service.ReservationService;
+import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,8 +36,8 @@ class ReservationFacadeTest {
 
     @BeforeEach
     void setUp() {
-        reservationDAO = new ReservationDAO("The Lord of the Rings", "John Doe", OffsetDateTime.now(), OffsetDateTime.now().plusDays(1));
-        expiredReservationDAO = new ReservationDAO("The Hobbit", "Franta Vopršálek", OffsetDateTime.now().minusDays(4), OffsetDateTime.now().minusDays(1));
+        reservationDAO = new ReservationDAO("The Lord of the Rings", "John Doe", TimeProvider.now(), TimeProvider.now().plusDays(1));
+        expiredReservationDAO = new ReservationDAO("The Hobbit", "Franta Vopršálek", TimeProvider.now().minusDays(4), TimeProvider.now().minusDays(1));
     }
 
     @Test
@@ -103,8 +104,8 @@ class ReservationFacadeTest {
     void updateById_validParameters_returnsUpdatedReservationDTO() {
         // Arrange
         Long id = 1L;
-        OffsetDateTime reservedFrom = OffsetDateTime.now();
-        OffsetDateTime reservedTo = OffsetDateTime.now().plusDays(1);
+        OffsetDateTime reservedFrom = TimeProvider.now();
+        OffsetDateTime reservedTo = TimeProvider.now().plusDays(1);
         when(reservationService.updateById(id, reservationDAO.getBook(), reservationDAO.getReservedBy(), reservedFrom, reservedTo)).thenReturn(Optional.of(reservationDAO));
 
         // Act
@@ -123,8 +124,8 @@ class ReservationFacadeTest {
     void updateById_invalidId_returnsEmptyOptional() {
         // Arrange
         Long id = 1L;
-        OffsetDateTime reservedFrom = OffsetDateTime.now();
-        OffsetDateTime reservedTo = OffsetDateTime.now().plusDays(1);
+        OffsetDateTime reservedFrom = TimeProvider.now();
+        OffsetDateTime reservedTo = TimeProvider.now().plusDays(1);
         when(reservationService.updateById(id, reservationDAO.getBook(), reservationDAO.getReservedBy(), reservedFrom, reservedTo)).thenReturn(Optional.empty());
 
         // Act

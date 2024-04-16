@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.dao.ReservationDAO;
 import cz.muni.fi.pa165.repository.ReservationRepository;
+import cz.muni.fi.pa165.util.TimeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,12 +31,12 @@ public class ReservationService {
     }
 
     public ReservationDAO createReservation(String book, String reservedBy) {
-        ReservationDAO reservationDAO = new ReservationDAO(book, reservedBy, OffsetDateTime.now(), getDefaultReservationCancelDate());
+        ReservationDAO reservationDAO = new ReservationDAO(book, reservedBy, TimeProvider.now(), getDefaultReservationCancelDate());
         return reservationRepository.store(reservationDAO);
     }
 
     private OffsetDateTime getDefaultReservationCancelDate() {
-        return OffsetDateTime.now().plusDays(3);
+        return TimeProvider.now().plusDays(3);
     }
 
     public Optional<ReservationDAO> findById(Long id) {

@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.repository;
 
 import cz.muni.fi.pa165.dao.ReservationDAO;
+import cz.muni.fi.pa165.util.TimeProvider;
 import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
@@ -44,7 +45,7 @@ public class ReservationRepository {
     }
 
     public List<ReservationDAO> findAllActive() {
-        OffsetDateTime currentDateTime = OffsetDateTime.now();
+        OffsetDateTime currentDateTime = TimeProvider.now();
         return reservations
                 .values()
                 .stream()
@@ -53,7 +54,7 @@ public class ReservationRepository {
     }
 
     public List<ReservationDAO> findAllExpired() {
-        OffsetDateTime currentDateTime = OffsetDateTime.now();
+        OffsetDateTime currentDateTime = TimeProvider.now();
         return reservations
                 .values()
                 .stream()

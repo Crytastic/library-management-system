@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.dao.ReservationDAO;
 import cz.muni.fi.pa165.repository.ReservationRepository;
+import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,10 +35,10 @@ class ReservationServiceTest {
 
     @BeforeEach
     void setUp() {
-        reservationDAO = new ReservationDAO("The Lord of the Rings", "Franta Vopršálek", OffsetDateTime.now(), OffsetDateTime.now().plusDays(3));
+        reservationDAO = new ReservationDAO("The Lord of the Rings", "Franta Vopršálek", TimeProvider.now(), TimeProvider.now().plusDays(3));
         reservationDAOList = Arrays.asList(
-                new ReservationDAO("Active Book 1", "User 1", OffsetDateTime.now(), OffsetDateTime.now().plusDays(3)),
-                new ReservationDAO("Active Book 2", "User 2", OffsetDateTime.now(), OffsetDateTime.now().plusDays(5))
+                new ReservationDAO("Active Book 1", "User 1", TimeProvider.now(), TimeProvider.now().plusDays(3)),
+                new ReservationDAO("Active Book 2", "User 2", TimeProvider.now(), TimeProvider.now().plusDays(5))
         );
     }
 
@@ -87,8 +88,8 @@ class ReservationServiceTest {
         Long id = 1L;
         String newBook = "Updated Book";
         String newReservedBy = "Updated User";
-        OffsetDateTime newReservedFrom = OffsetDateTime.now().plusDays(1);
-        OffsetDateTime newReservedTo = OffsetDateTime.now().plusDays(4);
+        OffsetDateTime newReservedFrom = TimeProvider.now().plusDays(1);
+        OffsetDateTime newReservedTo = TimeProvider.now().plusDays(4);
         when(reservationRepository.findById(id)).thenReturn(Optional.of(reservationDAO));
         when(reservationRepository.updateById(eq(id), any(ReservationDAO.class))).thenReturn(Optional.of(reservationDAO));
 
@@ -111,7 +112,7 @@ class ReservationServiceTest {
         when(reservationRepository.findById(id)).thenReturn(Optional.empty());
 
         // Act
-        Optional<ReservationDAO> result = reservationService.updateById(id, "New Book", "New User", OffsetDateTime.now(), OffsetDateTime.now().plusDays(3));
+        Optional<ReservationDAO> result = reservationService.updateById(id, "New Book", "New User", TimeProvider.now(), TimeProvider.now().plusDays(3));
 
         // Assert
         assertThat(result).isEmpty();
@@ -134,8 +135,8 @@ class ReservationServiceTest {
     void findAllActive_callsReservationRepositoryFindAllActive() {
         // Arrange
         List<ReservationDAO> activeReservations = Arrays.asList(
-                new ReservationDAO("Active Book 1", "User 1", OffsetDateTime.now(), OffsetDateTime.now().plusDays(3)),
-                new ReservationDAO("Active Book 2", "User 2", OffsetDateTime.now(), OffsetDateTime.now().plusDays(5))
+                new ReservationDAO("Active Book 1", "User 1", TimeProvider.now(), TimeProvider.now().plusDays(3)),
+                new ReservationDAO("Active Book 2", "User 2", TimeProvider.now(), TimeProvider.now().plusDays(5))
         );
         when(reservationRepository.findAllActive()).thenReturn(activeReservations);
 
@@ -151,8 +152,8 @@ class ReservationServiceTest {
     void findAllExpired_callsReservationRepositoryFindAllExpired() {
         // Arrange
         List<ReservationDAO> expiredReservations = Arrays.asList(
-                new ReservationDAO("Expired Book 1", "User 1", OffsetDateTime.now().minusDays(5), OffsetDateTime.now().minusDays(2)),
-                new ReservationDAO("Expired Book 2", "User 2", OffsetDateTime.now().minusDays(3), OffsetDateTime.now().minusDays(1))
+                new ReservationDAO("Expired Book 1", "User 1", TimeProvider.now().minusDays(5), TimeProvider.now().minusDays(2)),
+                new ReservationDAO("Expired Book 2", "User 2", TimeProvider.now().minusDays(3), TimeProvider.now().minusDays(1))
         );
         when(reservationRepository.findAllExpired()).thenReturn(expiredReservations);
 

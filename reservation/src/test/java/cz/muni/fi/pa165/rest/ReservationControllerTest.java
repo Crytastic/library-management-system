@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.rest;
 
 import cz.muni.fi.pa165.facade.ReservationFacade;
 import cz.muni.fi.pa165.util.ReservationDTOFactory;
+import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,7 +37,7 @@ public class ReservationControllerTest {
         // Arrange
         String book = "The Lord of the Rings";
         String reservedBy = "Franta Vopršálek";
-        ReservationDTO reservation = ReservationDTOFactory.createReservation(book, reservedBy, OffsetDateTime.now(), OffsetDateTime.now().plusDays(3));
+        ReservationDTO reservation = ReservationDTOFactory.createReservation(book, reservedBy, TimeProvider.now(), TimeProvider.now().plusDays(3));
         when(reservationFacade.createReservation(book, reservedBy)).thenReturn(reservation);
 
         // Act
@@ -95,7 +96,7 @@ public class ReservationControllerTest {
         Long id = 1L;
         String book = "The Lord of the Rings";
         String reservedBy = "Franta Vopršálek";
-        ReservationDTO reservation = ReservationDTOFactory.createReservation(book, reservedBy, OffsetDateTime.now(), OffsetDateTime.now().plusDays(3));
+        ReservationDTO reservation = ReservationDTOFactory.createReservation(book, reservedBy, TimeProvider.now(), TimeProvider.now().plusDays(3));
         when(reservationFacade.findById(id)).thenReturn(Optional.of(reservation));
 
         // Act
@@ -139,8 +140,8 @@ public class ReservationControllerTest {
         Long id = 1L;
         String book = "Updated Book";
         String reservedBy = "Updated User";
-        OffsetDateTime reservedFrom = OffsetDateTime.now().plusDays(1);
-        OffsetDateTime reservedTo = OffsetDateTime.now().plusDays(4);
+        OffsetDateTime reservedFrom = TimeProvider.now().plusDays(1);
+        OffsetDateTime reservedTo = TimeProvider.now().plusDays(4);
         ReservationDTO updatedReservation = ReservationDTOFactory.createReservation(book, reservedBy, reservedFrom, reservedTo);
         when(reservationFacade.updateById(id, book, reservedBy, reservedFrom, reservedTo)).thenReturn(Optional.of(updatedReservation));
 
@@ -159,8 +160,8 @@ public class ReservationControllerTest {
         Long id = 1L;
         String book = "Updated Book";
         String reservedBy = "Updated User";
-        OffsetDateTime reservedFrom = OffsetDateTime.now().plusDays(1);
-        OffsetDateTime reservedTo = OffsetDateTime.now().plusDays(4);
+        OffsetDateTime reservedFrom = TimeProvider.now().plusDays(1);
+        OffsetDateTime reservedTo = TimeProvider.now().plusDays(4);
         when(reservationFacade.updateById(id, book, reservedBy, reservedFrom, reservedTo)).thenReturn(Optional.empty());
 
         // Act

@@ -3,14 +3,17 @@ package cz.muni.fi.pa165.service;
 import cz.muni.fi.pa165.dao.RentalDAO;
 import cz.muni.fi.pa165.repository.RentalRepository;
 import cz.muni.fi.pa165.util.TestDataFactory;
+import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -27,6 +30,9 @@ import static org.mockito.Mockito.verify;
  */
 @ExtendWith(MockitoExtension.class)
 class RentalServiceTest {
+    @Mock
+    private TimeProvider timeProvider;
+
     @Mock
     private RentalRepository rentalRepository;
 
@@ -133,7 +139,7 @@ class RentalServiceTest {
     void updateById_someItemChanged_returnsUpdatedRental() {
         String changedBook = "New changed book";
         Boolean returned = true;
-        OffsetDateTime returnDate = OffsetDateTime.now();
+        OffsetDateTime returnDate = TimeProvider.now();
         RentalDAO updatedRental = TestDataFactory.activeRentalDAO;
         Mockito.when(rentalRepository.findById(updatedRental.getId())).thenReturn(Optional.of(updatedRental));
         Mockito.when(rentalRepository.updateById(updatedRental.getId(), updatedRental))
@@ -163,9 +169,9 @@ class RentalServiceTest {
         String changedBook = "New changed book";
         String rentedBy = "Changed user";
         Boolean returned = true;
-        OffsetDateTime returnedDate = OffsetDateTime.now();
-        OffsetDateTime expectedReturnDate = OffsetDateTime.now();
-        OffsetDateTime borrowDate = OffsetDateTime.now().minusMonths(1L);
+        OffsetDateTime returnedDate = TimeProvider.now();
+        OffsetDateTime expectedReturnDate = TimeProvider.now();
+        OffsetDateTime borrowDate = TimeProvider.now().minusMonths(1L);
         Boolean fineResolved = true;
         BigDecimal lateReturnWeeklyFine = new BigDecimal(2);
 
@@ -259,10 +265,14 @@ class RentalServiceTest {
         RentalDAO activeRental = TestDataFactory.activeRentalLateDAO;
         Mockito.when(rentalRepository.findById(activeRental.getId())).thenReturn(Optional.of(activeRental));
 
-        Optional<BigDecimal> fine = rentalService.getFineById(activeRental.getId());
+        try (MockedStatic<TimeProvider> dummy = Mockito.mockStatic(TimeProvider.class)) {
+            dummy.when(TimeProvider::now).thenReturn(activeRental.getExpectedReturnDate().plusWeeks(5));
 
-        assertThat(fine).isPresent();
-        assertThat(fine.get()).isEqualTo(new BigDecimal(5));
-        verify(rentalRepository, times(1)).findById(activeRental.getId());
+            Optional<BigDecimal> fine = rentalService.getFineById(activeRental.getId());
+
+            assertThat(fine).isPresent();
+            assertThat(fine.get()).isEqualTo(new BigDecimal(5));
+            verify(rentalRepository, times(1)).findById(activeRental.getId());
+        }
     }
 }
