@@ -8,7 +8,6 @@ build:
     - shared-fi
   stage: build
   script:
-    - mvn dependency:resolve --quiet
     - mvn package -DskipTests=true
 
 test:
