@@ -1,0 +1,211 @@
+openapi: 3.0.1
+info:
+  title: Book microservice of library management system
+  description: Book microservice of library management system that provides operations on books
+  version: 1.0.0
+servers:
+  - url: "http://localhost:8080"
+tags:
+  - name: Book
+
+components:
+  schemas:
+    BookStatus:
+      type: string
+      enum:
+        - AVAILABLE
+        - RESERVED
+        - RENTED
+    BookDTO:
+      title: "A book"
+      description: "Book object"
+      properties:
+        id: { type: integer, format: int64, description: "Id of book", example: 23 }
+        title: { type: string, description: "Book title / name", example: "Java tutorial" }
+        author: { type: string, description: "Author name", example: "Bruno Rossi" }
+        description: { type: string, description: "Description of the book", example: "It is *** hard" }
+        status:
+          $ref: '#/components/schemas/BookStatus'
+
+paths:
+  /api/test:
+    get:
+      tags:
+        - Book
+      summary: Returns test message response
+      operationId: test
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: BookTestResponse
+                properties:
+                  message:
+                    type: string
+
+  /api/books:
+    get:
+      tags:
+        - Book
+      summary: Returns all books that match provided filter
+      operationId: getBooks
+      parameters:
+        - in: query
+          name: title
+          required: false
+          description: "Equals match"
+          schema:
+            type: string
+        - in: query
+          name: author
+          required: false
+          description: "Equals match"
+          schema:
+            type: string
+        - in: query
+          name: description
+          required: false
+          description: "Contains match"
+          schema:
+            type: string
+        - in: query
+          name: status
+          required: false
+          description: "Equals match"
+          schema:
+            $ref: '#/components/schemas/BookStatus'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                title: BooksResponse
+                items:
+                  $ref: '#/components/schemas/BookDTO'
+    post:
+      tags:
+        - Book
+      summary: Creates new book
+      operationId: createBook
+      parameters:
+        - { name: title, in: query, required: true, schema: { type: string }, description: "Title of book" }
+        - { name: author, in: query, required: true, schema: { type: string }, description: "Author of book" }
+        - { name: description, in: query, required: true, schema: { type: string }, description: "Description of book" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookDTO'
+
+  /api/books/{id}:
+    get:
+      tags:
+        - Book
+      summary: Get book by id
+      operationId: getBook
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookDTO'
+        '404':
+          description: Not found
+
+    delete:
+      tags:
+        - Book
+      summary: Delete book by id
+      operationId: deleteBook
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No content
+
+    patch:
+      tags:
+        - Book
+      summary: Update a existing book
+      operationId: updateBook
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          name: title
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: author
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: description
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: status
+          required: false
+          schema:
+            $ref: '#/components/schemas/BookStatus'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookDTO'
+        '404':
+          description: Not found
+
+  /api/books/{id}/rentals:
+    get:
+      tags:
+        - Book
+      summary: Get all rentals of specific book
+      operationId: getBookRentals
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: #  schema:
+                type: array           #    $ref: '#/path/to/rental/schema'
+                items:
+                  type: string
+        '404':
+          description: Book not found
