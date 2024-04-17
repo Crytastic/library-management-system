@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.dao.RentalDAO;
 import cz.muni.fi.pa165.repository.RentalRepository;
+import cz.muni.fi.pa165.util.TimeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,7 @@ public class RentalService {
     public RentalDAO createRental(String book, String rentedBy, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
         RentalDAO rentalDAO = new RentalDAO(book,
                 rentedBy,
-                OffsetDateTime.now(),
+                TimeProvider.now(),
                 expectedReturnDate == null ? getDefaultExpectedReturnDate() : expectedReturnDate,
                 false,
                 null,
@@ -95,7 +96,7 @@ public class RentalService {
         }
 
         // Book not yet returned
-        OffsetDateTime currentDate = OffsetDateTime.now();
+        OffsetDateTime currentDate = TimeProvider.now();
         BigDecimal fine = calculateFine(expectedReturnDate, currentDate, rental);
         return Optional.of(fine);
     }
@@ -112,7 +113,7 @@ public class RentalService {
     }
 
     private OffsetDateTime getDefaultExpectedReturnDate() {
-        return OffsetDateTime.now().plusMonths(3);
+        return TimeProvider.now().plusMonths(3);
     }
 
     private BigDecimal getDefaultLateReturnWeeklyFine() {

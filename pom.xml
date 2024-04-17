@@ -105,7 +105,7 @@
     <module>book</module>
     <module>rental</module>
     <module>account</module>
+    <module>infrastructure</module>
   </modules>
-
 
 </project>

@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.rest;
 
 import cz.muni.fi.pa165.facade.RentalFacade;
+import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -180,8 +181,8 @@ class RentalControllerTest {
         return new RentalDTO()
                 .book("Book")
                 .rentedBy("Some user")
-                .borrowDate(OffsetDateTime.now())
-                .expectedReturnDate(OffsetDateTime.now().plusMonths(1))
+                .borrowDate(TimeProvider.now())
+                .expectedReturnDate(TimeProvider.now().plusMonths(1))
                 .returned(false)
                 .returnDate(null)
                 .lateReturnWeeklyFine(BigDecimal.TWO)

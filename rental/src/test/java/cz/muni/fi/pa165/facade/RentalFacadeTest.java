@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.facade;
 import cz.muni.fi.pa165.dao.RentalDAO;
 import cz.muni.fi.pa165.service.RentalService;
 import cz.muni.fi.pa165.util.TestDataFactory;
+import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -118,10 +119,10 @@ class RentalFacadeTest {
         RentalDAO updatedRental = new RentalDAO(
                 "Inactive test book",
                 "Rental creator",
-                OffsetDateTime.now(),
-                OffsetDateTime.now(),
+                TimeProvider.now(),
+                TimeProvider.now(),
                 true,
-                OffsetDateTime.now(),
+                TimeProvider.now(),
                 new BigDecimal(3),
                 true);
         updatedRental.setId(3L);
