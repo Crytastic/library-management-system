@@ -1,7 +1,6 @@
 package cz.muni.fi.pa165.util;
 
 import cz.muni.fi.pa165.dao.RentalDAO;
-import org.openapitools.model.RentalDTO;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
