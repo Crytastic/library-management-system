@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.dao.BookDAO;
 import cz.muni.fi.pa165.repository.BookRepository;
+import cz.muni.fi.pa165.repository.JpaBookRepository;
 import cz.muni.fi.pa165.stubs.RentalServiceStub;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,8 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BookServiceTest {
+    @Mock
+    private JpaBookRepository jpaBookRepository;
     @Mock
     private BookRepository bookRepository;
     @Mock
@@ -212,7 +215,7 @@ public class BookServiceTest {
         String description = "Fantasy novel";
         String author = "J.R.R. Tolkien";
         BookDAO createdBook = new BookDAO(title, author, description, BookStatus.AVAILABLE);
-        when(bookRepository.store(any(BookDAO.class))).thenReturn(createdBook);
+        when(jpaBookRepository.save(any(BookDAO.class))).thenReturn(createdBook);
 
         // Act
         BookDAO result = bookService.createBook(title, description, author);
@@ -222,6 +225,6 @@ public class BookServiceTest {
         assertThat(result.getTitle()).isEqualTo(title);
         assertThat(result.getAuthor()).isEqualTo(author);
         assertThat(result.getDescription()).isEqualTo(description);
-        verify(bookRepository, times(1)).store(any(BookDAO.class));
+        verify(jpaBookRepository, times(1)).save(any(BookDAO.class));
     }
 }
