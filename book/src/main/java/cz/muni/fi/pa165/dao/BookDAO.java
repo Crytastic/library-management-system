@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.dao;
 
+import jakarta.persistence.*;
 import org.openapitools.model.BookStatus;
 
 /**
@@ -7,11 +8,20 @@ import org.openapitools.model.BookStatus;
  *
  * @author Martin Suchánek
  */
+@Entity
 public class BookDAO {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "book_id")
     Long id;
+    @Column
     String title;
+    @Column
     String author;
+    @Column
     String description;
+    @Column
+    @Enumerated(EnumType.STRING)
     BookStatus status;
 
     public BookDAO(String title, String author, String description, BookStatus status) {
@@ -19,6 +29,9 @@ public class BookDAO {
         this.author = author;
         this.description = description;
         this.status = status;
+    }
+
+    public BookDAO() {
     }
 
     public Long getId() {
