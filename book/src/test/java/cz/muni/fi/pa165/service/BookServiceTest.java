@@ -34,7 +34,7 @@ public class BookServiceTest {
     void findById_bookFound_returnsBook() {
         // Arrange
         BookDAO foundBook = new BookDAO("The Lord of the Rings", "J. R. R. Tolkien", "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.", BookStatus.AVAILABLE);
-        when(bookRepository.findById(1L)).thenReturn(Optional.of(foundBook));
+        when(jpaBookRepository.findById(1L)).thenReturn(Optional.of(foundBook));
 
         // Act
         Optional<BookDAO> result = bookService.findById(1L);
@@ -46,7 +46,7 @@ public class BookServiceTest {
     @Test
     void findById_bookNotFound_returnsEmpty() {
         // Arrange
-        when(bookRepository.findById(1L)).thenReturn(Optional.empty());
+        when(jpaBookRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act
         Optional<BookDAO> result = bookService.findById(1L);
@@ -63,7 +63,7 @@ public class BookServiceTest {
         String newAuthor = "J. R. R. Tolkien";
         String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
         BookStatus newStatus = BookStatus.RENTED;
-        when(bookRepository.findById(id)).thenReturn(Optional.empty());
+        when(jpaBookRepository.findById(id)).thenReturn(Optional.empty());
 
         // Act
         Optional<BookDAO> result = bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus);
@@ -81,7 +81,7 @@ public class BookServiceTest {
         String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
         BookStatus newStatus = BookStatus.RENTED;
         BookDAO existingBook = new BookDAO("The Lord of the Rings", "Tolkien", "Fantasy novel", BookStatus.AVAILABLE);
-        when(bookRepository.findById(id)).thenReturn(Optional.of(existingBook));
+        when(jpaBookRepository.findById(id)).thenReturn(Optional.of(existingBook));
         when(bookRepository.updateById(id, existingBook)).thenReturn(Optional.of(existingBook));
 
         // Act
@@ -101,7 +101,7 @@ public class BookServiceTest {
         Long id = 1L;
         List<String> rentals = List.of("Rental 1", "Rental 2");
         when(rentalServiceStub.apiCallToRentalServiceToFindBookRentals(id)).thenReturn(rentals);
-        when(bookRepository.findById(id)).thenReturn(Optional.of(new BookDAO("", "", "", BookStatus.AVAILABLE)));
+        when(jpaBookRepository.findById(id)).thenReturn(Optional.of(new BookDAO("", "", "", BookStatus.AVAILABLE)));
 
         // Act
         Optional<List<String>> result = bookService.findBookRentals(id);
@@ -114,7 +114,7 @@ public class BookServiceTest {
     void findBookRentals_bookNotFound_returnsEmpty() {
         // Arrange
         Long id = 1L;
-        when(bookRepository.findById(id)).thenReturn(Optional.empty());
+        when(jpaBookRepository.findById(id)).thenReturn(Optional.empty());
 
         // Act
         Optional<List<String>> result = bookService.findBookRentals(id);

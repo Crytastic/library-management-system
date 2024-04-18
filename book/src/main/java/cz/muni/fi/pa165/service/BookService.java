@@ -42,7 +42,7 @@ public class BookService {
     }
 
     public Optional<BookDAO> findById(Long id) {
-        return bookRepository.findById(id);
+        return jpaBookRepository.findById(id);
     }
 
     public void deleteById(Long id) {
@@ -50,7 +50,7 @@ public class BookService {
     }
 
     public Optional<BookDAO> updateById(Long id, String title, String author, String description, BookStatus status) {
-        Optional<BookDAO> optionalBook = bookRepository.findById(id);
+        Optional<BookDAO> optionalBook = jpaBookRepository.findById(id);
 
         if (optionalBook.isEmpty()) {
             return Optional.empty();
@@ -67,7 +67,7 @@ public class BookService {
     }
 
     public Optional<List<String>> findBookRentals(Long id) {
-        if (bookRepository.findById(id).isEmpty()) {
+        if (jpaBookRepository.findById(id).isEmpty()) {
             return Optional.empty();
         } else {
             return Optional.ofNullable(rentalServiceStub.apiCallToRentalServiceToFindBookRentals(id));
