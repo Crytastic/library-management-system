@@ -205,7 +205,7 @@ public class BookServiceTest {
         bookService.deleteById(idToDelete);
 
         // Assert
-        verify(bookRepository, times(1)).deleteById(idToDelete);
+        verify(jpaBookRepository, times(1)).deleteById(idToDelete);
     }
 
     @Test

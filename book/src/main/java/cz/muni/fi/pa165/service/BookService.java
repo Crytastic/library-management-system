@@ -45,8 +45,7 @@ public class BookService {
         return jpaBookRepository.findById(id);
     }
 
-    public void deleteById(Long id) {
-        bookRepository.deleteById(id);
+    public void deleteById(Long id) { jpaBookRepository.deleteById(id);
     }
 
     public Optional<BookDAO> updateById(Long id, String title, String author, String description, BookStatus status) {
