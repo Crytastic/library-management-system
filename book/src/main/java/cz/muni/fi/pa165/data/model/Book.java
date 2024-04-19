@@ -1,4 +1,4 @@
-package cz.muni.fi.pa165.dao;
+package cz.muni.fi.pa165.data.model;
 
 import jakarta.persistence.*;
 import org.openapitools.model.BookStatus;
@@ -10,7 +10,7 @@ import org.openapitools.model.BookStatus;
  */
 @Entity
 @Table(name = "book")
-public class BookDAO {
+public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "book_id")
@@ -25,14 +25,14 @@ public class BookDAO {
     @Enumerated(EnumType.STRING)
     BookStatus status;
 
-    public BookDAO(String title, String author, String description, BookStatus status) {
+    public Book(String title, String author, String description, BookStatus status) {
         this.title = title;
         this.author = author;
         this.description = description;
         this.status = status;
     }
 
-    public BookDAO() {
+    public Book() {
     }
 
     public Long getId() {

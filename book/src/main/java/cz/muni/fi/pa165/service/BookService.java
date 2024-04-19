@@ -1,7 +1,7 @@
 package cz.muni.fi.pa165.service;
 
-import cz.muni.fi.pa165.dao.BookDAO;
-import cz.muni.fi.pa165.repository.JpaBookRepository;
+import cz.muni.fi.pa165.data.model.Book;
+import cz.muni.fi.pa165.data.repository.JpaBookRepository;
 import cz.muni.fi.pa165.stubs.RentalServiceStub;
 import org.openapitools.model.BookStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +30,15 @@ public class BookService {
         this.jpaBookRepository = jpaBookRepository;
     }
 
-    public List<BookDAO> findByFilter(String title, String author, String description, BookStatus status) {
+    public List<Book> findByFilter(String title, String author, String description, BookStatus status) {
         return jpaBookRepository.findByFilter(title, author, description, status);
     }
 
-    public BookDAO createBook(String title, String author, String description) {
-        return jpaBookRepository.save(new BookDAO(title, author, description, BookStatus.AVAILABLE));
+    public Book createBook(String title, String author, String description) {
+        return jpaBookRepository.save(new Book(title, author, description, BookStatus.AVAILABLE));
     }
 
-    public Optional<BookDAO> findById(Long id) {
+    public Optional<Book> findById(Long id) {
         return jpaBookRepository.findById(id);
     }
 
