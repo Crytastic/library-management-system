@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.data.model;
 
+import jakarta.persistence.*;
 import org.openapitools.model.UserType;
 
 import java.time.LocalDate;
@@ -9,14 +10,26 @@ import java.time.LocalDate;
  *
  * @author Sophia Zápotočná
  */
+@Entity
+@Table(name = "user_table")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "user_id")
     private Long id;
+    @Column
     private String username;
+    @Column
     private String passwordHash;
+    @Column
     private String address;
+    @Column
+    @Enumerated(EnumType.STRING)
     private UserType userType;
+    @Column
     private LocalDate birthDate;
 
+    public User() {}
     public User(Long id, String username, String passwordHash, UserType userType, String address, LocalDate birthDate) {
         this.id = id;
         this.username = username;
