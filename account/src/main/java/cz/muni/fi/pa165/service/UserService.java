@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import com.google.common.hash.Hashing;
 import cz.muni.fi.pa165.data.model.User;
+import cz.muni.fi.pa165.data.repository.JpaUserRepository;
 import cz.muni.fi.pa165.data.repository.UserRepository;
 import cz.muni.fi.pa165.exceptions.UnauthorisedException;
 import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
@@ -26,8 +27,11 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserService(@Autowired UserRepository userRepository) {
+    private final JpaUserRepository jpaUserRepository;
+
+    public UserService(@Autowired UserRepository userRepository, @Autowired JpaUserRepository jpaUserRepository) {
         this.userRepository = userRepository;
+        this.jpaUserRepository = jpaUserRepository;
     }
 
     public List<User> findAll(UserType userType) {
@@ -43,7 +47,7 @@ public class UserService {
             throw new UsernameAlreadyExistsException();
         }
         String passwordHashed = createPasswordHash(password);
-        return userRepository.saveUser(username, passwordHashed, address, birthDate, userType);
+        return jpaUserRepository.save(new User(1L, username, passwordHashed, userType, address, birthDate));
     }
 
     private String createPasswordHash(String password) {

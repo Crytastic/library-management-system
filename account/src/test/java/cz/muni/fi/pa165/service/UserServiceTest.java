@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.User;
+import cz.muni.fi.pa165.data.repository.JpaUserRepository;
 import cz.muni.fi.pa165.data.repository.UserRepository;
 import cz.muni.fi.pa165.exceptions.UnauthorisedException;
 import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
@@ -29,6 +30,9 @@ import static org.mockito.Mockito.verify;
  */
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
+
+    @Mock
+    private JpaUserRepository jpaUserRepository;
 
     @Mock
     private UserRepository userRepository;
@@ -64,13 +68,7 @@ class UserServiceTest {
         LocalDate birthDate = LocalDate.parse("2000-02-02");
         Long id = 1L;
         User testUserDAO = new User(id, username, passwordHash, userType, address, birthDate);
-        Mockito.when(userRepository.saveUser(
-                anyString(),
-                anyString(),
-                anyString(),
-                any(LocalDate.class),
-                any(UserType.class))
-        ).thenReturn(testUserDAO);
+        Mockito.when(jpaUserRepository.save(any(User.class))).thenReturn(testUserDAO);
 
         User userDAO = userService.createUser(username, passwordHash, address, birthDate, userType);
         assertThat(userDAO.getUsername()).isEqualTo(username);
@@ -80,12 +78,7 @@ class UserServiceTest {
         assertThat(userDAO.getUserType()).isEqualTo(userType);
         assertThat(userDAO.getId()).isEqualTo(id);
 
-        verify(userRepository, times(1))
-                .saveUser(anyString(),
-                        anyString(),
-                        anyString(),
-                        any(LocalDate.class),
-                        any(UserType.class));
+        verify(jpaUserRepository, times(1)).save(any(User.class));
     }
 
     @Test
@@ -102,12 +95,7 @@ class UserServiceTest {
         assertThrows(UsernameAlreadyExistsException.class,
                 () -> userService.createUser(username, passwordHash, address, birthDate, userType));
 
-        verify(userRepository, times(0))
-                .saveUser(anyString(),
-                        anyString(),
-                        anyString(),
-                        any(LocalDate.class),
-                        any(UserType.class));
+        verify(jpaUserRepository, times(0)).save(any(User.class));
     }
 
     @Test
