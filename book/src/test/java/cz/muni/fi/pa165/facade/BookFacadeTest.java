@@ -107,39 +107,38 @@ class BookFacadeTest {
     }
 
     @Test
-    void updateById_validParameters_returnsUpdatedBookDTO() {
+    void updateById_validParameters_returnsOneOrMore() {
         // Arrange
         Long id = 1L;
         String title = "The Lord of the Rings";
         String author = "J.R.R. Tolkien";
         String description = "Fantasy";
         BookStatus status = BookStatus.RENTED;
-        BookDAO updatedBookDAO = new BookDAO(title, author, description, status);
-        when(bookService.updateById(id, title, author, description, status)).thenReturn(Optional.of(updatedBookDAO));
+        when(bookService.updateById(id, title, author, description, status)).thenReturn(1);
 
         // Act
-        Optional<BookDTO> result = bookFacade.updateById(id, title, author, description, status);
+        int result = bookFacade.updateById(id, title, author, description, status);
 
         // Assert
-        assertThat(result).isPresent();
+        assertThat(result).isEqualTo(1);
         verify(bookService, times(1)).updateById(id, title, author, description, status);
     }
 
     @Test
-    void updateById_invalidId_returnsEmptyOptional() {
+    void updateById_invalidId_returnsZero() {
         // Arrange
         Long id = 1L;
         String title = "The Lord of the Rings";
         String author = "J.R.R. Tolkien";
         String description = "Fantasy";
         BookStatus status = BookStatus.RENTED;
-        when(bookService.updateById(id, title, author, description, status)).thenReturn(Optional.empty());
+        when(bookService.updateById(id, title, author, description, status)).thenReturn(0);
 
         // Act
-        Optional<BookDTO> result = bookFacade.updateById(id, title, author, description, status);
+        int result = bookFacade.updateById(id, title, author, description, status);
 
         // Assert
-        assertThat(result).isEmpty();
+        assertThat(result).isEqualTo(0);
         verify(bookService, times(1)).updateById(id, title, author, description, status);
     }
 

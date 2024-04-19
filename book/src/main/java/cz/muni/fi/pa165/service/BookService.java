@@ -7,6 +7,7 @@ import cz.muni.fi.pa165.stubs.RentalServiceStub;
 import org.openapitools.model.BookStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,21 +49,9 @@ public class BookService {
     public void deleteById(Long id) { jpaBookRepository.deleteById(id);
     }
 
-    public Optional<BookDAO> updateById(Long id, String title, String author, String description, BookStatus status) {
-        Optional<BookDAO> optionalBook = jpaBookRepository.findById(id);
-
-        if (optionalBook.isEmpty()) {
-            return Optional.empty();
-        }
-
-        BookDAO bookDao = optionalBook.get();
-
-        if (title != null) bookDao.setTitle(title);
-        if (author != null) bookDao.setAuthor(author);
-        if (description != null) bookDao.setDescription(description);
-        if (status != null) bookDao.setStatus(status);
-
-        return bookRepository.updateById(id, bookDao);
+    @Transactional
+    public int updateById(Long id, String title, String author, String description, BookStatus status) {
+        return jpaBookRepository.updateById(id, title, author, description, status);
     }
 
     public Optional<List<String>> findBookRentals(Long id) {

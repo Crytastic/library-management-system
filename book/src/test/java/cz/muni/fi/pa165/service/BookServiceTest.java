@@ -56,43 +56,37 @@ public class BookServiceTest {
     }
 
     @Test
-    void updateById_bookNotFound_returnsEmpty() {
+    void updateById_bookNotFound_returnsZero() {
         // Arrange
         Long id = 1L;
         String newTitle = "The Lord of the Rings: The Two Towers";
         String newAuthor = "J. R. R. Tolkien";
         String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
         BookStatus newStatus = BookStatus.RENTED;
-        when(jpaBookRepository.findById(id)).thenReturn(Optional.empty());
+        when(jpaBookRepository.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(0);
 
         // Act
-        Optional<BookDAO> result = bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus);
+        int result = bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus);
 
         // Assert
-        assertThat(result).isEmpty();
+        assertThat(result).isEqualTo(0);
     }
 
     @Test
-    void updateById_bookFound_updatesBook() {
+    void updateById_bookFound_returnsOneOrMore() {
         // Arrange
         Long id = 1L;
         String newTitle = "The Lord of the Rings: The Two Towers";
         String newAuthor = "J. R. R. Tolkien";
         String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
         BookStatus newStatus = BookStatus.RENTED;
-        BookDAO existingBook = new BookDAO("The Lord of the Rings", "Tolkien", "Fantasy novel", BookStatus.AVAILABLE);
-        when(jpaBookRepository.findById(id)).thenReturn(Optional.of(existingBook));
-        when(bookRepository.updateById(id, existingBook)).thenReturn(Optional.of(existingBook));
+        when(jpaBookRepository.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(1);
 
         // Act
-        Optional<BookDAO> result = bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus);
+        int result = bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus);
 
         // Assert
-        assertThat(result).isPresent().contains(existingBook);
-        assertThat(result.get().getTitle()).isEqualTo(newTitle);
-        assertThat(result.get().getAuthor()).isEqualTo(newAuthor);
-        assertThat(result.get().getDescription()).isEqualTo(newDescription);
-        assertThat(result.get().getStatus()).isEqualTo(newStatus);
+        assertThat(result).isEqualTo(1);
     }
 
     @Test

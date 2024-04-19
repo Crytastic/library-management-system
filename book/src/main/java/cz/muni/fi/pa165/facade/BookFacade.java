@@ -47,8 +47,8 @@ public class BookFacade {
         bookService.deleteById(id);
     }
 
-    public Optional<BookDTO> updateById(Long id, String title, String author, String description, BookStatus status) {
-        return bookService.updateById(id, title, author, description, status).map(this::convertToDTO);
+    public int updateById(Long id, String title, String author, String description, BookStatus status) {
+        return bookService.updateById(id, title, author, description, status);
     }
 
     public Optional<List<String>> findBookRentals(Long id) {
