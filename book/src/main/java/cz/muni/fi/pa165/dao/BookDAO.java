@@ -9,6 +9,7 @@ import org.openapitools.model.BookStatus;
  * @author Martin Suchánek
  */
 @Entity
+@Table(name = "book")
 public class BookDAO {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
