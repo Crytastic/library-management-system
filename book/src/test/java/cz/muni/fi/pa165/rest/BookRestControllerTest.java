@@ -20,13 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class BookControllerTest {
+public class BookRestControllerTest {
 
     @Mock
     private BookFacade bookFacade;
 
     @InjectMocks
-    private BookController bookController;
+    private BookRestController bookRestController;
 
     @Test
     void createBook_validRequestBody_createsBook() {
@@ -39,7 +39,7 @@ public class BookControllerTest {
         when(bookFacade.createBook(title, description, author)).thenReturn(createdBook);
 
         // Act
-        ResponseEntity<BookDTO> response = bookController.createBook(title, description, author);
+        ResponseEntity<BookDTO> response = bookRestController.createBook(title, description, author);
 
         // Assert
         assertThat(response.getBody()).isNotNull();
@@ -54,7 +54,7 @@ public class BookControllerTest {
         doNothing().when(bookFacade).deleteById(anyLong());
 
         // Act
-        ResponseEntity<Void> response = bookController.deleteBook(id);
+        ResponseEntity<Void> response = bookRestController.deleteBook(id);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -73,7 +73,7 @@ public class BookControllerTest {
         when(bookFacade.findById(id)).thenReturn(Optional.of(book));
 
         // Act
-        ResponseEntity<BookDTO> response = bookController.getBook(id);
+        ResponseEntity<BookDTO> response = bookRestController.getBook(id);
 
         // Assert
         assertThat(response.getBody()).isNotNull();
@@ -88,7 +88,7 @@ public class BookControllerTest {
         when(bookFacade.findById(id)).thenReturn(Optional.empty());
 
         // Act
-        ResponseEntity<BookDTO> response = bookController.getBook(id);
+        ResponseEntity<BookDTO> response = bookRestController.getBook(id);
 
         // Assert
         assertThat(response.getBody()).isNull();
@@ -105,7 +105,7 @@ public class BookControllerTest {
         when(bookFacade.findBookRentals(id)).thenReturn(Optional.of(rentals));
 
         // Act
-        ResponseEntity<List<String>> response = bookController.getBookRentals(id);
+        ResponseEntity<List<String>> response = bookRestController.getBookRentals(id);
 
         // Assert
         assertThat(response.getBody()).isEqualTo(rentals);
@@ -119,7 +119,7 @@ public class BookControllerTest {
         when(bookFacade.findBookRentals(id)).thenReturn(Optional.empty());
 
         // Act
-        ResponseEntity<List<String>> response = bookController.getBookRentals(id);
+        ResponseEntity<List<String>> response = bookRestController.getBookRentals(id);
 
         // Assert
         assertThat(response.getBody()).isNull();
@@ -138,7 +138,7 @@ public class BookControllerTest {
         when(bookFacade.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(1);
 
         // Act
-        ResponseEntity<Void> response = bookController.updateBook(id, newTitle, newAuthor, newDescription, newStatus);
+        ResponseEntity<Void> response = bookRestController.updateBook(id, newTitle, newAuthor, newDescription, newStatus);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -155,7 +155,7 @@ public class BookControllerTest {
         when(bookFacade.updateById(id, title, author, description, status)).thenReturn(0);
 
         // Act
-        ResponseEntity<Void> response = bookController.updateBook(id, title, author, description, status);
+        ResponseEntity<Void> response = bookRestController.updateBook(id, title, author, description, status);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -173,7 +173,7 @@ public class BookControllerTest {
         when(bookFacade.findByFilter(title, author, description, status)).thenReturn(books);
 
         // Act
-        ResponseEntity<List<BookDTO>> response = bookController.getBooks(title, author, description, status);
+        ResponseEntity<List<BookDTO>> response = bookRestController.getBooks(title, author, description, status);
 
         // Assert
         assertThat(response.getBody()).isEqualTo(books);

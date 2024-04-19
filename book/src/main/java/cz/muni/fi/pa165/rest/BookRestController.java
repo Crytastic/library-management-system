@@ -20,12 +20,12 @@ import java.util.Optional;
  * @author Martin Suchánek
  */
 @RestController
-public class BookController implements BookApi {
+public class BookRestController implements BookApi {
 
     private final BookFacade bookFacade;
 
     @Autowired
-    public BookController(BookFacade bookFacade) {
+    public BookRestController(BookFacade bookFacade) {
         this.bookFacade = bookFacade;
     }
 
