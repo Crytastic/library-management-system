@@ -51,6 +51,7 @@ public class BookControllerTest {
     void deleteBook_validId_deletesBook() {
         // Arrange
         Long id = 1L;
+        doNothing().when(bookFacade).deleteById(anyLong());
 
         // Act
         ResponseEntity<Void> response = bookController.deleteBook(id);
