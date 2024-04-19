@@ -65,7 +65,7 @@ class UserFacadeTest {
         String address = "Botanická 68a";
         LocalDate birthDate = LocalDate.parse("2000-02-02");
         Long id = 1L;
-        User testUserDAO = new User(id, username, passwordHash, userType, address, birthDate);
+        User testUserDAO = new User(username, passwordHash, userType, address, birthDate);
         Mockito.when(userService.createUser(
                 anyString(),
                 anyString(),

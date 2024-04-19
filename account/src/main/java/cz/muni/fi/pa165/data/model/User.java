@@ -13,11 +13,12 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "user_table")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "user_id")
     private Long id;
-    @Column
+    @Column(unique = true)
     private String username;
     @Column
     private String passwordHash;
@@ -30,8 +31,7 @@ public class User {
     private LocalDate birthDate;
 
     public User() {}
-    public User(Long id, String username, String passwordHash, UserType userType, String address, LocalDate birthDate) {
-        this.id = id;
+    public User(String username, String passwordHash, UserType userType, String address, LocalDate birthDate) {
         this.username = username;
         this.passwordHash = passwordHash;
         this.userType = userType;
@@ -54,7 +54,9 @@ public class User {
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
-
+    public void setId(Long id) {
+        this.id = id;
+    }
     public Long getId() {
         return id;
     }

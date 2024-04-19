@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openapitools.model.UserType;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,8 +23,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Martin Suchánek
@@ -66,8 +66,7 @@ class UserServiceTest {
         UserType userType = UserType.MEMBER;
         String address = "Botanická 68a";
         LocalDate birthDate = LocalDate.parse("2000-02-02");
-        Long id = 1L;
-        User testUserDAO = new User(id, username, passwordHash, userType, address, birthDate);
+        User testUserDAO = new User(username, passwordHash, userType, address, birthDate);
         Mockito.when(jpaUserRepository.save(any(User.class))).thenReturn(testUserDAO);
 
         User userDAO = userService.createUser(username, passwordHash, address, birthDate, userType);
@@ -76,7 +75,6 @@ class UserServiceTest {
         assertThat(userDAO.getPasswordHash()).isEqualTo(passwordHash);
         assertThat(userDAO.getBirthDate()).isEqualTo(birthDate);
         assertThat(userDAO.getUserType()).isEqualTo(userType);
-        assertThat(userDAO.getId()).isEqualTo(id);
 
         verify(jpaUserRepository, times(1)).save(any(User.class));
     }
@@ -88,14 +86,10 @@ class UserServiceTest {
         UserType userType = UserType.MEMBER;
         String address = "Botanická 68a";
         LocalDate birthDate = LocalDate.parse("2000-02-02");
-        Long id = 1L;
-        User testUserDAO = new User(id, username, passwordHash, userType, address, birthDate);
-        Mockito.when(userRepository.findUserByUsername(anyString())).thenReturn(testUserDAO);
+        when(jpaUserRepository.save(any(User.class))).thenThrow(DataIntegrityViolationException.class);
 
         assertThrows(UsernameAlreadyExistsException.class,
                 () -> userService.createUser(username, passwordHash, address, birthDate, userType));
-
-        verify(jpaUserRepository, times(0)).save(any(User.class));
     }
 
     @Test

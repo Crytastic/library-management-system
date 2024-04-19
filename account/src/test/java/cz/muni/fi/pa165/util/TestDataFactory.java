@@ -27,7 +27,9 @@ public class TestDataFactory {
             3L, "admin1", createPasswordHash(firstLibrarianDAOPassword), UserType.LIBRARIAN, "Šumavská 10, Brno", LocalDate.parse("1999-12-19"));
 
     private static User getUserDAOFactory(Long id, String username, String passwordHash, UserType userType, String address, LocalDate birhDate) {
-        return new User(id, username, passwordHash, userType, address, birhDate);
+        User user = new User(username, passwordHash, userType, address, birhDate);
+        user.setId(id);
+        return user;
     }
 
     public static String createPasswordHash(String password) {

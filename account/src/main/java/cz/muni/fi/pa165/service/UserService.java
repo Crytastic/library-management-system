@@ -8,6 +8,7 @@ import cz.muni.fi.pa165.exceptions.UnauthorisedException;
 import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
 import org.openapitools.model.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -43,11 +44,12 @@ public class UserService {
     }
 
     public User createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {
-        if (userRepository.findUserByUsername(username) != null) {
-            throw new UsernameAlreadyExistsException();
-        }
         String passwordHashed = createPasswordHash(password);
-        return jpaUserRepository.save(new User(1L, username, passwordHashed, userType, address, birthDate));
+        try {
+            return jpaUserRepository.save(new User(username, passwordHashed, userType, address, birthDate));
+        } catch (DataIntegrityViolationException e) {
+            throw new UsernameAlreadyExistsException(e.getMessage());
+        }
     }
 
     private String createPasswordHash(String password) {

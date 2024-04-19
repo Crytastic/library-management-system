@@ -39,7 +39,7 @@ public class UserRepository {
     }
 
     public User saveUser(String username, String passwordHash, String address, LocalDate birthDate, UserType userType) {
-        User newUser = new User(index, username, passwordHash, userType, address, birthDate);
+        User newUser = new User(username, passwordHash, userType, address, birthDate);
         users.put(index, newUser);
         index++;
         return newUser;
