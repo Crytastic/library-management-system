@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.service;
 
-import cz.muni.fi.pa165.data.model.UserDAO;
+import cz.muni.fi.pa165.data.model.User;
 import cz.muni.fi.pa165.data.repository.UserRepository;
 import cz.muni.fi.pa165.exceptions.UnauthorisedException;
 import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
@@ -40,7 +40,7 @@ class UserServiceTest {
     void findById_userFound_returnsUser() {
         Mockito.when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.firstMemberDAO));
 
-        Optional<UserDAO> userDAO = userService.findById(1L);
+        Optional<User> userDAO = userService.findById(1L);
 
         assertThat(userDAO).isPresent();
         assertThat(userDAO.get()).isEqualTo(TestDataFactory.firstMemberDAO);
@@ -50,7 +50,7 @@ class UserServiceTest {
     void findById_userNotFound_returnsEmptyOptional() {
         Mockito.when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-        Optional<UserDAO> userDAO = userService.findById(1L);
+        Optional<User> userDAO = userService.findById(1L);
 
         assertThat(userDAO).isEmpty();
     }
@@ -63,7 +63,7 @@ class UserServiceTest {
         String address = "Botanická 68a";
         LocalDate birthDate = LocalDate.parse("2000-02-02");
         Long id = 1L;
-        UserDAO testUserDAO = new UserDAO(id, username, passwordHash, userType, address, birthDate);
+        User testUserDAO = new User(id, username, passwordHash, userType, address, birthDate);
         Mockito.when(userRepository.saveUser(
                 anyString(),
                 anyString(),
@@ -72,7 +72,7 @@ class UserServiceTest {
                 any(UserType.class))
         ).thenReturn(testUserDAO);
 
-        UserDAO userDAO = userService.createUser(username, passwordHash, address, birthDate, userType);
+        User userDAO = userService.createUser(username, passwordHash, address, birthDate, userType);
         assertThat(userDAO.getUsername()).isEqualTo(username);
         assertThat(userDAO.getAddress()).isEqualTo(address);
         assertThat(userDAO.getPasswordHash()).isEqualTo(passwordHash);
@@ -96,7 +96,7 @@ class UserServiceTest {
         String address = "Botanická 68a";
         LocalDate birthDate = LocalDate.parse("2000-02-02");
         Long id = 1L;
-        UserDAO testUserDAO = new UserDAO(id, username, passwordHash, userType, address, birthDate);
+        User testUserDAO = new User(id, username, passwordHash, userType, address, birthDate);
         Mockito.when(userRepository.findUserByUsername(anyString())).thenReturn(testUserDAO);
 
         assertThrows(UsernameAlreadyExistsException.class,
@@ -121,7 +121,7 @@ class UserServiceTest {
 
     @Test
     void updateUser_incorrectUsername_notCallsUserRepositoryUpdateUserAndThrowsUnauthorisedException() {
-        UserDAO testUserDAO = TestDataFactory.firstMemberDAO;
+        User testUserDAO = TestDataFactory.firstMemberDAO;
         Mockito.when(userRepository.findUserByUsername(anyString())).thenReturn(null);
 
         assertThrows(UnauthorisedException.class, () ->
@@ -133,7 +133,7 @@ class UserServiceTest {
 
     @Test
     void updateUser_incorrectPassword_notCallsUserRepositoryUpdateUserAndThrowsUnauthorisedException() {
-        UserDAO testUserDAO = TestDataFactory.firstMemberDAO;
+        User testUserDAO = TestDataFactory.firstMemberDAO;
         Mockito.when(userRepository.findUserByUsername(anyString())).thenReturn(TestDataFactory.secondMemberDAO);
 
         assertThrows(UnauthorisedException.class, () ->
@@ -144,7 +144,7 @@ class UserServiceTest {
 
     @Test
     void updateUser_userUpdatesNotExistingUser_notCallsUserRepositoryUpdateUserAndReturnsEmptyOptional() {
-        UserDAO actor = TestDataFactory.firstLibrarianDAO;
+        User actor = TestDataFactory.firstLibrarianDAO;
         String actorPassword = TestDataFactory.firstLibrarianDAOPassword;
         Long notExistingId = 20L;
 
@@ -156,16 +156,16 @@ class UserServiceTest {
 
         verify(userRepository, times(1)).findUserByUsername(actor.getUsername());
         verify(userRepository, times(1)).findById(notExistingId);
-        verify(userRepository, times(0)).updateUser(eq(notExistingId), any(UserDAO.class));
+        verify(userRepository, times(0)).updateUser(eq(notExistingId), any(User.class));
     }
 
     @Test
     void updateUser_librarianUpdatesExistingUser_callsMultipleUserRepositoryMethodsAndReturnsUpdatedUser() {
-        UserDAO actor = TestDataFactory.firstLibrarianDAO;
+        User actor = TestDataFactory.firstLibrarianDAO;
         String actorPassword = TestDataFactory.firstLibrarianDAOPassword;
 
-        UserDAO userToBeUpdated = TestDataFactory.firstLibrarianDAO;
-        UserDAO updatedUser = TestDataFactory.firstLibrarianDAO;
+        User userToBeUpdated = TestDataFactory.firstLibrarianDAO;
+        User updatedUser = TestDataFactory.firstLibrarianDAO;
         updatedUser.setAddress("Nová Adresa 132, Brno");
         updatedUser.setBirthDate(LocalDate.parse("1999-12-12"));
 
@@ -183,11 +183,11 @@ class UserServiceTest {
 
     @Test
     void updateUser_memberUpdatesHimself_callsMultipleUserRepositoryMethodsAndReturnsUpdatedUser() {
-        UserDAO actor = TestDataFactory.firstMemberDAO;
+        User actor = TestDataFactory.firstMemberDAO;
         String actorPassword = TestDataFactory.firstMemberDAOPassword;
 
-        UserDAO userToBeUpdated = TestDataFactory.firstMemberDAO;
-        UserDAO updatedUser = TestDataFactory.firstMemberDAO;
+        User userToBeUpdated = TestDataFactory.firstMemberDAO;
+        User updatedUser = TestDataFactory.firstMemberDAO;
         updatedUser.setAddress("Nová Adresa 132, Brno");
         updatedUser.setBirthDate(LocalDate.parse("1999-12-12"));
 
@@ -205,11 +205,11 @@ class UserServiceTest {
 
     @Test
     void updateUser_memberUpdatesTypeOnHimself_callsOnlyUserRepositoryFindUserByUsernameAndThrowsUnauthorizedException() {
-        UserDAO actor = TestDataFactory.firstMemberDAO;
+        User actor = TestDataFactory.firstMemberDAO;
         String actorPassword = TestDataFactory.firstMemberDAOPassword;
 
-        UserDAO userToBeUpdated = TestDataFactory.secondMemberDAO;
-        UserDAO updatedUser = TestDataFactory.secondMemberDAO;
+        User userToBeUpdated = TestDataFactory.secondMemberDAO;
+        User updatedUser = TestDataFactory.secondMemberDAO;
         updatedUser.setUserType(UserType.LIBRARIAN);
 
         Mockito.when(userRepository.findUserByUsername(actor.getUsername())).thenReturn(actor);
@@ -224,11 +224,11 @@ class UserServiceTest {
 
     @Test
     void updateUser_memberUpdatesOtherUser_callsOnlyUserRepositoryFindUserByUsernameAndThrowsUnauthorizedException() {
-        UserDAO actor = TestDataFactory.firstMemberDAO;
+        User actor = TestDataFactory.firstMemberDAO;
         String actorPassword = TestDataFactory.firstMemberDAOPassword;
 
-        UserDAO userToBeUpdated = TestDataFactory.secondMemberDAO;
-        UserDAO updatedUser = TestDataFactory.secondMemberDAO;
+        User userToBeUpdated = TestDataFactory.secondMemberDAO;
+        User updatedUser = TestDataFactory.secondMemberDAO;
         updatedUser.setAddress("Nová Adresa 132, Brno");
         updatedUser.setBirthDate(LocalDate.parse("1999-12-12"));
 
@@ -244,7 +244,7 @@ class UserServiceTest {
 
     @Test
     void findAll_userTypeMember_callsUserRepositoryFindAllAndReturnsUsers() {
-        List<UserDAO> users = new ArrayList<>();
+        List<User> users = new ArrayList<>();
         users.add(TestDataFactory.firstMemberDAO);
         users.add(TestDataFactory.secondMemberDAO);
 
@@ -259,7 +259,7 @@ class UserServiceTest {
 
     @Test
     void findAllAdults_callsUserRepositoryFindAllAdultsAndReturnsUsers() {
-        List<UserDAO> users = new ArrayList<>();
+        List<User> users = new ArrayList<>();
         users.add(TestDataFactory.firstMemberDAO);
         users.add(TestDataFactory.secondMemberDAO);
 

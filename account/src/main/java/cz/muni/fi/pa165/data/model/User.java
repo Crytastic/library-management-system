@@ -9,7 +9,7 @@ import java.time.LocalDate;
  *
  * @author Sophia Zápotočná
  */
-public class UserDAO {
+public class User {
     private Long id;
     private String username;
     private String passwordHash;
@@ -17,7 +17,7 @@ public class UserDAO {
     private UserType userType;
     private LocalDate birthDate;
 
-    public UserDAO(Long id, String username, String passwordHash, UserType userType, String address, LocalDate birthDate) {
+    public User(Long id, String username, String passwordHash, UserType userType, String address, LocalDate birthDate) {
         this.id = id;
         this.username = username;
         this.passwordHash = passwordHash;

@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.data.model.UserDAO;
+import cz.muni.fi.pa165.data.model.User;
 import cz.muni.fi.pa165.service.UserService;
 import org.openapitools.model.UserDTO;
 import org.openapitools.model.UserType;
@@ -27,21 +27,21 @@ public class UserFacade {
     }
 
     public List<UserDTO> findAll(UserType userType) {
-        List<UserDAO> users = userService.findAll(userType);
+        List<User> users = userService.findAll(userType);
         return users.stream()
                 .map(this::convertToDTO)
                 .toList();
     }
 
     public List<UserDTO> findAllAdults() {
-        List<UserDAO> users = userService.findAllAdults();
+        List<User> users = userService.findAllAdults();
         return users.stream()
                 .map(this::convertToDTO)
                 .toList();
     }
 
     public UserDTO createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {
-        UserDAO user = userService.createUser(username, password, address, birthDate, userType);
+        User user = userService.createUser(username, password, address, birthDate, userType);
         return convertToDTO(user);
     }
 
@@ -59,7 +59,7 @@ public class UserFacade {
     }
 
     // Will be replaced by mapper in the future
-    private UserDTO convertToDTO(UserDAO userDAO) {
+    private UserDTO convertToDTO(User userDAO) {
         return new UserDTO()
                 .id(userDAO.getId())
                 .username(userDAO.getUsername())
