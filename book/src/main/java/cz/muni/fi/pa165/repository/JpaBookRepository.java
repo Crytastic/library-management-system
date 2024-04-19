@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.awt.print.Book;
+import java.util.List;
+
 @Repository
 public interface JpaBookRepository extends JpaRepository<BookDAO, Long> {
 
@@ -17,5 +20,12 @@ public interface JpaBookRepository extends JpaRepository<BookDAO, Long> {
             "b.description = coalesce(:description, b.description)," +
             "b.status = coalesce(:status, b.status) WHERE b.id = :id")
     int updateById(Long id, String title, String author, String description, BookStatus status);
+
+    @Query("SELECT b FROM BookDAO b WHERE " +
+            "b.author = coalesce(:author, b.author) AND " +
+            "b.title = coalesce(:title, b.title) AND " +
+            "b.description = coalesce(:description, b.description) AND " +
+            "b.status = coalesce(:status, b.status)")
+    List<BookDAO> findByFilter(String title,String author,String description,BookStatus status);
 
 }

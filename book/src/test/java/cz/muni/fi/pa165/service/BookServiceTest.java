@@ -1,7 +1,6 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.dao.BookDAO;
-import cz.muni.fi.pa165.repository.BookRepository;
 import cz.muni.fi.pa165.repository.JpaBookRepository;
 import cz.muni.fi.pa165.stubs.RentalServiceStub;
 import org.junit.jupiter.api.Test;
@@ -22,8 +21,6 @@ import static org.mockito.Mockito.*;
 public class BookServiceTest {
     @Mock
     private JpaBookRepository jpaBookRepository;
-    @Mock
-    private BookRepository bookRepository;
     @Mock
     RentalServiceStub rentalServiceStub;
 
@@ -124,7 +121,7 @@ public class BookServiceTest {
         BookDAO book1 = new BookDAO("The Lord of the Rings: The Fellowship of the Ring", author, "Fantasy novel", BookStatus.AVAILABLE);
         BookDAO book2 = new BookDAO("The Hobbit", author, "Fantasy novel", BookStatus.AVAILABLE);
         List<BookDAO> booksByAuthor = List.of(book1, book2);
-        when(bookRepository.findByFilter(null, author, null, null)).thenReturn(booksByAuthor);
+        when(jpaBookRepository.findByFilter(null, author, null, null)).thenReturn(booksByAuthor);
 
         // Act
         List<BookDAO> result = bookService.findByFilter(null, author, null, null);
@@ -137,7 +134,7 @@ public class BookServiceTest {
     void findByFilter_authorDoesNotExist_returnsEmptyList() {
         // Arrange
         String author = "J. K. Rowling";
-        when(bookRepository.findByFilter(null, author, null, null)).thenReturn(new ArrayList<>());
+        when(jpaBookRepository.findByFilter(null, author, null, null)).thenReturn(new ArrayList<>());
 
         // Act
         List<BookDAO> result = bookService.findByFilter(null, author, null, null);
@@ -153,7 +150,7 @@ public class BookServiceTest {
         BookDAO book1 = new BookDAO("The Lord of the Rings: The Fellowship of the Ring", author, "Fantasy novel", BookStatus.AVAILABLE);
         BookDAO book2 = new BookDAO("The Hobbit", author, "Fantasy novel", BookStatus.AVAILABLE);
         List<BookDAO> availableBooks = List.of(book1, book2);
-        when(bookRepository.findByFilter(null, null, null, BookStatus.AVAILABLE)).thenReturn(availableBooks);
+        when(jpaBookRepository.findByFilter(null, null, null, BookStatus.AVAILABLE)).thenReturn(availableBooks);
 
         // Act
         List<BookDAO> result = bookService.findByFilter(null, null, null, BookStatus.AVAILABLE);
@@ -165,7 +162,7 @@ public class BookServiceTest {
     @Test
     void findByFilter_noBooksAvailable_returnsEmptyList() {
         // Arrange
-        when(bookRepository.findByFilter(null, null, null, BookStatus.AVAILABLE)).thenReturn(new ArrayList<>());
+        when(jpaBookRepository.findByFilter(null, null, null, BookStatus.AVAILABLE)).thenReturn(new ArrayList<>());
 
         // Act
         List<BookDAO> result = bookService.findByFilter(null, null, null, BookStatus.AVAILABLE);
@@ -181,7 +178,7 @@ public class BookServiceTest {
         BookDAO book1 = new BookDAO("The Lord of the Rings: The Fellowship of the Ring", author, "Fantasy novel", BookStatus.AVAILABLE);
         BookDAO book2 = new BookDAO("The Hobbit", author, "Fantasy novel", BookStatus.AVAILABLE);
         List<BookDAO> allBooks = List.of(book1, book2);
-        when(bookRepository.findByFilter(null, null, null, null)).thenReturn(allBooks);
+        when(jpaBookRepository.findByFilter(null, null, null, null)).thenReturn(allBooks);
 
         // Act
         List<BookDAO> result = bookService.findByFilter(null, null, null, null);

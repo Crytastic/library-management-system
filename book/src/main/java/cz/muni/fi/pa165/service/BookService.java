@@ -1,7 +1,6 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.dao.BookDAO;
-import cz.muni.fi.pa165.repository.BookRepository;
 import cz.muni.fi.pa165.repository.JpaBookRepository;
 import cz.muni.fi.pa165.stubs.RentalServiceStub;
 import org.openapitools.model.BookStatus;
@@ -21,21 +20,18 @@ import java.util.Optional;
 @Service
 public class BookService {
 
-    private final BookRepository bookRepository;
-
     private final JpaBookRepository jpaBookRepository;
 
     private final RentalServiceStub rentalServiceStub;
 
     @Autowired
-    public BookService(BookRepository bookRepository, RentalServiceStub rentalServiceStub, JpaBookRepository jpaBookRepository) {
-        this.bookRepository = bookRepository;
+    public BookService(RentalServiceStub rentalServiceStub, JpaBookRepository jpaBookRepository) {
         this.rentalServiceStub = rentalServiceStub;
         this.jpaBookRepository = jpaBookRepository;
     }
 
     public List<BookDAO> findByFilter(String title, String author, String description, BookStatus status) {
-        return bookRepository.findByFilter(title, author, description, status);
+        return jpaBookRepository.findByFilter(title, author, description, status);
     }
 
     public BookDAO createBook(String title, String author, String description) {
