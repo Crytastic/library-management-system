@@ -142,14 +142,12 @@ public class ReservationControllerTest {
         String reservedBy = "Updated User";
         OffsetDateTime reservedFrom = TimeProvider.now().plusDays(1);
         OffsetDateTime reservedTo = TimeProvider.now().plusDays(4);
-        ReservationDTO updatedReservation = ReservationDTOFactory.createReservation(book, reservedBy, reservedFrom, reservedTo);
-        when(reservationFacade.updateById(id, book, reservedBy, reservedFrom, reservedTo)).thenReturn(Optional.of(updatedReservation));
+        when(reservationFacade.updateById(id, book, reservedBy, reservedFrom, reservedTo)).thenReturn(1);
 
         // Act
-        ResponseEntity<ReservationDTO> response = reservationController.updateReservation(id, book, reservedBy, reservedFrom, reservedTo);
+        ResponseEntity<Void> response = reservationController.updateReservation(id, book, reservedBy, reservedFrom, reservedTo);
 
         // Assert
-        assertThat(response.getBody()).isEqualTo(updatedReservation);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(reservationFacade, times(1)).updateById(id, book, reservedBy, reservedFrom, reservedTo);
     }
@@ -162,10 +160,10 @@ public class ReservationControllerTest {
         String reservedBy = "Updated User";
         OffsetDateTime reservedFrom = TimeProvider.now().plusDays(1);
         OffsetDateTime reservedTo = TimeProvider.now().plusDays(4);
-        when(reservationFacade.updateById(id, book, reservedBy, reservedFrom, reservedTo)).thenReturn(Optional.empty());
+        when(reservationFacade.updateById(id, book, reservedBy, reservedFrom, reservedTo)).thenReturn(0);
 
         // Act
-        ResponseEntity<ReservationDTO> response = reservationController.updateReservation(id, book, reservedBy, reservedFrom, reservedTo);
+        ResponseEntity<Void> response = reservationController.updateReservation(id, book, reservedBy, reservedFrom, reservedTo);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);

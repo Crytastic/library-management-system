@@ -49,21 +49,9 @@ public class ReservationService {
         return jpaReservationRepository.findById(id);
     }
 
-    public Optional<Reservation> updateById(Long id, String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
-        Optional<Reservation> optionalReservation = reservationRepository.findById(id);
-
-        if (optionalReservation.isEmpty()) {
-            return Optional.empty();
-        }
-
-        Reservation reservation = optionalReservation.get();
-
-        if (book != null) reservation.setBook(book);
-        if (reservedBy != null) reservation.setReservedBy(reservedBy);
-        if (reservedFrom != null) reservation.setReservedFrom(reservedFrom);
-        if (reservedTo != null) reservation.setReservedTo(reservedTo);
-
-        return reservationRepository.updateById(id, reservation);
+    @Transactional
+    public int updateById(Long id, String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
+        return jpaReservationRepository.updateById(id, book, reservedBy, reservedFrom, reservedTo);
 
     }
 

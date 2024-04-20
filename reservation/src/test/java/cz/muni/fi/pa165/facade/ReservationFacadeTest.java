@@ -101,38 +101,35 @@ class ReservationFacadeTest {
     }
 
     @Test
-    void updateById_validParameters_returnsUpdatedReservationDTO() {
+    void updateById_validParameters_returnsOneOrMore() {
         // Arrange
         Long id = 1L;
         OffsetDateTime reservedFrom = TimeProvider.now();
         OffsetDateTime reservedTo = TimeProvider.now().plusDays(1);
-        when(reservationService.updateById(id, reservation.getBook(), reservation.getReservedBy(), reservedFrom, reservedTo)).thenReturn(Optional.of(reservation));
+        when(reservationService.updateById(id, reservation.getBook(), reservation.getReservedBy(), reservedFrom, reservedTo)).thenReturn(1);
 
         // Act
-        Optional<ReservationDTO> result = reservationFacade.updateById(id, reservation.getBook(), reservation.getReservedBy(), reservedFrom, reservedTo);
+        int result = reservationFacade.updateById(id, reservation.getBook(), reservation.getReservedBy(), reservedFrom, reservedTo);
 
         // Assert
-        assertThat(result).isPresent();
-        assertThat(result.get().getBook()).isEqualTo(reservation.getBook());
-        assertThat(result.get().getReservedBy()).isEqualTo(reservation.getReservedBy());
-        assertThat(result.get().getReservedFrom()).isEqualTo(reservation.getReservedFrom());
-        assertThat(result.get().getReservedTo()).isEqualTo(reservation.getReservedTo());
+        assertThat(result).isEqualTo(1);
+
         verify(reservationService, times(1)).updateById(id, reservation.getBook(), reservation.getReservedBy(), reservedFrom, reservedTo);
     }
 
     @Test
-    void updateById_invalidId_returnsEmptyOptional() {
+    void updateById_invalidId_returnsZero() {
         // Arrange
         Long id = 1L;
         OffsetDateTime reservedFrom = TimeProvider.now();
         OffsetDateTime reservedTo = TimeProvider.now().plusDays(1);
-        when(reservationService.updateById(id, reservation.getBook(), reservation.getReservedBy(), reservedFrom, reservedTo)).thenReturn(Optional.empty());
+        when(reservationService.updateById(id, reservation.getBook(), reservation.getReservedBy(), reservedFrom, reservedTo)).thenReturn(0);
 
         // Act
-        Optional<ReservationDTO> result = reservationFacade.updateById(id, reservation.getBook(), reservation.getReservedBy(), reservedFrom, reservedTo);
+        int result = reservationFacade.updateById(id, reservation.getBook(), reservation.getReservedBy(), reservedFrom, reservedTo);
 
         // Assert
-        assertThat(result).isEmpty();
+        assertThat(result).isEqualTo(0);
         verify(reservationService, times(1)).updateById(id, reservation.getBook(), reservation.getReservedBy(), reservedFrom, reservedTo);
     }
 

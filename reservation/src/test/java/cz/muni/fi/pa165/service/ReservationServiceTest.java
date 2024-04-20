@@ -93,34 +93,31 @@ class ReservationServiceTest {
         String newBook = "Updated Book";
         String newReservedBy = "Updated User";
         OffsetDateTime newReservedFrom = TimeProvider.now().plusDays(1);
-        OffsetDateTime newReservedTo = TimeProvider.now().plusDays(4);
-        when(reservationRepository.findById(id)).thenReturn(Optional.of(reservation));
-        when(reservationRepository.updateById(eq(id), any(Reservation.class))).thenReturn(Optional.of(reservation));
+        OffsetDateTime newReservedTo = TimeProvider.now().plusDays(4);when(jpaReservationRepository.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo)).thenReturn(1);
 
         // Act
-        Optional<Reservation> result = reservationService.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);
+        int result = reservationService.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);
 
         // Assert
-        assertThat(result).isPresent().contains(reservation);
-        assertThat(reservation.getBook()).isEqualTo(newBook);
-        assertThat(reservation.getReservedBy()).isEqualTo(newReservedBy);
-        assertThat(reservation.getReservedFrom()).isEqualTo(newReservedFrom);
-        assertThat(reservation.getReservedTo()).isEqualTo(newReservedTo);
-        verify(reservationRepository, times(1)).updateById(eq(id), any(Reservation.class));
+        assertThat(result).isEqualTo(1);
+        verify(jpaReservationRepository, times(1)).updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);
     }
 
     @Test
     void updateById_nonExistingId_returnsEmptyOptional() {
         // Arrange
         Long id = 1L;
-        when(reservationRepository.findById(id)).thenReturn(Optional.empty());
+        String newBook = "New Book";
+        String newReservedBy = "New User";
+        OffsetDateTime newReservedFrom = TimeProvider.now().plusDays(1);
+        OffsetDateTime newReservedTo = TimeProvider.now().plusDays(4);
+        when(jpaReservationRepository.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo)).thenReturn(0);
 
         // Act
-        Optional<Reservation> result = reservationService.updateById(id, "New Book", "New User", TimeProvider.now(), TimeProvider.now().plusDays(3));
+        int result = reservationService.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);
 
         // Assert
-        assertThat(result).isEmpty();
-        verify(reservationRepository, never()).updateById(anyLong(), any(Reservation.class));
+        assertThat(result).isEqualTo(0);
     }
 
     @Test
