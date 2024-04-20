@@ -36,7 +36,7 @@ public class UserService {
     }
 
     public List<User> findAll(UserType userType) {
-        return userRepository.findAll(userType);
+        return jpaUserRepository.findAllByUserType(userType);
     }
 
     public List<User> findAllAdults() {
