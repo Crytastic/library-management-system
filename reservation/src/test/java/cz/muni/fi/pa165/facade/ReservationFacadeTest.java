@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.data.ReservationDAO;
+import cz.muni.fi.pa165.data.model.ReservationDAO;
 import cz.muni.fi.pa165.service.ReservationService;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.BeforeEach;

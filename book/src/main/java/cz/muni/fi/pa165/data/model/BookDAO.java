@@ -1,4 +1,4 @@
-package cz.muni.fi.pa165.data;
+package cz.muni.fi.pa165.data.model;
 
 import org.openapitools.model.BookStatus;
 

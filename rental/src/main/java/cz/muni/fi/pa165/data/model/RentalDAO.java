@@ -1,4 +1,4 @@
-package cz.muni.fi.pa165.data;
+package cz.muni.fi.pa165.data.model;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;

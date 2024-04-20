@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.repository;
 
-import cz.muni.fi.pa165.data.RentalDAO;
+import cz.muni.fi.pa165.data.model.RentalDAO;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
