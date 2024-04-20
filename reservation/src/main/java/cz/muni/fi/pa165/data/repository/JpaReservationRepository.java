@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 public interface JpaReservationRepository extends JpaRepository<Reservation, Long> {
 
@@ -16,5 +17,9 @@ public interface JpaReservationRepository extends JpaRepository<Reservation, Lon
             "r.reservedFrom = coalesce(:reservedFrom, r.reservedFrom)," +
             "r.reservedTo = coalesce(:reservedTo, r.reservedTo) WHERE r.id = :id")
     int updateById(Long id, String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo);
+
+
+    @Query("SELECT r FROM Reservation r WHERE r.reservedFrom < :currentDate AND r.reservedTo > :currentDate")
+    List<Reservation> findAllActive(OffsetDateTime currentDate);
 
 }

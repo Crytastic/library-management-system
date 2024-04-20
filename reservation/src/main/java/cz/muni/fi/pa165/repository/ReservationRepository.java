@@ -19,15 +19,6 @@ public class ReservationRepository {
     private final HashMap<Long, Reservation> reservations = new HashMap<>();
     private static Long index = 1L;
 
-    public List<Reservation> findAllActive() {
-        OffsetDateTime currentDateTime = TimeProvider.now();
-        return reservations
-                .values()
-                .stream()
-                .filter(reservationDAO -> reservationDAO.getReservedTo().isAfter(currentDateTime) &&
-                        reservationDAO.getReservedFrom().isBefore(currentDateTime)).toList();
-    }
-
     public List<Reservation> findAllExpired() {
         OffsetDateTime currentDateTime = TimeProvider.now();
         return reservations

@@ -140,14 +140,14 @@ class ReservationServiceTest {
                 new Reservation("Active Book 1", "User 1", TimeProvider.now(), TimeProvider.now().plusDays(3)),
                 new Reservation("Active Book 2", "User 2", TimeProvider.now(), TimeProvider.now().plusDays(5))
         );
-        when(reservationRepository.findAllActive()).thenReturn(activeReservations);
+        when(jpaReservationRepository.findAllActive(any(OffsetDateTime.class))).thenReturn(activeReservations);
 
         // Act
         List<Reservation> result = reservationService.findAllActive();
 
         // Assert
         assertThat(result).isEqualTo(activeReservations);
-        verify(reservationRepository, times(1)).findAllActive();
+        verify(jpaReservationRepository, times(1)).findAllActive(any(OffsetDateTime.class));
     }
 
     @Test

@@ -62,7 +62,7 @@ public class ReservationService {
     }
 
     public List<Reservation> findAllActive() {
-        return reservationRepository.findAllActive();
+        return jpaReservationRepository.findAllActive(TimeProvider.now());
     }
 
     public List<Reservation> findAllExpired() {
