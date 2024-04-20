@@ -104,7 +104,7 @@
     <module>reservation</module>
     <module>book</module>
     <module>rental</module>
-    <module>user</module>
+    <module>account</module>
     <module>infrastructure</module>
   </modules>
 
