@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.service;
 
-import cz.muni.fi.pa165.dao.RentalDAO;
+import cz.muni.fi.pa165.data.model.Rental;
 import cz.muni.fi.pa165.repository.RentalRepository;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +28,12 @@ public class RentalService {
         this.rentalRepository = rentalRepository;
     }
 
-    public List<RentalDAO> findAll() {
+    public List<Rental> findAll() {
         return rentalRepository.findAll();
     }
 
-    public RentalDAO createRental(String book, String rentedBy, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
-        RentalDAO rentalDAO = new RentalDAO(book,
+    public Rental createRental(String book, String rentedBy, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
+        Rental rental = new Rental(book,
                 rentedBy,
                 TimeProvider.now(),
                 expectedReturnDate == null ? getDefaultExpectedReturnDate() : expectedReturnDate,
@@ -41,10 +41,10 @@ public class RentalService {
                 null,
                 lateReturnWeeklyFine == null ? getDefaultLateReturnWeeklyFine() : lateReturnWeeklyFine,
                 false);
-        return rentalRepository.store(rentalDAO);
+        return rentalRepository.store(rental);
     }
 
-    public Optional<RentalDAO> findById(Long id) {
+    public Optional<Rental> findById(Long id) {
         return rentalRepository.findById(id);
     }
 
@@ -52,36 +52,36 @@ public class RentalService {
         return rentalRepository.deleteById(id);
     }
 
-    public Optional<RentalDAO> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
-        Optional<RentalDAO> optionalRental = rentalRepository.findById(id);
+    public Optional<Rental> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
+        Optional<Rental> optionalRental = rentalRepository.findById(id);
 
         if (optionalRental.isEmpty()) {
             return Optional.empty();
         }
 
-        RentalDAO rentalDAO = optionalRental.get();
+        Rental rental = optionalRental.get();
 
-        rentalDAO.setBook(book != null ? book : rentalDAO.getBook());
-        rentalDAO.setRentedBy(rentedBy != null ? rentedBy : rentalDAO.getRentedBy());
-        rentalDAO.setBorrowDate(borrowDate != null ? borrowDate : rentalDAO.getBorrowDate());
-        rentalDAO.setExpectedReturnDate(expectedReturnDate != null ? expectedReturnDate : rentalDAO.getExpectedReturnDate());
-        rentalDAO.setReturned(returned != null ? returned : rentalDAO.isReturned());
-        rentalDAO.setReturnDate(returnDate != null ? returnDate : rentalDAO.getReturnDate());
-        rentalDAO.setLateReturnWeeklyFine(lateReturnWeeklyFine != null ? lateReturnWeeklyFine : rentalDAO.getLateReturnWeeklyFine());
-        rentalDAO.setFineResolved(fineResolved != null ? fineResolved : rentalDAO.isFineResolved());
+        rental.setBook(book != null ? book : rental.getBook());
+        rental.setRentedBy(rentedBy != null ? rentedBy : rental.getRentedBy());
+        rental.setBorrowDate(borrowDate != null ? borrowDate : rental.getBorrowDate());
+        rental.setExpectedReturnDate(expectedReturnDate != null ? expectedReturnDate : rental.getExpectedReturnDate());
+        rental.setReturned(returned != null ? returned : rental.isReturned());
+        rental.setReturnDate(returnDate != null ? returnDate : rental.getReturnDate());
+        rental.setLateReturnWeeklyFine(lateReturnWeeklyFine != null ? lateReturnWeeklyFine : rental.getLateReturnWeeklyFine());
+        rental.setFineResolved(fineResolved != null ? fineResolved : rental.isFineResolved());
 
-        return rentalRepository.updateById(rentalDAO.getId(), rentalDAO);
+        return rentalRepository.updateById(rental.getId(), rental);
     }
 
     public Optional<BigDecimal> getFineById(Long id) {
-        Optional<RentalDAO> optionalRental = findById(id);
+        Optional<Rental> optionalRental = findById(id);
 
         // Rental not found
         if (optionalRental.isEmpty()) {
             return Optional.empty();
         }
 
-        RentalDAO rental = optionalRental.get();
+        Rental rental = optionalRental.get();
         OffsetDateTime expectedReturnDate = rental.getExpectedReturnDate();
 
         // Book returned but fine not paid
@@ -101,7 +101,7 @@ public class RentalService {
         return Optional.of(fine);
     }
 
-    private BigDecimal calculateFine(OffsetDateTime expectedReturnDate, OffsetDateTime returnDate, RentalDAO rental) {
+    private BigDecimal calculateFine(OffsetDateTime expectedReturnDate, OffsetDateTime returnDate, Rental rental) {
         if (returnDate.isBefore(expectedReturnDate)) {
             return BigDecimal.ZERO;
         }

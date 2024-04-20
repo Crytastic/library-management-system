@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.repository;
 
-import cz.muni.fi.pa165.dao.BookDAO;
+import cz.muni.fi.pa165.data.model.Book;
 import org.openapitools.model.BookStatus;
 import org.springframework.stereotype.Repository;
 
@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
  */
 @Repository
 public class BookRepository {
-    private final HashMap<Long, BookDAO> books = new HashMap<>();
+    private final HashMap<Long, Book> books = new HashMap<>();
 
     private static Long index = 1L;
 
-    public List<BookDAO> findByFilter(String title, String author, String description, BookStatus status) {
+    public List<Book> findByFilter(String title, String author, String description, BookStatus status) {
         return books
                 .values()
                 .stream()
@@ -32,14 +32,14 @@ public class BookRepository {
                 .collect(Collectors.toList());
     }
 
-    public BookDAO store(BookDAO bookDAO) {
-        bookDAO.setId(index);
-        books.put(bookDAO.getId(), bookDAO);
+    public Book store(Book book) {
+        book.setId(index);
+        books.put(book.getId(), book);
         index++;
-        return bookDAO;
+        return book;
     }
 
-    public Optional<BookDAO> findById(Long id) {
+    public Optional<Book> findById(Long id) {
         return Optional.ofNullable(books.get(id));
     }
 
@@ -47,8 +47,8 @@ public class BookRepository {
         books.remove(id);
     }
 
-    public Optional<BookDAO> updateById(Long id, BookDAO bookDAO) {
-        books.put(id, bookDAO);
-        return Optional.ofNullable(bookDAO);
+    public Optional<Book> updateById(Long id, Book book) {
+        books.put(id, book);
+        return Optional.ofNullable(book);
     }
 }
