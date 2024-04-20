@@ -26,6 +26,8 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    private static final LocalDate dateOfAdultAge = LocalDate.now().minusYears(18);
+
     private final UserRepository userRepository;
 
     private final JpaUserRepository jpaUserRepository;
@@ -40,7 +42,7 @@ public class UserService {
     }
 
     public List<User> findAllAdults() {
-        return userRepository.findAllAdults();
+        return jpaUserRepository.findAllByAge(dateOfAdultAge);
     }
 
     public User createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {

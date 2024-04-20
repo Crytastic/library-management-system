@@ -244,13 +244,14 @@ class UserServiceTest {
         List<User> users = new ArrayList<>();
         users.add(TestDataFactory.firstMemberDAO);
         users.add(TestDataFactory.secondMemberDAO);
+        LocalDate dateOfAdultAge = LocalDate.now().minusYears(18);
 
-        Mockito.when(userRepository.findAllAdults()).thenReturn(users);
+        Mockito.when(jpaUserRepository.findAllByAge(dateOfAdultAge)).thenReturn(users);
 
         assertThat(userService.findAllAdults())
                 .isNotNull()
                 .hasSize(2)
                 .containsExactlyInAnyOrder(TestDataFactory.firstMemberDAO, TestDataFactory.secondMemberDAO);
-        verify(userRepository, times(1)).findAllAdults();
+        verify(jpaUserRepository, times(1)).findAllByAge(dateOfAdultAge);
     }
 }
