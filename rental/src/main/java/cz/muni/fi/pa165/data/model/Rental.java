@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
  *
  * @author Maxmilián Šeffer
  */
-public class RentalDAO {
+public class Rental {
     private Long id;
     private String book;
     private String rentedBy;
@@ -20,7 +20,7 @@ public class RentalDAO {
     private BigDecimal lateReturnWeeklyFine;
     private boolean fineResolved;
 
-    public RentalDAO(String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, boolean fineResolved) {
+    public Rental(String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, boolean fineResolved) {
         this.book = book;
         this.rentedBy = rentedBy;
         this.borrowDate = borrowDate;

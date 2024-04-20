@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.util;
 
-import cz.muni.fi.pa165.data.model.RentalDAO;
+import cz.muni.fi.pa165.data.model.Rental;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -13,15 +13,15 @@ import java.time.ZoneOffset;
 @Component
 public class TestDataFactory {
 
-    public static RentalDAO activeRentalDAO = getActiveRentalDAOFactory();
-    public static RentalDAO inActiveRentalDAO = getInActiveRentalDAOFactory();
-    public static RentalDAO activeRentalLateDAO = getActiveLateRentalDAOFactory();
-    public static RentalDAO inActiveRentalLateDAO = getInActiveLateRentalDAOFactory();
+    public static Rental activeRental = getActiveRentalDAOFactory();
+    public static Rental inActiveRental = getInActiveRentalDAOFactory();
+    public static Rental activeRentalLateDAO = getActiveLateRentalDAOFactory();
+    public static Rental inActiveRentalLateDAO = getInActiveLateRentalDAOFactory();
 
-    private static RentalDAO getInActiveRentalDAOFactory() {
+    private static Rental getInActiveRentalDAOFactory() {
         OffsetDateTime borrowDate = OffsetDateTime.of(2024, 3, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 4, 1, 12, 0, 0, 0, ZoneOffset.UTC);
-        RentalDAO inActiveRental = new RentalDAO(
+        Rental inActiveRental = new Rental(
                 "Inactive test book",
                 "Rental creator",
                 borrowDate,
@@ -34,10 +34,10 @@ public class TestDataFactory {
         return inActiveRental;
     }
 
-    private static RentalDAO getActiveRentalDAOFactory() {
+    private static Rental getActiveRentalDAOFactory() {
         OffsetDateTime borrowDate = OffsetDateTime.of(2024, 4, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 5, 1, 12, 0, 0, 0, ZoneOffset.UTC);
-        RentalDAO activeRental = new RentalDAO(
+        Rental activeRental = new Rental(
                 "Active test book",
                 "Rental creator",
                 borrowDate,
@@ -50,10 +50,10 @@ public class TestDataFactory {
         return activeRental;
     }
 
-    private static RentalDAO getInActiveLateRentalDAOFactory() {
+    private static Rental getInActiveLateRentalDAOFactory() {
         OffsetDateTime borrowDate = OffsetDateTime.of(2024, 3, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 4, 1, 12, 0, 0, 0, ZoneOffset.UTC);
-        RentalDAO inActiveRental = new RentalDAO(
+        Rental inActiveRental = new Rental(
                 "Inactive test book",
                 "Rental creator",
                 borrowDate,
@@ -66,10 +66,10 @@ public class TestDataFactory {
         return inActiveRental;
     }
 
-    private static RentalDAO getActiveLateRentalDAOFactory() {
+    private static Rental getActiveLateRentalDAOFactory() {
         OffsetDateTime borrowDate = OffsetDateTime.of(2024, 2, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 3, 1, 12, 0, 0, 0, ZoneOffset.UTC);
-        RentalDAO activeRental = new RentalDAO(
+        Rental activeRental = new Rental(
                 "Active test book",
                 "Rental creator",
                 borrowDate,
