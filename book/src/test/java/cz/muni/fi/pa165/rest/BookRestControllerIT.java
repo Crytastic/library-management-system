@@ -1,7 +1,7 @@
 package cz.muni.fi.pa165.rest;
 
 import cz.muni.fi.pa165.data.model.Book;
-import cz.muni.fi.pa165.data.repository.JpaBookRepository;
+import cz.muni.fi.pa165.data.repository.BookRepository;
 import cz.muni.fi.pa165.util.ObjectConverter;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.BookDTO;
@@ -27,7 +27,7 @@ public class BookRestControllerIT {
     private MockMvc mockMvc;
 
     @Autowired
-    private JpaBookRepository jpaBookRepository;
+    private BookRepository bookRepository;
 
     @Test
     void getBook_validId_returnsBook() throws Exception {
@@ -39,7 +39,7 @@ public class BookRestControllerIT {
         BookStatus status = BookStatus.AVAILABLE;
         Book book = new Book(title, author, description, status);
         book.setId(id);
-        jpaBookRepository.save(book);
+        bookRepository.save(book);
 
         // Act
         String responseJson = mockMvc.perform(get("/api/books/{id}", id)

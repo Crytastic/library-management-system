@@ -1,7 +1,7 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Book;
-import cz.muni.fi.pa165.data.repository.JpaBookRepository;
+import cz.muni.fi.pa165.data.repository.BookRepository;
 import cz.muni.fi.pa165.stubs.RentalServiceStub;
 import org.openapitools.model.BookStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,43 +20,43 @@ import java.util.Optional;
 @Service
 public class BookService {
 
-    private final JpaBookRepository jpaBookRepository;
+    private final BookRepository bookRepository;
 
     private final RentalServiceStub rentalServiceStub;
 
     @Autowired
-    public BookService(RentalServiceStub rentalServiceStub, JpaBookRepository jpaBookRepository) {
+    public BookService(RentalServiceStub rentalServiceStub, BookRepository bookRepository) {
         this.rentalServiceStub = rentalServiceStub;
-        this.jpaBookRepository = jpaBookRepository;
+        this.bookRepository = bookRepository;
     }
 
     @Transactional
     public List<Book> findByFilter(String title, String author, String description, BookStatus status) {
-        return jpaBookRepository.findByFilter(title, author, description, status);
+        return bookRepository.findByFilter(title, author, description, status);
     }
 
     @Transactional
     public Book createBook(String title, String author, String description) {
-        return jpaBookRepository.save(new Book(title, author, description, BookStatus.AVAILABLE));
+        return bookRepository.save(new Book(title, author, description, BookStatus.AVAILABLE));
     }
 
     @Transactional
     public Optional<Book> findById(Long id) {
-        return jpaBookRepository.findById(id);
+        return bookRepository.findById(id);
     }
 
     @Transactional
-    public void deleteById(Long id) { jpaBookRepository.deleteById(id);
+    public void deleteById(Long id) { bookRepository.deleteById(id);
     }
 
     @Transactional
     public int updateById(Long id, String title, String author, String description, BookStatus status) {
-        return jpaBookRepository.updateById(id, title, author, description, status);
+        return bookRepository.updateById(id, title, author, description, status);
     }
 
     @Transactional
     public Optional<List<String>> findBookRentals(Long id) {
-        if (jpaBookRepository.findById(id).isEmpty()) {
+        if (bookRepository.findById(id).isEmpty()) {
             return Optional.empty();
         } else {
             return Optional.ofNullable(rentalServiceStub.apiCallToRentalServiceToFindBookRentals(id));

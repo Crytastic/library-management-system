@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface JpaBookRepository extends JpaRepository<Book, Long> {
+public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Modifying
     @Query("UPDATE Book b SET " +
