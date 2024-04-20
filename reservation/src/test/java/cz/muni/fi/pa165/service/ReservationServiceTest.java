@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Reservation;
+import cz.muni.fi.pa165.data.repository.JpaReservationRepository;
 import cz.muni.fi.pa165.repository.ReservationRepository;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +27,9 @@ class ReservationServiceTest {
 
     @Mock
     private ReservationRepository reservationRepository;
+
+    @Mock
+    private JpaReservationRepository jpaReservationRepository;
 
     @InjectMocks
     private ReservationService reservationService;
@@ -72,14 +76,14 @@ class ReservationServiceTest {
     @Test
     void createReservation_validReservation_callsReservationRepositoryStore() {
         // Arrange
-        when(reservationRepository.store(any(Reservation.class))).thenReturn(reservation);
+        when(jpaReservationRepository.save(any(Reservation.class))).thenReturn(reservation);
 
         // Act
         Reservation result = reservationService.createReservation("The Lord of the Rings", "Franta Vopršálek");
 
         // Assert
         assertThat(result).isEqualTo(reservation);
-        verify(reservationRepository, times(1)).store(any(Reservation.class));
+        verify(jpaReservationRepository, times(1)).save(any(Reservation.class));
     }
 
     @Test

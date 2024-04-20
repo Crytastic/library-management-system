@@ -24,13 +24,6 @@ public class ReservationRepository {
         return reservations.values().stream().toList();
     }
 
-    public Reservation store(Reservation reservation) {
-        reservation.setId(index);
-        reservations.put(reservation.getId(), reservation);
-        index++;
-        return reservation;
-    }
-
     public Optional<Reservation> findById(Long id) {
         return Optional.ofNullable(reservations.get(id));
     }
