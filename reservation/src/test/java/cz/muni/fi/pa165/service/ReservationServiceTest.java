@@ -63,14 +63,14 @@ class ReservationServiceTest {
     @Test
     void findAll_validReservations_callsReservationRepositoryFindAll() {
         // Arrange
-        when(reservationRepository.findAll()).thenReturn(reservationList);
+        when(jpaReservationRepository.findAll()).thenReturn(reservationList);
 
         // Act
         List<Reservation> result = reservationService.findAll();
 
         // Assert
         assertThat(result).isEqualTo(reservationList);
-        verify(reservationRepository, times(1)).findAll();
+        verify(jpaReservationRepository, times(1)).findAll();
     }
 
     @Test

@@ -31,8 +31,9 @@ public class ReservationService {
         this.jpaReservationRepository = jpaReservationRepository;
     }
 
+    @Transactional
     public List<Reservation> findAll() {
-        return reservationRepository.findAll();
+        return jpaReservationRepository.findAll();
     }
 
     @Transactional

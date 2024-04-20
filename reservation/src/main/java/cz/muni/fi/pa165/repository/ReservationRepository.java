@@ -19,10 +19,6 @@ public class ReservationRepository {
     private final HashMap<Long, Reservation> reservations = new HashMap<>();
     private static Long index = 1L;
 
-    public List<Reservation> findAll() {
-        return reservations.values().stream().toList();
-    }
-
     public List<Reservation> findAllActive() {
         OffsetDateTime currentDateTime = TimeProvider.now();
         return reservations
