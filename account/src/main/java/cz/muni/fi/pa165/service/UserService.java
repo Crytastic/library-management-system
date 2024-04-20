@@ -1,7 +1,7 @@
 package cz.muni.fi.pa165.service;
 
 import com.google.common.hash.Hashing;
-import cz.muni.fi.pa165.data.model.UserDAO;
+import cz.muni.fi.pa165.data.model.User;
 import cz.muni.fi.pa165.data.repository.UserRepository;
 import cz.muni.fi.pa165.exceptions.UnauthorisedException;
 import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
@@ -30,15 +30,15 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<UserDAO> findAll(UserType userType) {
+    public List<User> findAll(UserType userType) {
         return userRepository.findAll(userType);
     }
 
-    public List<UserDAO> findAllAdults() {
+    public List<User> findAllAdults() {
         return userRepository.findAllAdults();
     }
 
-    public UserDAO createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {
+    public User createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {
         if (userRepository.findUserByUsername(username) != null) {
             throw new UsernameAlreadyExistsException();
         }
@@ -52,7 +52,7 @@ public class UserService {
                 .toString();
     }
 
-    public Optional<UserDAO> findById(Long id) {
+    public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
 
@@ -66,8 +66,8 @@ public class UserService {
      * The LIBRARIANS can change any of parameters of any USER.
      * The MEMBERS can change only themselves, they can not change a type of user.
      */
-    public Optional<UserDAO> updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) {
-        UserDAO userByUsername = userRepository.findUserByUsername(username);
+    public Optional<User> updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) {
+        User userByUsername = userRepository.findUserByUsername(username);
         if (userByUsername == null || !userByUsername.getPasswordHash().equals(createPasswordHash(password))) {
             throw new UnauthorisedException();
         }
@@ -76,11 +76,11 @@ public class UserService {
                 throw new UnauthorisedException();
             }
         }
-        Optional<UserDAO> optionalUpdatedUser = userRepository.findById(id);
+        Optional<User> optionalUpdatedUser = userRepository.findById(id);
         if (optionalUpdatedUser.isEmpty()) {
             return Optional.empty();
         }
-        UserDAO updatedUser = optionalUpdatedUser.get();
+        User updatedUser = optionalUpdatedUser.get();
         if (userType != null) updatedUser.setUserType(userType);
         if (address != null) updatedUser.setAddress(address);
         if (birthdate != null) updatedUser.setBirthDate(birthdate);
