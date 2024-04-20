@@ -50,14 +50,14 @@ class ReservationServiceTest {
     void findById_existingId_callsReservationRepositoryFindById() {
         // Arrange
         Long id = 1L;
-        when(reservationRepository.findById(id)).thenReturn(Optional.of(reservation));
+        when(jpaReservationRepository.findById(id)).thenReturn(Optional.of(reservation));
 
         // Act
         Optional<Reservation> result = reservationService.findById(id);
 
         // Assert
         assertThat(result).isPresent().contains(reservation);
-        verify(reservationRepository, times(1)).findById(id);
+        verify(jpaReservationRepository, times(1)).findById(id);
     }
 
     @Test

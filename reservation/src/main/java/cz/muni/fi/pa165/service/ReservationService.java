@@ -44,8 +44,9 @@ public class ReservationService {
         return TimeProvider.now().plusDays(3);
     }
 
+    @Transactional
     public Optional<Reservation> findById(Long id) {
-        return reservationRepository.findById(id);
+        return jpaReservationRepository.findById(id);
     }
 
     public Optional<Reservation> updateById(Long id, String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
