@@ -31,11 +31,12 @@ public class BookRestControllerTest {
     @Test
     void createBook_validRequestBody_createsBook() {
         // Arrange
+        Long id = 1L;
         String title = "The Lord of the Rings";
         String description = "Fantasy novel";
         String author = "J.R.R. Tolkien";
         BookStatus status = BookStatus.AVAILABLE;
-        BookDTO createdBook = BookDTOFactory.createBook(title, description, author, status);
+        BookDTO createdBook = BookDTOFactory.createBook(id,title, description, author, status);
         when(bookFacade.createBook(title, description, author)).thenReturn(createdBook);
 
         // Act
@@ -69,7 +70,7 @@ public class BookRestControllerTest {
         String description = "Fantasy novel";
         String author = "J.R.R. Tolkien";
         BookStatus status = BookStatus.AVAILABLE;
-        BookDTO book = BookDTOFactory.createBook(title, description, author, status);
+        BookDTO book = BookDTOFactory.createBook(id, title, description, author, status);
         when(bookFacade.findById(id)).thenReturn(Optional.of(book));
 
         // Act
@@ -164,12 +165,13 @@ public class BookRestControllerTest {
     @Test
     void getBooks_validParameters_returnsBooks() {
         // Arrange
+        Long id = 1L;
         String title = "The Lord of the Rings";
         String author = "Tolkien";
         String description = "Fantasy novel";
         BookStatus status = BookStatus.AVAILABLE;
         List<BookDTO> books = new ArrayList<>();
-        books.add(BookDTOFactory.createBook(title, author, description, status));
+        books.add(BookDTOFactory.createBook(id, title, author, description, status));
         when(bookFacade.findByFilter(title, author, description, status)).thenReturn(books);
 
         // Act
