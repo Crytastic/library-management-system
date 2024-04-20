@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.data.model;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
 /**
  * This class encapsulates information about a rental.
@@ -101,5 +102,41 @@ public class Rental {
 
     public void setFineResolved(boolean fineResolved) {
         this.fineResolved = fineResolved;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Rental rental = (Rental) o;
+        return returned == rental.returned &&
+                fineResolved == rental.fineResolved &&
+                Objects.equals(id, rental.id) &&
+                Objects.equals(book, rental.book) &&
+                Objects.equals(rentedBy, rental.rentedBy) &&
+                Objects.equals(borrowDate, rental.borrowDate) &&
+                Objects.equals(expectedReturnDate, rental.expectedReturnDate) &&
+                Objects.equals(returnDate, rental.returnDate) &&
+                Objects.equals(lateReturnWeeklyFine, rental.lateReturnWeeklyFine);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
+    }
+
+    @Override
+    public String toString() {
+        return "Rental{" +
+                "id=" + id +
+                ", book='" + book +
+                ", rentedBy='" + rentedBy +
+                ", borrowDate=" + borrowDate +
+                ", expectedReturnDate=" + expectedReturnDate +
+                ", returned=" + returned +
+                ", returnDate=" + returnDate +
+                ", lateReturnWeeklyFine=" + lateReturnWeeklyFine +
+                ", fineResolved=" + fineResolved +
+                '}';
     }
 }
