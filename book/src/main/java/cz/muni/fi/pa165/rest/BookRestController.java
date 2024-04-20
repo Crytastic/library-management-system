@@ -20,12 +20,12 @@ import java.util.Optional;
  * @author Martin Suchánek
  */
 @RestController
-public class BookController implements BookApi {
+public class BookRestController implements BookApi {
 
     private final BookFacade bookFacade;
 
     @Autowired
-    public BookController(BookFacade bookFacade) {
+    public BookRestController(BookFacade bookFacade) {
         this.bookFacade = bookFacade;
     }
 
@@ -63,8 +63,8 @@ public class BookController implements BookApi {
     }
 
     @Override
-    public ResponseEntity<BookDTO> updateBook(Long id, String title, String author, String description, BookStatus status) {
-        Optional<BookDTO> book = bookFacade.updateById(id, title, author, description, status);
-        return book.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<Void> updateBook(Long id, String title, String author, String description, BookStatus status) {
+        int modifiedCount = bookFacade.updateById(id, title, author, description, status);
+        return new ResponseEntity<>(modifiedCount > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 }

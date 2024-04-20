@@ -59,12 +59,12 @@ public class UserFacade {
     }
 
     // Will be replaced by mapper in the future
-    private UserDTO convertToDTO(User userDAO) {
+    private UserDTO convertToDTO(User user) {
         return new UserDTO()
-                .id(userDAO.getId())
-                .username(userDAO.getUsername())
-                .address(userDAO.getAddress())
-                .birthDate(userDAO.getBirthDate())
-                .userType(userDAO.getUserType());
+                .id(user.getId())
+                .username(user.getUsername())
+                .address(user.getAddress())
+                .birthDate(user.getBirthDate())
+                .userType(user.getUserType());
     }
 }

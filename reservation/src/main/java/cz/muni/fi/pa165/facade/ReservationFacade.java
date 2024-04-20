@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.dao.ReservationDAO;
+import cz.muni.fi.pa165.data.model.Reservation;
 import cz.muni.fi.pa165.service.ReservationService;
 import org.openapitools.model.ReservationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,18 +35,18 @@ public class ReservationFacade {
                 .collect(Collectors.toList());
     }
 
-    private ReservationDTO convertToDTO(ReservationDAO reservationDAO) {
+    private ReservationDTO convertToDTO(Reservation reservation) {
         return new ReservationDTO()
-                .id(reservationDAO.getId())
-                .book(reservationDAO.getBook())
-                .reservedBy(reservationDAO.getReservedBy())
-                .reservedFrom(reservationDAO.getReservedFrom())
-                .reservedTo(reservationDAO.getReservedTo());
+                .id(reservation.getId())
+                .book(reservation.getBook())
+                .reservedBy(reservation.getReservedBy())
+                .reservedFrom(reservation.getReservedFrom())
+                .reservedTo(reservation.getReservedTo());
     }
 
     public ReservationDTO createReservation(String book, String reservedBy) {
-        ReservationDAO reservationDAO = reservationService.createReservation(book, reservedBy);
-        return convertToDTO(reservationDAO);
+        Reservation reservation = reservationService.createReservation(book, reservedBy);
+        return convertToDTO(reservation);
     }
 
     public Optional<ReservationDTO> findById(Long id) {

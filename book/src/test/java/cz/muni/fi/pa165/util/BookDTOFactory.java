@@ -5,8 +5,9 @@ import org.openapitools.model.BookStatus;
 
 public class BookDTOFactory {
 
-    public static BookDTO createBook(String title, String author, String description, BookStatus status) {
+    public static BookDTO createBook(Long id,String title, String author, String description, BookStatus status) {
         BookDTO bookDTO = new BookDTO();
+        bookDTO.setId(id);
         bookDTO.setTitle(title);
         bookDTO.setDescription(description);
         bookDTO.setAuthor(author);

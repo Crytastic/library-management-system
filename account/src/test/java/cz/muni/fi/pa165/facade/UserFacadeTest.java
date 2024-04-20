@@ -65,14 +65,14 @@ class UserFacadeTest {
         String address = "Botanická 68a";
         LocalDate birthDate = LocalDate.parse("2000-02-02");
         Long id = 1L;
-        User testUserDAO = new User(username, passwordHash, userType, address, birthDate);
+        User testUser = new User(username, passwordHash, userType, address, birthDate);
         Mockito.when(userService.createUser(
                 anyString(),
                 anyString(),
                 anyString(),
                 any(LocalDate.class),
                 any(UserType.class))
-        ).thenReturn(testUserDAO);
+        ).thenReturn(testUser);
 
 
         UserDTO userDTO = userFacade.createUser(username, passwordHash, address, birthDate, userType);
@@ -114,11 +114,11 @@ class UserFacadeTest {
 
     @Test
     void updateUser_incorrectUsername_throwsUnauthorisedException() {
-        User testUserDAO = TestDataFactory.firstMemberDAO;
+        User testUser = TestDataFactory.firstMemberDAO;
         Mockito.when(userService.updateUser(
                 TestDataFactory.secondMemberDAO.getId(),
                 "IncorrectUserName",
-                testUserDAO.getPasswordHash(),
+                testUser.getPasswordHash(),
                 "Nová Adresa 123, Brno",
                 null,
                 null)).thenThrow(UnauthorisedException.class);
@@ -127,7 +127,7 @@ class UserFacadeTest {
                 userFacade.updateUser(
                         TestDataFactory.secondMemberDAO.getId(),
                         "IncorrectUserName",
-                        testUserDAO.getPasswordHash(),
+                        testUser.getPasswordHash(),
                         "Nová Adresa 123, Brno",
                         null,
                         null));
@@ -135,11 +135,11 @@ class UserFacadeTest {
 
     @Test
     void updateUser_incorrectPassword_throwsUnauthorisedException() {
-        User testUserDAO = TestDataFactory.firstMemberDAO;
-        Mockito.when(userService.updateUser(TestDataFactory.secondMemberDAO.getId(), testUserDAO.getUsername(), "incorrectPassword", "Nová Adresa 123, Brno", null, null)).thenThrow(UnauthorisedException.class);
+        User testUser = TestDataFactory.firstMemberDAO;
+        Mockito.when(userService.updateUser(TestDataFactory.secondMemberDAO.getId(), testUser.getUsername(), "incorrectPassword", "Nová Adresa 123, Brno", null, null)).thenThrow(UnauthorisedException.class);
 
         assertThrows(UnauthorisedException.class, () ->
-                userFacade.updateUser(TestDataFactory.secondMemberDAO.getId(), testUserDAO.getUsername(), "incorrectPassword", "Nová Adresa 123, Brno", null, null));
+                userFacade.updateUser(TestDataFactory.secondMemberDAO.getId(), testUser.getUsername(), "incorrectPassword", "Nová Adresa 123, Brno", null, null));
     }
 
     @Test
@@ -248,13 +248,13 @@ class UserFacadeTest {
     }
 
     // Will be replaced by mapper in the future
-    private UserDTO convertToDTO(User userDAO) {
+    private UserDTO convertToDTO(User user) {
         return new UserDTO()
-                .id(userDAO.getId())
-                .username(userDAO.getUsername())
-                .address(userDAO.getAddress())
-                .birthDate(userDAO.getBirthDate())
-                .userType(userDAO.getUserType());
+                .id(user.getId())
+                .username(user.getUsername())
+                .address(user.getAddress())
+                .birthDate(user.getBirthDate())
+                .userType(user.getUserType());
     }
 
 }

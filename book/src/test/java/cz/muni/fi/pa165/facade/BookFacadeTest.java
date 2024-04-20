@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.dao.BookDAO;
+import cz.muni.fi.pa165.data.model.Book;
 import cz.muni.fi.pa165.service.BookService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,8 +32,8 @@ class BookFacadeTest {
         String title = "The Lord of the Rings";
         String author = "J.R.R. Tolkien";
         String description = "Fantasy";
-        BookDAO bookDAO = new BookDAO(title, author, description, BookStatus.AVAILABLE);
-        when(bookService.createBook(title, author, description)).thenReturn(bookDAO);
+        Book book = new Book(title, author, description, BookStatus.AVAILABLE);
+        when(bookService.createBook(title, author, description)).thenReturn(book);
 
         // Act
         BookDTO result = bookFacade.createBook(title, author, description);
@@ -53,8 +53,8 @@ class BookFacadeTest {
         String author = "J.R.R. Tolkien";
         String description = "Fantasy";
         BookStatus status = BookStatus.AVAILABLE;
-        List<BookDAO> books = new ArrayList<>();
-        books.add(new BookDAO(title, author, description, status));
+        List<Book> books = new ArrayList<>();
+        books.add(new Book(title, author, description, status));
         when(bookService.findByFilter(title, author, description, status)).thenReturn(books);
 
         // Act
@@ -69,8 +69,8 @@ class BookFacadeTest {
     void findById_bookExists_returnsBookDTO() {
         // Arrange
         Long id = 1L;
-        BookDAO bookDAO = new BookDAO("The Lord of the Rings", "J.R.R. Tolkien", "Fantasy", BookStatus.AVAILABLE);
-        when(bookService.findById(id)).thenReturn(Optional.of(bookDAO));
+        Book book = new Book("The Lord of the Rings", "J.R.R. Tolkien", "Fantasy", BookStatus.AVAILABLE);
+        when(bookService.findById(id)).thenReturn(Optional.of(book));
 
         // Act
         Optional<BookDTO> result = bookFacade.findById(id);
@@ -107,39 +107,38 @@ class BookFacadeTest {
     }
 
     @Test
-    void updateById_validParameters_returnsUpdatedBookDTO() {
+    void updateById_validParameters_returnsOneOrMore() {
         // Arrange
         Long id = 1L;
         String title = "The Lord of the Rings";
         String author = "J.R.R. Tolkien";
         String description = "Fantasy";
         BookStatus status = BookStatus.RENTED;
-        BookDAO updatedBookDAO = new BookDAO(title, author, description, status);
-        when(bookService.updateById(id, title, author, description, status)).thenReturn(Optional.of(updatedBookDAO));
+        when(bookService.updateById(id, title, author, description, status)).thenReturn(1);
 
         // Act
-        Optional<BookDTO> result = bookFacade.updateById(id, title, author, description, status);
+        int result = bookFacade.updateById(id, title, author, description, status);
 
         // Assert
-        assertThat(result).isPresent();
+        assertThat(result).isEqualTo(1);
         verify(bookService, times(1)).updateById(id, title, author, description, status);
     }
 
     @Test
-    void updateById_invalidId_returnsEmptyOptional() {
+    void updateById_invalidId_returnsZero() {
         // Arrange
         Long id = 1L;
         String title = "The Lord of the Rings";
         String author = "J.R.R. Tolkien";
         String description = "Fantasy";
         BookStatus status = BookStatus.RENTED;
-        when(bookService.updateById(id, title, author, description, status)).thenReturn(Optional.empty());
+        when(bookService.updateById(id, title, author, description, status)).thenReturn(0);
 
         // Act
-        Optional<BookDTO> result = bookFacade.updateById(id, title, author, description, status);
+        int result = bookFacade.updateById(id, title, author, description, status);
 
         // Assert
-        assertThat(result).isEmpty();
+        assertThat(result).isEqualTo(0);
         verify(bookService, times(1)).updateById(id, title, author, description, status);
     }
 

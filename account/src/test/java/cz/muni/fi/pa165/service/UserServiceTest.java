@@ -103,25 +103,25 @@ class UserServiceTest {
 
     @Test
     void updateUser_incorrectUsername_notCallsUserRepositoryUpdateUserAndThrowsUnauthorisedException() {
-        User testUserDAO = TestDataFactory.firstMemberDAO;
+        User testUser = TestDataFactory.firstMemberDAO;
         Mockito.when(userRepository.findUserByUsername(anyString())).thenReturn(null);
 
         assertThrows(UnauthorisedException.class, () ->
-                userService.updateUser(TestDataFactory.secondMemberDAO.getId(), "IncorrectUserName", testUserDAO.getPasswordHash(), "Nová Adresa 123, Brno", null, null));
+                userService.updateUser(TestDataFactory.secondMemberDAO.getId(), "IncorrectUserName", testUser.getPasswordHash(), "Nová Adresa 123, Brno", null, null));
 
-        verify(userRepository, times(0)).updateUser(TestDataFactory.secondMemberDAO.getId(), testUserDAO);
+        verify(userRepository, times(0)).updateUser(TestDataFactory.secondMemberDAO.getId(), testUser);
 
     }
 
     @Test
     void updateUser_incorrectPassword_notCallsUserRepositoryUpdateUserAndThrowsUnauthorisedException() {
-        User testUserDAO = TestDataFactory.firstMemberDAO;
+        User testUser = TestDataFactory.firstMemberDAO;
         Mockito.when(userRepository.findUserByUsername(anyString())).thenReturn(TestDataFactory.secondMemberDAO);
 
         assertThrows(UnauthorisedException.class, () ->
-                userService.updateUser(TestDataFactory.secondMemberDAO.getId(), testUserDAO.getUsername(), "incorrectPassword", "Nová Adresa 123, Brno", null, null));
+                userService.updateUser(TestDataFactory.secondMemberDAO.getId(), testUser.getUsername(), "incorrectPassword", "Nová Adresa 123, Brno", null, null));
 
-        verify(userRepository, times(0)).updateUser(TestDataFactory.secondMemberDAO.getId(), testUserDAO);
+        verify(userRepository, times(0)).updateUser(TestDataFactory.secondMemberDAO.getId(), testUser);
     }
 
     @Test

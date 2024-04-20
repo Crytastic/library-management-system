@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.dao.RentalDAO;
+import cz.muni.fi.pa165.data.model.Rental;
 import cz.muni.fi.pa165.service.RentalService;
 import org.openapitools.model.RentalDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +37,8 @@ public class RentalFacade {
     }
 
     public RentalDTO createRental(String book, String rentedBy, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
-        RentalDAO rentalDAO = rentalService.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine);
-        return convertToDTO(rentalDAO);
+        Rental rental = rentalService.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine);
+        return convertToDTO(rental);
     }
 
     public Optional<RentalDTO> findById(Long id) {
@@ -57,16 +57,16 @@ public class RentalFacade {
         return rentalService.getFineById(id);
     }
 
-    private RentalDTO convertToDTO(RentalDAO rentalDAO) {
+    private RentalDTO convertToDTO(Rental rental) {
         return new RentalDTO()
-                .id(rentalDAO.getId())
-                .book(rentalDAO.getBook())
-                .rentedBy(rentalDAO.getRentedBy())
-                .borrowDate(rentalDAO.getBorrowDate())
-                .expectedReturnDate(rentalDAO.getExpectedReturnDate())
-                .returned(rentalDAO.isReturned())
-                .returnDate(rentalDAO.getReturnDate())
-                .lateReturnWeeklyFine(rentalDAO.getLateReturnWeeklyFine())
-                .fineResolved(rentalDAO.isFineResolved());
+                .id(rental.getId())
+                .book(rental.getBook())
+                .rentedBy(rental.getRentedBy())
+                .borrowDate(rental.getBorrowDate())
+                .expectedReturnDate(rental.getExpectedReturnDate())
+                .returned(rental.isReturned())
+                .returnDate(rental.getReturnDate())
+                .lateReturnWeeklyFine(rental.getLateReturnWeeklyFine())
+                .fineResolved(rental.isFineResolved());
     }
 }

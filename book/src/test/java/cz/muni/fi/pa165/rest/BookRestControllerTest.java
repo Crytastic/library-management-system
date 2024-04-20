@@ -20,26 +20,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class BookControllerTest {
+public class BookRestControllerTest {
 
     @Mock
     private BookFacade bookFacade;
 
     @InjectMocks
-    private BookController bookController;
+    private BookRestController bookRestController;
 
     @Test
     void createBook_validRequestBody_createsBook() {
         // Arrange
+        Long id = 1L;
         String title = "The Lord of the Rings";
         String description = "Fantasy novel";
         String author = "J.R.R. Tolkien";
         BookStatus status = BookStatus.AVAILABLE;
-        BookDTO createdBook = BookDTOFactory.createBook(title, description, author, status);
+        BookDTO createdBook = BookDTOFactory.createBook(id,title, description, author, status);
         when(bookFacade.createBook(title, description, author)).thenReturn(createdBook);
 
         // Act
-        ResponseEntity<BookDTO> response = bookController.createBook(title, description, author);
+        ResponseEntity<BookDTO> response = bookRestController.createBook(title, description, author);
 
         // Assert
         assertThat(response.getBody()).isNotNull();
@@ -51,9 +52,10 @@ public class BookControllerTest {
     void deleteBook_validId_deletesBook() {
         // Arrange
         Long id = 1L;
+        doNothing().when(bookFacade).deleteById(anyLong());
 
         // Act
-        ResponseEntity<Void> response = bookController.deleteBook(id);
+        ResponseEntity<Void> response = bookRestController.deleteBook(id);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -68,11 +70,11 @@ public class BookControllerTest {
         String description = "Fantasy novel";
         String author = "J.R.R. Tolkien";
         BookStatus status = BookStatus.AVAILABLE;
-        BookDTO book = BookDTOFactory.createBook(title, description, author, status);
+        BookDTO book = BookDTOFactory.createBook(id, title, description, author, status);
         when(bookFacade.findById(id)).thenReturn(Optional.of(book));
 
         // Act
-        ResponseEntity<BookDTO> response = bookController.getBook(id);
+        ResponseEntity<BookDTO> response = bookRestController.getBook(id);
 
         // Assert
         assertThat(response.getBody()).isNotNull();
@@ -87,7 +89,7 @@ public class BookControllerTest {
         when(bookFacade.findById(id)).thenReturn(Optional.empty());
 
         // Act
-        ResponseEntity<BookDTO> response = bookController.getBook(id);
+        ResponseEntity<BookDTO> response = bookRestController.getBook(id);
 
         // Assert
         assertThat(response.getBody()).isNull();
@@ -104,7 +106,7 @@ public class BookControllerTest {
         when(bookFacade.findBookRentals(id)).thenReturn(Optional.of(rentals));
 
         // Act
-        ResponseEntity<List<String>> response = bookController.getBookRentals(id);
+        ResponseEntity<List<String>> response = bookRestController.getBookRentals(id);
 
         // Assert
         assertThat(response.getBody()).isEqualTo(rentals);
@@ -118,7 +120,7 @@ public class BookControllerTest {
         when(bookFacade.findBookRentals(id)).thenReturn(Optional.empty());
 
         // Act
-        ResponseEntity<List<String>> response = bookController.getBookRentals(id);
+        ResponseEntity<List<String>> response = bookRestController.getBookRentals(id);
 
         // Assert
         assertThat(response.getBody()).isNull();
@@ -126,27 +128,21 @@ public class BookControllerTest {
     }
 
     @Test
-    void updateBook_validIdAndRequestBody_updatesBook() {
+    void updateBook_validIdAndRequestBody_returnsOk() {
         // Arrange
         Long id = 1L;
         String newTitle = "The Lord of the Rings: The Two Towers";
         String newAuthor = "J. R. R. Tolkien";
         String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
         BookStatus newStatus = BookStatus.RENTED;
-        BookDTO updatedBook = BookDTOFactory.createBook(newTitle, newAuthor, newDescription, newStatus);
 
-        when(bookFacade.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(Optional.of(updatedBook));
+        when(bookFacade.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(1);
 
         // Act
-        ResponseEntity<BookDTO> response = bookController.updateBook(id, newTitle, newAuthor, newDescription, newStatus);
+        ResponseEntity<Void> response = bookRestController.updateBook(id, newTitle, newAuthor, newDescription, newStatus);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getTitle()).isEqualTo(newTitle);
-        assertThat(response.getBody().getAuthor()).isEqualTo(newAuthor);
-        assertThat(response.getBody().getDescription()).isEqualTo(newDescription);
-        assertThat(response.getBody().getStatus()).isEqualTo(newStatus);
     }
 
     @Test
@@ -157,29 +153,29 @@ public class BookControllerTest {
         String author = "Tolkien";
         String description = "Fantasy novel";
         BookStatus status = BookStatus.AVAILABLE;
-        when(bookFacade.updateById(id, title, author, description, status)).thenReturn(Optional.empty());
+        when(bookFacade.updateById(id, title, author, description, status)).thenReturn(0);
 
         // Act
-        ResponseEntity<BookDTO> response = bookController.updateBook(id, title, author, description, status);
+        ResponseEntity<Void> response = bookRestController.updateBook(id, title, author, description, status);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody()).isNull();
     }
 
     @Test
     void getBooks_validParameters_returnsBooks() {
         // Arrange
+        Long id = 1L;
         String title = "The Lord of the Rings";
         String author = "Tolkien";
         String description = "Fantasy novel";
         BookStatus status = BookStatus.AVAILABLE;
         List<BookDTO> books = new ArrayList<>();
-        books.add(BookDTOFactory.createBook(title, author, description, status));
+        books.add(BookDTOFactory.createBook(id, title, author, description, status));
         when(bookFacade.findByFilter(title, author, description, status)).thenReturn(books);
 
         // Act
-        ResponseEntity<List<BookDTO>> response = bookController.getBooks(title, author, description, status);
+        ResponseEntity<List<BookDTO>> response = bookRestController.getBooks(title, author, description, status);
 
         // Assert
         assertThat(response.getBody()).isEqualTo(books);
