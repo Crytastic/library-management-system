@@ -4,6 +4,7 @@ import cz.muni.fi.pa165.facade.ReservationFacade;
 import cz.muni.fi.pa165.util.ObjectConverter;
 import cz.muni.fi.pa165.util.ReservationDTOFactory;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.openapitools.model.ReservationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -54,6 +55,23 @@ public class ReservationControllerWebMvcTest {
         // Assert
         assertThat(responseJson).isEqualTo(String.format("{\"id\":1,\"book\":\"The Lord of the Rings\",\"reservedBy\":\"Franta Vopršálek\",\"reservedFrom\":\"%s\",\"reservedTo\":\"%s\"}", reservedFromString, reservedToString));
         assertThat(response).isEqualTo(reservationDTO);
+    }
+
+    @Test
+    void updateReservation_invalidId_returnsNotFound() throws Exception {
+        // Arrange
+        Long id = 10L;
+        Mockito.when(reservationFacade.findById(id)).thenReturn(Optional.empty());
+
+        // Act and Assert
+        String responseJson = mockMvc.perform(get("/api/reservations/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        assertThat(responseJson).isEqualTo("");
     }
 
 }
