@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.dao.RentalDAO;
+import cz.muni.fi.pa165.data.RentalDAO;
 import cz.muni.fi.pa165.service.RentalService;
 import org.openapitools.model.RentalDTO;
 import org.springframework.beans.factory.annotation.Autowired;

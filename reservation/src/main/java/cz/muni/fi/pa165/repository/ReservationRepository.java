@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.repository;
 
-import cz.muni.fi.pa165.dao.ReservationDAO;
+import cz.muni.fi.pa165.data.ReservationDAO;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.springframework.stereotype.Repository;
 

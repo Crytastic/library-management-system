@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.service;
 
-import cz.muni.fi.pa165.dao.RentalDAO;
+import cz.muni.fi.pa165.data.RentalDAO;
 import cz.muni.fi.pa165.repository.RentalRepository;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.springframework.beans.factory.annotation.Autowired;

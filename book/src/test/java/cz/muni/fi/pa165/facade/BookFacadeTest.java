@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.dao.BookDAO;
+import cz.muni.fi.pa165.data.BookDAO;
 import cz.muni.fi.pa165.service.BookService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

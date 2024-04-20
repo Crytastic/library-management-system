@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.dao.ReservationDAO;
+import cz.muni.fi.pa165.data.ReservationDAO;
 import cz.muni.fi.pa165.service.ReservationService;
 import org.openapitools.model.ReservationDTO;
 import org.springframework.beans.factory.annotation.Autowired;

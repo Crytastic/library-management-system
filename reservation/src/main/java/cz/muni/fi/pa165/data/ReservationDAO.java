@@ -1,4 +1,4 @@
-package cz.muni.fi.pa165.dao;
+package cz.muni.fi.pa165.data;
 
 import org.springframework.format.annotation.DateTimeFormat;
 

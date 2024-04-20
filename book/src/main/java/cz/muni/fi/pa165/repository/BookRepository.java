@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.repository;
 
-import cz.muni.fi.pa165.dao.BookDAO;
+import cz.muni.fi.pa165.data.BookDAO;
 import org.openapitools.model.BookStatus;
 import org.springframework.stereotype.Repository;
 

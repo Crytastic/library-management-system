@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.service;
 
-import cz.muni.fi.pa165.dao.BookDAO;
+import cz.muni.fi.pa165.data.BookDAO;
 import cz.muni.fi.pa165.repository.BookRepository;
 import cz.muni.fi.pa165.stubs.RentalServiceStub;
 import org.openapitools.model.BookStatus;
