@@ -92,7 +92,7 @@ class RentalServiceTest {
 
         rentalService.deleteById(idToDelete);
 
-        verify(rentalRepository, times(1)).deleteById(idToDelete);
+        verify(jpaRentalRepository, times(1)).deleteById(idToDelete);
     }
 
     @Test

@@ -216,11 +216,7 @@ paths:
             format: int64
       responses:
         '200':
-          description: Successfully deleted
-        '204':
-          description: Failed to delete or couldn't find the rental
-        '404':
-          description: No such rental
+          description: OK
   /api/rentals/{id}/fine:
     get:
       tags:

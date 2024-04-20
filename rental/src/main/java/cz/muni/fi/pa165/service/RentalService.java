@@ -51,8 +51,8 @@ public class RentalService {
         return rentalRepository.findById(id);
     }
 
-    public boolean deleteById(Long id) {
-        return rentalRepository.deleteById(id);
+    public void deleteById(Long id) {
+        jpaRentalRepository.deleteById(id);
     }
 
     public Optional<Rental> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {

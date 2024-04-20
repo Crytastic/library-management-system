@@ -45,8 +45,8 @@ public class RentalFacade {
         return rentalService.findById(id).map(this::convertToDTO);
     }
 
-    public boolean deleteById(Long id) {
-        return rentalService.deleteById(id);
+    public void deleteById(Long id) {
+        rentalService.deleteById(id);
     }
 
     public Optional<RentalDTO> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {

@@ -63,12 +63,8 @@ public class RentalController implements RentalApi {
 
     @Override
     public ResponseEntity<Void> deleteRental(Long id) {
-        boolean deleted = rentalFacade.deleteById(id);
-        if (deleted) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        rentalFacade.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
