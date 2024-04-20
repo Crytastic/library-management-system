@@ -23,10 +23,6 @@ public class ReservationRepository {
         return reservations.values().stream().toList();
     }
 
-    public void deleteById(Long id) {
-        reservations.remove(id);
-    }
-
     public List<Reservation> findAllActive() {
         OffsetDateTime currentDateTime = TimeProvider.now();
         return reservations

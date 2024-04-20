@@ -55,8 +55,9 @@ public class ReservationService {
 
     }
 
+    @Transactional
     public void deleteById(Long id) {
-        reservationRepository.deleteById(id);
+        jpaReservationRepository.deleteById(id);
     }
 
     public List<Reservation> findAllActive() {

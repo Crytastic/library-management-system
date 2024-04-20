@@ -124,12 +124,13 @@ class ReservationServiceTest {
     void deleteById_validId_callsReservationRepositoryDeleteById() {
         // Arrange
         Long id = 1L;
+        doNothing().when(jpaReservationRepository).deleteById(id);
 
         // Act
         reservationService.deleteById(id);
 
         // Assert
-        verify(reservationRepository, times(1)).deleteById(id);
+        verify(jpaReservationRepository, times(1)).deleteById(id);
     }
 
     @Test
