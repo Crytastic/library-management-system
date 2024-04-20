@@ -1,7 +1,7 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Reservation;
-import cz.muni.fi.pa165.data.repository.JpaReservationRepository;
+import cz.muni.fi.pa165.data.repository.ReservationRepository;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 class ReservationServiceTest {
 
     @Mock
-    private JpaReservationRepository jpaReservationRepository;
+    private ReservationRepository reservationRepository;
 
     @InjectMocks
     private ReservationService reservationService;
@@ -46,40 +46,40 @@ class ReservationServiceTest {
     void findById_existingId_callsReservationRepositoryFindById() {
         // Arrange
         Long id = 1L;
-        when(jpaReservationRepository.findById(id)).thenReturn(Optional.of(reservation));
+        when(reservationRepository.findById(id)).thenReturn(Optional.of(reservation));
 
         // Act
         Optional<Reservation> result = reservationService.findById(id);
 
         // Assert
         assertThat(result).isPresent().contains(reservation);
-        verify(jpaReservationRepository, times(1)).findById(id);
+        verify(reservationRepository, times(1)).findById(id);
     }
 
     @Test
     void findAll_validReservations_callsReservationRepositoryFindAll() {
         // Arrange
-        when(jpaReservationRepository.findAll()).thenReturn(reservationList);
+        when(reservationRepository.findAll()).thenReturn(reservationList);
 
         // Act
         List<Reservation> result = reservationService.findAll();
 
         // Assert
         assertThat(result).isEqualTo(reservationList);
-        verify(jpaReservationRepository, times(1)).findAll();
+        verify(reservationRepository, times(1)).findAll();
     }
 
     @Test
     void createReservation_validReservation_callsReservationRepositoryStore() {
         // Arrange
-        when(jpaReservationRepository.save(any(Reservation.class))).thenReturn(reservation);
+        when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
 
         // Act
         Reservation result = reservationService.createReservation("The Lord of the Rings", "Franta Vopršálek");
 
         // Assert
         assertThat(result).isEqualTo(reservation);
-        verify(jpaReservationRepository, times(1)).save(any(Reservation.class));
+        verify(reservationRepository, times(1)).save(any(Reservation.class));
     }
 
     @Test
@@ -89,14 +89,14 @@ class ReservationServiceTest {
         String newBook = "Updated Book";
         String newReservedBy = "Updated User";
         OffsetDateTime newReservedFrom = TimeProvider.now().plusDays(1);
-        OffsetDateTime newReservedTo = TimeProvider.now().plusDays(4);when(jpaReservationRepository.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo)).thenReturn(1);
+        OffsetDateTime newReservedTo = TimeProvider.now().plusDays(4);when(reservationRepository.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo)).thenReturn(1);
 
         // Act
         int result = reservationService.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);
 
         // Assert
         assertThat(result).isEqualTo(1);
-        verify(jpaReservationRepository, times(1)).updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);
+        verify(reservationRepository, times(1)).updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);
     }
 
     @Test
@@ -107,7 +107,7 @@ class ReservationServiceTest {
         String newReservedBy = "New User";
         OffsetDateTime newReservedFrom = TimeProvider.now().plusDays(1);
         OffsetDateTime newReservedTo = TimeProvider.now().plusDays(4);
-        when(jpaReservationRepository.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo)).thenReturn(0);
+        when(reservationRepository.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo)).thenReturn(0);
 
         // Act
         int result = reservationService.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);
@@ -120,13 +120,13 @@ class ReservationServiceTest {
     void deleteById_validId_callsReservationRepositoryDeleteById() {
         // Arrange
         Long id = 1L;
-        doNothing().when(jpaReservationRepository).deleteById(id);
+        doNothing().when(reservationRepository).deleteById(id);
 
         // Act
         reservationService.deleteById(id);
 
         // Assert
-        verify(jpaReservationRepository, times(1)).deleteById(id);
+        verify(reservationRepository, times(1)).deleteById(id);
     }
 
     @Test
@@ -136,14 +136,14 @@ class ReservationServiceTest {
                 new Reservation("Active Book 1", "User 1", TimeProvider.now(), TimeProvider.now().plusDays(3)),
                 new Reservation("Active Book 2", "User 2", TimeProvider.now(), TimeProvider.now().plusDays(5))
         );
-        when(jpaReservationRepository.findAllActive(any(OffsetDateTime.class))).thenReturn(activeReservations);
+        when(reservationRepository.findAllActive(any(OffsetDateTime.class))).thenReturn(activeReservations);
 
         // Act
         List<Reservation> result = reservationService.findAllActive();
 
         // Assert
         assertThat(result).isEqualTo(activeReservations);
-        verify(jpaReservationRepository, times(1)).findAllActive(any(OffsetDateTime.class));
+        verify(reservationRepository, times(1)).findAllActive(any(OffsetDateTime.class));
     }
 
     @Test
@@ -153,13 +153,13 @@ class ReservationServiceTest {
                 new Reservation("Expired Book 1", "User 1", TimeProvider.now().minusDays(5), TimeProvider.now().minusDays(2)),
                 new Reservation("Expired Book 2", "User 2", TimeProvider.now().minusDays(3), TimeProvider.now().minusDays(1))
         );
-        when(jpaReservationRepository.findAllExpired(any(OffsetDateTime.class))).thenReturn(expiredReservations);
+        when(reservationRepository.findAllExpired(any(OffsetDateTime.class))).thenReturn(expiredReservations);
 
         // Act
         List<Reservation> result = reservationService.findAllExpired();
 
         // Assert
         assertThat(result).isEqualTo(expiredReservations);
-        verify(jpaReservationRepository, times(1)).findAllExpired(any(OffsetDateTime.class));
+        verify(reservationRepository, times(1)).findAllExpired(any(OffsetDateTime.class));
     }
 }

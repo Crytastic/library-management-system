@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-public interface JpaReservationRepository extends JpaRepository<Reservation, Long> {
+public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
     @Modifying
     @Query("UPDATE Reservation r SET " +
