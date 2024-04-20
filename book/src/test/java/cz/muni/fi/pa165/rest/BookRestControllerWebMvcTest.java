@@ -56,4 +56,20 @@ public class BookRestControllerWebMvcTest {
         assertThat(response).isEqualTo(bookDTO);
     }
 
+    @Test
+    void getBook_invalidId_returnsNotFound() throws Exception {
+        // Arrange
+        Long id = 10L;
+        Mockito.when(bookFacade.findById(id)).thenReturn(Optional.empty());
+        // Act and Assert
+        String responseJson = mockMvc.perform(get("/api/books/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        assertThat(responseJson).isEqualTo("");
+    }
+
 }
