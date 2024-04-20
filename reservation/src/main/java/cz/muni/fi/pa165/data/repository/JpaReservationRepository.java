@@ -22,4 +22,7 @@ public interface JpaReservationRepository extends JpaRepository<Reservation, Lon
     @Query("SELECT r FROM Reservation r WHERE r.reservedFrom < :currentDate AND r.reservedTo > :currentDate")
     List<Reservation> findAllActive(OffsetDateTime currentDate);
 
+    @Query("SELECT r FROM Reservation r WHERE r.reservedFrom < :currentDate AND r.reservedTo < :currentDate")
+    List<Reservation> findAllExpired(OffsetDateTime currentDate);
+
 }

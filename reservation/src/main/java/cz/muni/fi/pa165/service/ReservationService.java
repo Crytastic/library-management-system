@@ -2,7 +2,6 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Reservation;
 import cz.muni.fi.pa165.data.repository.JpaReservationRepository;
-import cz.muni.fi.pa165.repository.ReservationRepository;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,13 +20,10 @@ import java.util.Optional;
 @Service
 public class ReservationService {
 
-    ReservationRepository reservationRepository;
-
     JpaReservationRepository jpaReservationRepository;
 
     @Autowired
-    public ReservationService(ReservationRepository reservationRepository, JpaReservationRepository jpaReservationRepository) {
-        this.reservationRepository = reservationRepository;
+    public ReservationService(JpaReservationRepository jpaReservationRepository) {
         this.jpaReservationRepository = jpaReservationRepository;
     }
 
@@ -61,11 +57,13 @@ public class ReservationService {
         jpaReservationRepository.deleteById(id);
     }
 
+    @Transactional
     public List<Reservation> findAllActive() {
         return jpaReservationRepository.findAllActive(TimeProvider.now());
     }
 
+    @Transactional
     public List<Reservation> findAllExpired() {
-        return reservationRepository.findAllExpired();
+        return jpaReservationRepository.findAllExpired(TimeProvider.now());
     }
 }

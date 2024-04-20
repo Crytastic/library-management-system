@@ -2,7 +2,6 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Reservation;
 import cz.muni.fi.pa165.data.repository.JpaReservationRepository;
-import cz.muni.fi.pa165.repository.ReservationRepository;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,9 +23,6 @@ import static org.mockito.Mockito.*;
  */
 @ExtendWith(MockitoExtension.class)
 class ReservationServiceTest {
-
-    @Mock
-    private ReservationRepository reservationRepository;
 
     @Mock
     private JpaReservationRepository jpaReservationRepository;
@@ -157,13 +153,13 @@ class ReservationServiceTest {
                 new Reservation("Expired Book 1", "User 1", TimeProvider.now().minusDays(5), TimeProvider.now().minusDays(2)),
                 new Reservation("Expired Book 2", "User 2", TimeProvider.now().minusDays(3), TimeProvider.now().minusDays(1))
         );
-        when(reservationRepository.findAllExpired()).thenReturn(expiredReservations);
+        when(jpaReservationRepository.findAllExpired(any(OffsetDateTime.class))).thenReturn(expiredReservations);
 
         // Act
         List<Reservation> result = reservationService.findAllExpired();
 
         // Assert
         assertThat(result).isEqualTo(expiredReservations);
-        verify(reservationRepository, times(1)).findAllExpired();
+        verify(jpaReservationRepository, times(1)).findAllExpired(any(OffsetDateTime.class));
     }
 }
