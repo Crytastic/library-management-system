@@ -30,18 +30,22 @@ public class BookService {
         this.jpaBookRepository = jpaBookRepository;
     }
 
+    @Transactional
     public List<Book> findByFilter(String title, String author, String description, BookStatus status) {
         return jpaBookRepository.findByFilter(title, author, description, status);
     }
 
+    @Transactional
     public Book createBook(String title, String author, String description) {
         return jpaBookRepository.save(new Book(title, author, description, BookStatus.AVAILABLE));
     }
 
+    @Transactional
     public Optional<Book> findById(Long id) {
         return jpaBookRepository.findById(id);
     }
 
+    @Transactional
     public void deleteById(Long id) { jpaBookRepository.deleteById(id);
     }
 
@@ -50,6 +54,7 @@ public class BookService {
         return jpaBookRepository.updateById(id, title, author, description, status);
     }
 
+    @Transactional
     public Optional<List<String>> findBookRentals(Long id) {
         if (jpaBookRepository.findById(id).isEmpty()) {
             return Optional.empty();
