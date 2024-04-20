@@ -138,9 +138,9 @@ class RentalFacadeTest {
                         updatedRental.getReturnDate(),
                         updatedRental.getLateReturnWeeklyFine(),
                         updatedRental.isFineResolved()))
-                .thenReturn(Optional.of(updatedRental));
+                .thenReturn(1);
 
-        Optional<RentalDTO> updatedDto = rentalFacade.updateById(
+        int numberOfUpdatedRentals = rentalFacade.updateById(
                 updatedRental.getId(),
                 updatedRental.getBook(),
                 updatedRental.getRentedBy(),
@@ -151,9 +151,7 @@ class RentalFacadeTest {
                 updatedRental.getLateReturnWeeklyFine(),
                 updatedRental.isFineResolved());
 
-
-        assertThat(updatedDto).isPresent().contains(convertToDTO(updatedRental));
-
+        assertThat(numberOfUpdatedRentals).isEqualTo(1);
         verify(rentalService, times(1)).updateById(
                 updatedRental.getId(),
                 updatedRental.getBook(),

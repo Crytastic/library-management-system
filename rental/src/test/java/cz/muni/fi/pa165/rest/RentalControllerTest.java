@@ -101,7 +101,7 @@ class RentalControllerTest {
     }
 
     @Test
-    void updateRental_rentalFound_returnsRentalAndOkStatus() {
+    void updateRental_rentalFound_returnsOkStatus() {
         RentalDTO rentalDTO = createDTORental();
         Mockito.when(rentalFacade.updateById(1L,
                 rentalDTO.getBook(),
@@ -111,9 +111,9 @@ class RentalControllerTest {
                 rentalDTO.getReturned(),
                 rentalDTO.getReturnDate(),
                 rentalDTO.getLateReturnWeeklyFine(),
-                rentalDTO.getFineResolved())).thenReturn(Optional.of(rentalDTO));
+                rentalDTO.getFineResolved())).thenReturn(1);
 
-        ResponseEntity<RentalDTO> response = rentalController.updateRental(1L,
+        ResponseEntity<Void> response = rentalController.updateRental(1L,
                 rentalDTO.getBook(),
                 rentalDTO.getRentedBy(),
                 rentalDTO.getBorrowDate(),
@@ -123,13 +123,11 @@ class RentalControllerTest {
                 rentalDTO.getLateReturnWeeklyFine(),
                 rentalDTO.getFineResolved());
 
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody()).isEqualTo(rentalDTO);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
-    void updateRental_rentalNotFound_returnsEmptyAndNotFoundStatus() {
+    void updateRental_rentalNotFound_returnsNotFoundStatus() {
         RentalDTO rentalDTO = createDTORental();
         Mockito.when(rentalFacade.updateById(1L,
                 rentalDTO.getBook(),
@@ -139,9 +137,9 @@ class RentalControllerTest {
                 rentalDTO.getReturned(),
                 rentalDTO.getReturnDate(),
                 rentalDTO.getLateReturnWeeklyFine(),
-                rentalDTO.getFineResolved())).thenReturn(Optional.empty());
+                rentalDTO.getFineResolved())).thenReturn(0);
 
-        ResponseEntity<RentalDTO> response = rentalController.updateRental(1L,
+        ResponseEntity<Void> response = rentalController.updateRental(1L,
                 rentalDTO.getBook(),
                 rentalDTO.getRentedBy(),
                 rentalDTO.getBorrowDate(),
@@ -151,7 +149,6 @@ class RentalControllerTest {
                 rentalDTO.getLateReturnWeeklyFine(),
                 rentalDTO.getFineResolved());
 
-        assertThat(response.getBody()).isNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 

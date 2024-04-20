@@ -55,10 +55,9 @@ public class RentalController implements RentalApi {
     }
 
     @Override
-    public ResponseEntity<RentalDTO> updateRental(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
-        Optional<RentalDTO> rental = rentalFacade.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
-        return rental.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<Void> updateRental(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
+        int numberOfUpdatedRentals = rentalFacade.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
+        return new ResponseEntity<>(numberOfUpdatedRentals == 1 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
     @Override

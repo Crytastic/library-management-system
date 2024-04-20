@@ -21,8 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Sophia Zápotočná
@@ -40,7 +39,7 @@ class RentalServiceTest {
 
     @Test
     void findById_rentalFound_returnsRental() {
-        Mockito.when(jpaRentalRepository.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.activeRental));
+        when(jpaRentalRepository.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.activeRental));
 
         Optional<Rental> foundDao = rentalService.findById(1L);
 
@@ -50,7 +49,7 @@ class RentalServiceTest {
 
     @Test
     void findById_rentalNotFound_returnsEmptyOptional() {
-        Mockito.when(jpaRentalRepository.findById(11L)).thenReturn(Optional.empty());
+        when(jpaRentalRepository.findById(11L)).thenReturn(Optional.empty());
 
         Optional<Rental> foundDao = rentalService.findById(11L);
 
@@ -67,7 +66,7 @@ class RentalServiceTest {
         BigDecimal lateReturnWeeklyFine = new BigDecimal(100);
         Rental newRental = new Rental(book, rentedBy, borrowDate, expectedReturnDate, false,
                 null, lateReturnWeeklyFine, false);
-        Mockito.when(jpaRentalRepository.save(newRental)).thenReturn(newRental);
+        when(jpaRentalRepository.save(newRental)).thenReturn(newRental);
 
         try (MockedStatic<TimeProvider> timeProviderDummy = Mockito.mockStatic(TimeProvider.class)) {
             timeProviderDummy.when(TimeProvider::now).thenReturn(borrowDate);
@@ -100,7 +99,7 @@ class RentalServiceTest {
         List<Rental> rentals = new ArrayList<>();
         rentals.add(TestDataFactory.activeRental);
         rentals.add(TestDataFactory.inActiveRental);
-        Mockito.when(jpaRentalRepository.findAll()).thenReturn(rentals);
+        when(jpaRentalRepository.findAll()).thenReturn(rentals);
 
         List<Rental> listOfRentals = rentalService.findAll();
 
@@ -111,63 +110,43 @@ class RentalServiceTest {
     }
 
     @Test
-    void updateById_oneItemChanged_returnsUpdatedRental() {
+    void updateById_oneItemChanged_returnsOne() {
         String changedBook = "New changed book";
         Rental updatedRental = TestDataFactory.activeRental;
-        Mockito.when(rentalRepository.findById(updatedRental.getId())).thenReturn(Optional.of(updatedRental));
-        Mockito.when(rentalRepository.updateById(updatedRental.getId(), updatedRental))
-                .thenReturn(Optional.ofNullable(TestDataFactory.activeRental));
+        when(jpaRentalRepository.updateById(updatedRental.getId(), changedBook, null, null,
+                null, null, null, null, null))
+                .thenReturn(1);
 
-        Optional<Rental> updatedDao = rentalService.updateById(updatedRental.getId(), changedBook, null, null,
+        int numberOfUpdatedRentals = rentalService.updateById(updatedRental.getId(), changedBook, null, null,
                 null, null, null, null, null);
 
-        assertThat(updatedDao).isPresent();
-        assertThat(updatedDao.get().getBook()).isEqualTo(changedBook);
-        assertThat(updatedDao.get().getRentedBy()).isEqualTo(TestDataFactory.activeRental.getRentedBy());
-        assertThat(updatedDao.get().getBorrowDate()).isEqualTo(TestDataFactory.activeRental.getBorrowDate());
-        assertThat(updatedDao.get().getReturnDate()).isEqualTo(TestDataFactory.activeRental.getReturnDate());
-        assertThat(updatedDao.get().getExpectedReturnDate())
-                .isEqualTo(TestDataFactory.activeRental.getExpectedReturnDate());
-        assertThat(updatedDao.get().getLateReturnWeeklyFine())
-                .isEqualTo(TestDataFactory.activeRental.getLateReturnWeeklyFine());
-        assertThat(updatedDao.get().isReturned()).isEqualTo(TestDataFactory.activeRental.isReturned());
-        assertThat(updatedDao.get().isFineResolved()).isEqualTo(TestDataFactory.activeRental.isFineResolved());
-
-        verify(rentalRepository, times(1)).findById(updatedRental.getId());
-        verify(rentalRepository, times(1)).updateById(updatedRental.getId(), updatedRental);
+        assertThat(numberOfUpdatedRentals).isEqualTo(1);
+        verify(jpaRentalRepository, times(1)).updateById(updatedRental.getId(), changedBook, null, null,
+                null, null, null, null, null);
     }
 
     @Test
-    void updateById_someItemChanged_returnsUpdatedRental() {
+    void updateById_someItemChanged_returnsOne() {
         String changedBook = "New changed book";
         Boolean returned = true;
         OffsetDateTime returnDate = TimeProvider.now();
         Rental updatedRental = TestDataFactory.activeRental;
-        Mockito.when(rentalRepository.findById(updatedRental.getId())).thenReturn(Optional.of(updatedRental));
-        Mockito.when(rentalRepository.updateById(updatedRental.getId(), updatedRental))
-                .thenReturn(Optional.ofNullable(TestDataFactory.activeRental));
+        when(jpaRentalRepository.updateById(updatedRental.getId(), changedBook, null, null,
+                null, returned, returnDate, null, null))
+                .thenReturn(1);
 
-        Optional<Rental> updatedDao = rentalService.updateById(updatedRental.getId(), changedBook, null, null,
+
+        int numberOfUpdatedRentals = jpaRentalRepository.updateById(updatedRental.getId(), changedBook, null, null,
                 null, returned, returnDate, null, null);
 
-        assertThat(updatedDao).isPresent();
-        assertThat(updatedDao.get().getBook()).isEqualTo(changedBook);
-        assertThat(updatedDao.get().getRentedBy()).isEqualTo(TestDataFactory.activeRental.getRentedBy());
-        assertThat(updatedDao.get().getBorrowDate()).isEqualTo(TestDataFactory.activeRental.getBorrowDate());
-        assertThat(updatedDao.get().getReturnDate()).isEqualTo(returnDate);
-        assertThat(updatedDao.get().getExpectedReturnDate())
-                .isEqualTo(TestDataFactory.activeRental.getExpectedReturnDate());
-        assertThat(updatedDao.get().getLateReturnWeeklyFine())
-                .isEqualTo(TestDataFactory.activeRental.getLateReturnWeeklyFine());
-        assertThat(updatedDao.get().isReturned()).isEqualTo(returned);
-        assertThat(updatedDao.get().isFineResolved()).isEqualTo(TestDataFactory.activeRental.isFineResolved());
 
-        verify(rentalRepository, times(1)).findById(updatedRental.getId());
-        verify(rentalRepository, times(1)).updateById(updatedRental.getId(), updatedRental);
+        assertThat(numberOfUpdatedRentals).isEqualTo(1);
+        verify(jpaRentalRepository, times(1)).updateById(updatedRental.getId(), changedBook, null, null,
+                null, returned, returnDate, null, null);
     }
 
     @Test
-    void updateById_allItemChanged_returnsUpdatedRental() {
+    void updateById_allItemChanged_returnsOne() {
         String changedBook = "New changed book";
         String rentedBy = "Changed user";
         Boolean returned = true;
@@ -176,49 +155,35 @@ class RentalServiceTest {
         OffsetDateTime borrowDate = TimeProvider.now().minusMonths(1L);
         Boolean fineResolved = true;
         BigDecimal lateReturnWeeklyFine = new BigDecimal(2);
-
         Rental updatedRental = TestDataFactory.activeRental;
-        Mockito.when(rentalRepository.findById(updatedRental.getId())).thenReturn(Optional.of(updatedRental));
-        Mockito.when(rentalRepository.updateById(updatedRental.getId(), updatedRental))
-                .thenReturn(Optional.ofNullable(TestDataFactory.activeRental));
+        when(jpaRentalRepository.updateById(updatedRental.getId(), changedBook, rentedBy,
+                borrowDate, expectedReturnDate, returned, returnedDate, lateReturnWeeklyFine, fineResolved)).thenReturn(1);
 
-        Optional<Rental> updatedDao = rentalService.updateById(updatedRental.getId(), changedBook, rentedBy,
+        int numberOfUpdatedRentals = rentalService.updateById(updatedRental.getId(), changedBook, rentedBy,
                 borrowDate, expectedReturnDate, returned, returnedDate, lateReturnWeeklyFine, fineResolved);
 
-        assertThat(updatedDao).isPresent();
-        assertThat(updatedDao.get().getBook()).isEqualTo(changedBook);
-        assertThat(updatedDao.get().getRentedBy()).isEqualTo(rentedBy);
-        assertThat(updatedDao.get().getBorrowDate()).isEqualTo(borrowDate);
-        assertThat(updatedDao.get().getReturnDate()).isEqualTo(returnedDate);
-        assertThat(updatedDao.get().getExpectedReturnDate()).isEqualTo(expectedReturnDate);
-        assertThat(updatedDao.get().getLateReturnWeeklyFine()).isEqualTo(lateReturnWeeklyFine);
-        assertThat(updatedDao.get().isReturned()).isEqualTo(returned);
-        assertThat(updatedDao.get().isFineResolved()).isEqualTo(fineResolved);
-
-        verify(rentalRepository, times(1)).findById(updatedRental.getId());
-        verify(rentalRepository, times(1)).updateById(updatedRental.getId(), updatedRental);
+        assertThat(numberOfUpdatedRentals).isEqualTo(1);
+        verify(jpaRentalRepository, times(1)).updateById(updatedRental.getId(), changedBook, rentedBy,
+                borrowDate, expectedReturnDate, returned, returnedDate, lateReturnWeeklyFine, fineResolved);
     }
 
     @Test
-    void updateById_rentalNotFound_returnsEmptyOptional() {
+    void updateById_rentalNotFound_returnsZero() {
         Long nonExistingId = 11L;
         String changedBook = "New changed book";
-        Rental updatedRental = TestDataFactory.activeRental;
-        Mockito.when(rentalRepository.findById(nonExistingId)).thenReturn(Optional.empty());
+        when(jpaRentalRepository.updateById(nonExistingId, changedBook, null, null, null, null, null, null, null)).thenReturn(0);
 
-        Optional<Rental> updatedDao = rentalService.updateById(nonExistingId, changedBook, null, null,
+        int numberOfUpdatedRentals = rentalService.updateById(nonExistingId, changedBook, null, null,
                 null, null, null, null, null);
 
-        assertThat(updatedDao).isEmpty();
-
-        verify(rentalRepository, times(1)).findById(nonExistingId);
-        verify(rentalRepository, times(0)).updateById(nonExistingId, updatedRental);
+        assertThat(numberOfUpdatedRentals).isEqualTo(0);
+        verify(jpaRentalRepository, times(1)).updateById(nonExistingId, changedBook, null, null, null, null, null, null, null);
     }
 
     @Test
     void getFineById_rentalNotFound_returnsEmptyOptional() {
         Long nonExistingId = 11L;
-        Mockito.when(jpaRentalRepository.findById(nonExistingId)).thenReturn(Optional.empty());
+        when(jpaRentalRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
         Optional<BigDecimal> fine = rentalService.getFineById(nonExistingId);
 
@@ -229,7 +194,7 @@ class RentalServiceTest {
     @Test
     void getFineById_bookReturnedFinePaid_returnsZeroFine() {
         Rental inActiveRental = TestDataFactory.inActiveRental;
-        Mockito.when(jpaRentalRepository.findById(inActiveRental.getId())).thenReturn(Optional.of(inActiveRental));
+        when(jpaRentalRepository.findById(inActiveRental.getId())).thenReturn(Optional.of(inActiveRental));
 
         Optional<BigDecimal> fine = rentalService.getFineById(inActiveRental.getId());
 
@@ -241,7 +206,7 @@ class RentalServiceTest {
     @Test
     void getFineById_bookReturnedFineNotPaid_returnsSomeFine() {
         Rental inActiveRental = TestDataFactory.inActiveRentalLateDAO;
-        Mockito.when(jpaRentalRepository.findById(inActiveRental.getId())).thenReturn(Optional.of(inActiveRental));
+        when(jpaRentalRepository.findById(inActiveRental.getId())).thenReturn(Optional.of(inActiveRental));
 
         Optional<BigDecimal> fine = rentalService.getFineById(inActiveRental.getId());
 
@@ -253,7 +218,7 @@ class RentalServiceTest {
     @Test
     void getFineById_bookNotReturnedStillHaveTime_returnsZeroFine() {
         Rental activeRental = TestDataFactory.activeRental;
-        Mockito.when(jpaRentalRepository.findById(activeRental.getId())).thenReturn(Optional.of(activeRental));
+        when(jpaRentalRepository.findById(activeRental.getId())).thenReturn(Optional.of(activeRental));
 
         Optional<BigDecimal> fine = rentalService.getFineById(activeRental.getId());
 
@@ -265,7 +230,7 @@ class RentalServiceTest {
     @Test
     void getFineById_bookNotReturnedNowIsLate_returnsSomeFine() {
         Rental activeRental = TestDataFactory.activeRentalLateDAO;
-        Mockito.when(jpaRentalRepository.findById(activeRental.getId())).thenReturn(Optional.of(activeRental));
+        when(jpaRentalRepository.findById(activeRental.getId())).thenReturn(Optional.of(activeRental));
 
         try (MockedStatic<TimeProvider> dummy = Mockito.mockStatic(TimeProvider.class)) {
             dummy.when(TimeProvider::now).thenReturn(activeRental.getExpectedReturnDate().plusWeeks(5));

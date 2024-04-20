@@ -23,12 +23,10 @@ import java.util.Optional;
 public class RentalService {
 
     private final JpaRentalRepository jpaRentalRepository;
-    private final RentalRepository rentalRepository;
 
     @Autowired
     public RentalService(JpaRentalRepository jpaBookRepository, RentalRepository rentalRepository) {
         this.jpaRentalRepository = jpaBookRepository;
-        this.rentalRepository = rentalRepository;
     }
 
     public List<Rental> findAll() {
@@ -55,25 +53,8 @@ public class RentalService {
         jpaRentalRepository.deleteById(id);
     }
 
-    public Optional<Rental> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
-        Optional<Rental> optionalRental = rentalRepository.findById(id);
-
-        if (optionalRental.isEmpty()) {
-            return Optional.empty();
-        }
-
-        Rental rental = optionalRental.get();
-
-        rental.setBook(book != null ? book : rental.getBook());
-        rental.setRentedBy(rentedBy != null ? rentedBy : rental.getRentedBy());
-        rental.setBorrowDate(borrowDate != null ? borrowDate : rental.getBorrowDate());
-        rental.setExpectedReturnDate(expectedReturnDate != null ? expectedReturnDate : rental.getExpectedReturnDate());
-        rental.setReturned(returned != null ? returned : rental.isReturned());
-        rental.setReturnDate(returnDate != null ? returnDate : rental.getReturnDate());
-        rental.setLateReturnWeeklyFine(lateReturnWeeklyFine != null ? lateReturnWeeklyFine : rental.getLateReturnWeeklyFine());
-        rental.setFineResolved(fineResolved != null ? fineResolved : rental.isFineResolved());
-
-        return rentalRepository.updateById(rental.getId(), rental);
+    public int updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
+        return jpaRentalRepository.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
     }
 
     public Optional<BigDecimal> getFineById(Long id) {
