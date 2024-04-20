@@ -1,15 +1,16 @@
-package cz.muni.fi.pa165.dao;
+package cz.muni.fi.pa165.data.model;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
 /**
  * This class encapsulates information about a reservation of a book.
  *
  * @author Martin Suchánek
  */
-public class ReservationDAO {
+public class Reservation {
     private Long id;
     private String book;
     private String reservedBy;
@@ -18,7 +19,7 @@ public class ReservationDAO {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime reservedTo;
 
-    public ReservationDAO(String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
+    public Reservation(String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
         this.book = book;
         this.reservedBy = reservedBy;
         this.reservedFrom = reservedFrom;
@@ -63,5 +64,33 @@ public class ReservationDAO {
 
     public void setReservedTo(OffsetDateTime reservedTo) {
         this.reservedTo = reservedTo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Reservation that = (Reservation) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(book, that.book) &&
+                Objects.equals(reservedBy, that.reservedBy) &&
+                Objects.equals(reservedFrom, that.reservedFrom) &&
+                Objects.equals(reservedTo, that.reservedTo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, book, reservedBy, reservedFrom, reservedTo);
+    }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id=" + id +
+                ", book='" + book +
+                ", reservedBy='" + reservedBy +
+                ", reservedFrom=" + reservedFrom +
+                ", reservedTo=" + reservedTo +
+                '}';
     }
 }

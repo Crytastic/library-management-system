@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.dao.RentalDAO;
+import cz.muni.fi.pa165.data.model.Rental;
 import cz.muni.fi.pa165.service.RentalService;
 import cz.muni.fi.pa165.util.TestDataFactory;
 import cz.muni.fi.pa165.util.TimeProvider;
@@ -38,12 +38,12 @@ class RentalFacadeTest {
 
     @Test
     void findById_rentalFound_returnsRental() {
-        Mockito.when(rentalService.findById(2L)).thenReturn(Optional.ofNullable(TestDataFactory.activeRentalDAO));
+        Mockito.when(rentalService.findById(2L)).thenReturn(Optional.ofNullable(TestDataFactory.activeRental));
 
         Optional<RentalDTO> rentalDTO = rentalFacade.findById(2L);
 
         assertThat(rentalDTO).isPresent();
-        assertThat(rentalDTO.get()).isEqualTo(convertToDTO(TestDataFactory.activeRentalDAO));
+        assertThat(rentalDTO.get()).isEqualTo(convertToDTO(TestDataFactory.activeRental));
     }
 
     @Test
@@ -62,7 +62,7 @@ class RentalFacadeTest {
         OffsetDateTime expectedReturnDate = OffsetDateTime
                 .of(2024, 5, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         BigDecimal lateReturnWeeklyFine = new BigDecimal(100);
-        RentalDAO newRentalDAO = new RentalDAO(book, rentedBy, null, expectedReturnDate, false,
+        Rental newRental = new Rental(book, rentedBy, null, expectedReturnDate, false,
                 null, lateReturnWeeklyFine, false);
 
         Mockito.when(rentalService.createRental(
@@ -70,7 +70,7 @@ class RentalFacadeTest {
                         anyString(),
                         any(OffsetDateTime.class),
                         any(BigDecimal.class)))
-                .thenReturn(newRentalDAO);
+                .thenReturn(newRental);
 
         RentalDTO rentalDTO = rentalFacade.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine);
 
@@ -101,9 +101,9 @@ class RentalFacadeTest {
 
     @Test
     void findAll_rentalsReturned_returnsRentals() {
-        List<RentalDAO> rentals = new ArrayList<>();
-        rentals.add(TestDataFactory.activeRentalDAO);
-        rentals.add(TestDataFactory.inActiveRentalDAO);
+        List<Rental> rentals = new ArrayList<>();
+        rentals.add(TestDataFactory.activeRental);
+        rentals.add(TestDataFactory.inActiveRental);
         Mockito.when(rentalService.findAll()).thenReturn(rentals);
 
         List<RentalDTO> listOfRentals = rentalFacade.findAll();
@@ -111,13 +111,13 @@ class RentalFacadeTest {
         assertThat(listOfRentals)
                 .isNotNull()
                 .hasSize(2)
-                .containsExactlyInAnyOrder(convertToDTO(TestDataFactory.activeRentalDAO),
-                        convertToDTO(TestDataFactory.inActiveRentalDAO));
+                .containsExactlyInAnyOrder(convertToDTO(TestDataFactory.activeRental),
+                        convertToDTO(TestDataFactory.inActiveRental));
     }
 
     @Test
     void updateById_validParameters_callsUpdateByIdOnService() {
-        RentalDAO updatedRental = new RentalDAO(
+        Rental updatedRental = new Rental(
                 "Inactive test book",
                 "Rental creator",
                 TimeProvider.now(),
@@ -177,17 +177,17 @@ class RentalFacadeTest {
         verify(rentalService, times(1)).getFineById(1L);
     }
 
-    private RentalDTO convertToDTO(RentalDAO rentalDAO) {
+    private RentalDTO convertToDTO(Rental rental) {
         return new RentalDTO()
-                .id(rentalDAO.getId())
-                .book(rentalDAO.getBook())
-                .rentedBy(rentalDAO.getRentedBy())
-                .borrowDate(rentalDAO.getBorrowDate())
-                .expectedReturnDate(rentalDAO.getExpectedReturnDate())
-                .returned(rentalDAO.isReturned())
-                .returnDate(rentalDAO.getReturnDate())
-                .lateReturnWeeklyFine(rentalDAO.getLateReturnWeeklyFine())
-                .fineResolved(rentalDAO.isFineResolved());
+                .id(rental.getId())
+                .book(rental.getBook())
+                .rentedBy(rental.getRentedBy())
+                .borrowDate(rental.getBorrowDate())
+                .expectedReturnDate(rental.getExpectedReturnDate())
+                .returned(rental.isReturned())
+                .returnDate(rental.getReturnDate())
+                .lateReturnWeeklyFine(rental.getLateReturnWeeklyFine())
+                .fineResolved(rental.isFineResolved());
     }
 
 }

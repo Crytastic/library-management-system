@@ -1,14 +1,15 @@
-package cz.muni.fi.pa165.dao;
+package cz.muni.fi.pa165.data.model;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
 /**
  * This class encapsulates information about a rental.
  *
  * @author Maxmilián Šeffer
  */
-public class RentalDAO {
+public class Rental {
     private Long id;
     private String book;
     private String rentedBy;
@@ -20,7 +21,7 @@ public class RentalDAO {
     private BigDecimal lateReturnWeeklyFine;
     private boolean fineResolved;
 
-    public RentalDAO(String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, boolean fineResolved) {
+    public Rental(String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, boolean fineResolved) {
         this.book = book;
         this.rentedBy = rentedBy;
         this.borrowDate = borrowDate;
@@ -101,5 +102,41 @@ public class RentalDAO {
 
     public void setFineResolved(boolean fineResolved) {
         this.fineResolved = fineResolved;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Rental rental = (Rental) o;
+        return returned == rental.returned &&
+                fineResolved == rental.fineResolved &&
+                Objects.equals(id, rental.id) &&
+                Objects.equals(book, rental.book) &&
+                Objects.equals(rentedBy, rental.rentedBy) &&
+                Objects.equals(borrowDate, rental.borrowDate) &&
+                Objects.equals(expectedReturnDate, rental.expectedReturnDate) &&
+                Objects.equals(returnDate, rental.returnDate) &&
+                Objects.equals(lateReturnWeeklyFine, rental.lateReturnWeeklyFine);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
+    }
+
+    @Override
+    public String toString() {
+        return "Rental{" +
+                "id=" + id +
+                ", book='" + book +
+                ", rentedBy='" + rentedBy +
+                ", borrowDate=" + borrowDate +
+                ", expectedReturnDate=" + expectedReturnDate +
+                ", returned=" + returned +
+                ", returnDate=" + returnDate +
+                ", lateReturnWeeklyFine=" + lateReturnWeeklyFine +
+                ", fineResolved=" + fineResolved +
+                '}';
     }
 }

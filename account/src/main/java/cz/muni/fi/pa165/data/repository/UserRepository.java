@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.data.repository;
 
-import cz.muni.fi.pa165.data.model.UserDAO;
+import cz.muni.fi.pa165.data.model.User;
 import org.openapitools.model.UserType;
 import org.springframework.stereotype.Repository;
 
@@ -20,32 +20,32 @@ import java.util.Optional;
 @Repository
 public class UserRepository {
 
-    private Map<Long, UserDAO> users = new HashMap<>();
+    private Map<Long, User> users = new HashMap<>();
     private static Long index = 1L;
     private static final int ADULT_AGE = 18;
 
-    public List<UserDAO> findAll(UserType userType) {
+    public List<User> findAll(UserType userType) {
         return users.values()
                 .stream()
                 .filter(user -> userType == null || user.getUserType().equals(userType))
                 .toList();
     }
 
-    public List<UserDAO> findAllAdults() {
+    public List<User> findAllAdults() {
         return users.values()
                 .stream()
                 .filter(user -> getAge(user.getBirthDate()) >= ADULT_AGE)
                 .toList();
     }
 
-    public UserDAO saveUser(String username, String passwordHash, String address, LocalDate birthDate, UserType userType) {
-        UserDAO newUser = new UserDAO(index, username, passwordHash, userType, address, birthDate);
+    public User saveUser(String username, String passwordHash, String address, LocalDate birthDate, UserType userType) {
+        User newUser = new User(index, username, passwordHash, userType, address, birthDate);
         users.put(index, newUser);
         index++;
         return newUser;
     }
 
-    public Optional<UserDAO> findById(Long id) {
+    public Optional<User> findById(Long id) {
         return Optional.ofNullable(users.get(id));
     }
 
@@ -59,8 +59,8 @@ public class UserRepository {
         return period.getYears();
     }
 
-    public UserDAO findUserByUsername(String username) {
-        List<UserDAO> optionalUser = users.values()
+    public User findUserByUsername(String username) {
+        List<User> optionalUser = users.values()
                 .stream()
                 .filter(user -> user.getUsername().equals(username))
                 .toList();
@@ -70,7 +70,7 @@ public class UserRepository {
         return optionalUser.getFirst();
     }
 
-    public UserDAO updateUser(Long id, UserDAO userToUpdate) {
+    public User updateUser(Long id, User userToUpdate) {
         users.put(id, userToUpdate);
         return users.get(id);
     }
