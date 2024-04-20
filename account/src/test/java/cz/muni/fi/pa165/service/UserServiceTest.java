@@ -98,7 +98,7 @@ class UserServiceTest {
 
         userService.deleteById(idToDelete);
 
-        verify(userRepository, times(1)).deleteById(idToDelete);
+        verify(jpaUserRepository, times(1)).deleteById(idToDelete);
     }
 
     @Test
@@ -200,7 +200,7 @@ class UserServiceTest {
                 updatedUser.getAddress(), updatedUser.getBirthDate(), updatedUser.getUserType()));
 
         verify(userRepository, times(1)).findUserByUsername(actor.getUsername());
-        verify(userRepository, times(0)).findById(userToBeUpdated.getId());
+        verify(jpaUserRepository, times(0)).findById(userToBeUpdated.getId());
         verify(userRepository, times(0)).updateUser(userToBeUpdated.getId(), updatedUser);
     }
 
@@ -220,7 +220,7 @@ class UserServiceTest {
                 updatedUser.getAddress(), updatedUser.getBirthDate(), null));
 
         verify(userRepository, times(1)).findUserByUsername(actor.getUsername());
-        verify(userRepository, times(0)).findById(userToBeUpdated.getId());
+        verify(jpaUserRepository, times(0)).findById(userToBeUpdated.getId());
         verify(userRepository, times(0)).updateUser(userToBeUpdated.getId(), updatedUser);
     }
 
