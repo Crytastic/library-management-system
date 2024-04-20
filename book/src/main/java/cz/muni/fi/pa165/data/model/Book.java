@@ -7,14 +7,14 @@ import org.openapitools.model.BookStatus;
  *
  * @author Martin Suchánek
  */
-public class BookDAO {
+public class Book {
     Long id;
     String title;
     String author;
     String description;
     BookStatus status;
 
-    public BookDAO(String title, String author, String description, BookStatus status) {
+    public Book(String title, String author, String description, BookStatus status) {
         this.title = title;
         this.author = author;
         this.description = description;

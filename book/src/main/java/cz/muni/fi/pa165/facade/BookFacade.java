@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.data.model.BookDAO;
+import cz.muni.fi.pa165.data.model.Book;
 import cz.muni.fi.pa165.service.BookService;
 import org.openapitools.model.BookDTO;
 import org.openapitools.model.BookStatus;
@@ -35,8 +35,8 @@ public class BookFacade {
     }
 
     public BookDTO createBook(String title, String author, String description) {
-        BookDAO bookDAO = bookService.createBook(title, author, description);
-        return convertToDTO(bookDAO);
+        Book book = bookService.createBook(title, author, description);
+        return convertToDTO(book);
     }
 
     public Optional<BookDTO> findById(Long id) {
@@ -56,12 +56,12 @@ public class BookFacade {
     }
 
     // Will be replaced by mapper in the future
-    private BookDTO convertToDTO(BookDAO bookDAO) {
+    private BookDTO convertToDTO(Book book) {
         return new BookDTO()
-                .id(bookDAO.getId())
-                .title(bookDAO.getTitle())
-                .author(bookDAO.getAuthor())
-                .description(bookDAO.getDescription())
-                .status(bookDAO.getStatus());
+                .id(book.getId())
+                .title(book.getTitle())
+                .author(book.getAuthor())
+                .description(book.getDescription())
+                .status(book.getStatus());
     }
 }
