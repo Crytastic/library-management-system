@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Rental;
+import cz.muni.fi.pa165.data.repository.JpaRentalRepository;
 import cz.muni.fi.pa165.repository.RentalRepository;
 import cz.muni.fi.pa165.util.TestDataFactory;
 import cz.muni.fi.pa165.util.TimeProvider;
@@ -20,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class RentalServiceTest {
     @Mock
-    private TimeProvider timeProvider;
+    private JpaRentalRepository jpaRentalRepository;
 
     @Mock
     private RentalRepository rentalRepository;
@@ -61,26 +61,29 @@ class RentalServiceTest {
     void createRental_rentalCreated_returnsNewRental() {
         String book = "Rented book";
         String rentedBy = "User";
-        OffsetDateTime expectedReturnDate = OffsetDateTime
+        OffsetDateTime borrowDate = OffsetDateTime
                 .of(2024, 5, 1, 12, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDateTime expectedReturnDate = borrowDate.plusWeeks(6);
         BigDecimal lateReturnWeeklyFine = new BigDecimal(100);
-        Rental newRental = new Rental(book, rentedBy, null, expectedReturnDate, false,
+        Rental newRental = new Rental(book, rentedBy, borrowDate, expectedReturnDate, false,
                 null, lateReturnWeeklyFine, false);
-        Mockito.when(rentalRepository.store(any(Rental.class)))
-                .thenReturn(newRental);
+        Mockito.when(jpaRentalRepository.save(newRental)).thenReturn(newRental);
 
-        Rental rental = rentalService.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine);
+        try (MockedStatic<TimeProvider> timeProviderDummy = Mockito.mockStatic(TimeProvider.class)) {
+            timeProviderDummy.when(TimeProvider::now).thenReturn(borrowDate);
+            Rental rental = rentalService.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine);
 
-        assertThat(rental).isNotNull().isEqualTo(newRental);
-        assertThat(rental.getBook()).isEqualTo(book);
-        assertThat(rental.getRentedBy()).isEqualTo(rentedBy);
-        assertThat(rental.getExpectedReturnDate()).isEqualTo(expectedReturnDate);
-        assertThat(rental.getLateReturnWeeklyFine()).isEqualTo(lateReturnWeeklyFine);
-        assertThat(rental.getBorrowDate()).isNull();
-        assertThat(rental.getReturnDate()).isNull();
-        assertThat(rental.isReturned()).isFalse();
-        assertThat(rental.isFineResolved()).isFalse();
-        verify(rentalRepository, times(1)).store(any(Rental.class));
+            assertThat(rental).isNotNull().isEqualTo(newRental);
+            assertThat(rental.getBook()).isEqualTo(book);
+            assertThat(rental.getRentedBy()).isEqualTo(rentedBy);
+            assertThat(rental.getExpectedReturnDate()).isEqualTo(expectedReturnDate);
+            assertThat(rental.getLateReturnWeeklyFine()).isEqualTo(lateReturnWeeklyFine);
+            assertThat(rental.getBorrowDate()).isEqualTo(borrowDate);
+            assertThat(rental.getReturnDate()).isNull();
+            assertThat(rental.isReturned()).isFalse();
+            assertThat(rental.isFineResolved()).isFalse();
+            verify(jpaRentalRepository, times(1)).save(newRental);
+        }
     }
 
     @Test

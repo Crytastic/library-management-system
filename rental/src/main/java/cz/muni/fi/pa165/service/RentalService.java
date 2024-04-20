@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Rental;
+import cz.muni.fi.pa165.data.repository.JpaRentalRepository;
 import cz.muni.fi.pa165.repository.RentalRepository;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,12 @@ import java.util.Optional;
 @Service
 public class RentalService {
 
+    private final JpaRentalRepository jpaRentalRepository;
     private final RentalRepository rentalRepository;
 
     @Autowired
-    public RentalService(RentalRepository rentalRepository) {
+    public RentalService(JpaRentalRepository jpaBookRepository, RentalRepository rentalRepository) {
+        this.jpaRentalRepository = jpaBookRepository;
         this.rentalRepository = rentalRepository;
     }
 
@@ -41,7 +44,7 @@ public class RentalService {
                 null,
                 lateReturnWeeklyFine == null ? getDefaultLateReturnWeeklyFine() : lateReturnWeeklyFine,
                 false);
-        return rentalRepository.store(rental);
+        return jpaRentalRepository.save(rental);
     }
 
     public Optional<Rental> findById(Long id) {
