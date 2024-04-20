@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -55,6 +56,18 @@ public class BookRestControllerIT {
         assertThat(response.getTitle()).isEqualTo(title);
         assertThat(response.getDescription()).isEqualTo(description);
         assertThat(response.getStatus()).isEqualTo(status);
+    }
+
+    @Test
+    void getBook_invalidId_returnsNotFound() throws Exception {
+        // Arrange
+        Long id = 10L;
+
+        // Act and Assert
+        mockMvc.perform(get("/api/books/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(""));
     }
 
 }
