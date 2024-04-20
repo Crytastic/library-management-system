@@ -35,9 +35,10 @@ public class ReservationControllerTest {
     @Test
     void createReservation_validRequestBody_returnsCreated() {
         // Arrange
+        Long id = 1L;
         String book = "The Lord of the Rings";
         String reservedBy = "Franta Vopršálek";
-        ReservationDTO reservation = ReservationDTOFactory.createReservation(book, reservedBy, TimeProvider.now(), TimeProvider.now().plusDays(3));
+        ReservationDTO reservation = ReservationDTOFactory.createReservation(id, book, reservedBy, TimeProvider.now(), TimeProvider.now().plusDays(3));
         when(reservationFacade.createReservation(book, reservedBy)).thenReturn(reservation);
 
         // Act
@@ -96,7 +97,7 @@ public class ReservationControllerTest {
         Long id = 1L;
         String book = "The Lord of the Rings";
         String reservedBy = "Franta Vopršálek";
-        ReservationDTO reservation = ReservationDTOFactory.createReservation(book, reservedBy, TimeProvider.now(), TimeProvider.now().plusDays(3));
+        ReservationDTO reservation = ReservationDTOFactory.createReservation(id, book, reservedBy, TimeProvider.now(), TimeProvider.now().plusDays(3));
         when(reservationFacade.findById(id)).thenReturn(Optional.of(reservation));
 
         // Act
