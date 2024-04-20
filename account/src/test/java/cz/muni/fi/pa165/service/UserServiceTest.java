@@ -42,7 +42,7 @@ class UserServiceTest {
 
     @Test
     void findById_userFound_returnsUser() {
-        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.firstMemberDAO));
+        Mockito.when(jpaUserRepository.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.firstMemberDAO));
 
         Optional<User> userDAO = userService.findById(1L);
 
@@ -52,7 +52,7 @@ class UserServiceTest {
 
     @Test
     void findById_userNotFound_returnsEmptyOptional() {
-        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        Mockito.when(jpaUserRepository.findById(1L)).thenReturn(Optional.empty());
 
         Optional<User> userDAO = userService.findById(1L);
 
@@ -131,13 +131,13 @@ class UserServiceTest {
         Long notExistingId = 20L;
 
         Mockito.when(userRepository.findUserByUsername(actor.getUsername())).thenReturn(actor);
-        Mockito.when(userRepository.findById(notExistingId)).thenReturn(Optional.empty());
+        Mockito.when(jpaUserRepository.findById(notExistingId)).thenReturn(Optional.empty());
 
         assertThat(userService.updateUser(notExistingId, actor.getUsername(), actorPassword,
                 "Nová Adresa 132, Brno", null, null)).isEmpty();
 
         verify(userRepository, times(1)).findUserByUsername(actor.getUsername());
-        verify(userRepository, times(1)).findById(notExistingId);
+        verify(jpaUserRepository, times(1)).findById(notExistingId);
         verify(userRepository, times(0)).updateUser(eq(notExistingId), any(User.class));
     }
 
@@ -152,14 +152,14 @@ class UserServiceTest {
         updatedUser.setBirthDate(LocalDate.parse("1999-12-12"));
 
         Mockito.when(userRepository.findUserByUsername(actor.getUsername())).thenReturn(actor);
-        Mockito.when(userRepository.findById(userToBeUpdated.getId())).thenReturn(Optional.of(userToBeUpdated));
+        Mockito.when(jpaUserRepository.findById(userToBeUpdated.getId())).thenReturn(Optional.of(userToBeUpdated));
         Mockito.when(userRepository.updateUser(userToBeUpdated.getId(), updatedUser)).thenReturn(updatedUser);
 
         assertThat(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
                 updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isPresent().contains(updatedUser);
 
         verify(userRepository, times(1)).findUserByUsername(actor.getUsername());
-        verify(userRepository, times(1)).findById(userToBeUpdated.getId());
+        verify(jpaUserRepository, times(1)).findById(userToBeUpdated.getId());
         verify(userRepository, times(1)).updateUser(userToBeUpdated.getId(), updatedUser);
     }
 
@@ -174,14 +174,14 @@ class UserServiceTest {
         updatedUser.setBirthDate(LocalDate.parse("1999-12-12"));
 
         Mockito.when(userRepository.findUserByUsername(actor.getUsername())).thenReturn(actor);
-        Mockito.when(userRepository.findById(userToBeUpdated.getId())).thenReturn(Optional.of(userToBeUpdated));
+        Mockito.when(jpaUserRepository.findById(userToBeUpdated.getId())).thenReturn(Optional.of(userToBeUpdated));
         Mockito.when(userRepository.updateUser(userToBeUpdated.getId(), updatedUser)).thenReturn(updatedUser);
 
         assertThat(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
                 updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isPresent().contains(updatedUser);
 
         verify(userRepository, times(1)).findUserByUsername(actor.getUsername());
-        verify(userRepository, times(1)).findById(userToBeUpdated.getId());
+        verify(jpaUserRepository, times(1)).findById(userToBeUpdated.getId());
         verify(userRepository, times(1)).updateUser(userToBeUpdated.getId(), updatedUser);
     }
 

@@ -59,7 +59,7 @@ public class UserService {
     }
 
     public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+        return jpaUserRepository.findById(id);
     }
 
     public void deleteById(Long id) {
@@ -82,7 +82,7 @@ public class UserService {
                 throw new UnauthorisedException();
             }
         }
-        Optional<User> optionalUpdatedUser = userRepository.findById(id);
+        Optional<User> optionalUpdatedUser = jpaUserRepository.findById(id);
         if (optionalUpdatedUser.isEmpty()) {
             return Optional.empty();
         }
