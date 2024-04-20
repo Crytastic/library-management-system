@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.repository;
 
-import cz.muni.fi.pa165.data.model.ReservationDAO;
+import cz.muni.fi.pa165.data.model.Reservation;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.springframework.stereotype.Repository;
 
@@ -17,34 +17,34 @@ import java.util.Optional;
  */
 @Repository
 public class ReservationRepository {
-    private final HashMap<Long, ReservationDAO> reservations = new HashMap<>();
+    private final HashMap<Long, Reservation> reservations = new HashMap<>();
     private static Long index = 1L;
 
-    public List<ReservationDAO> findAll() {
+    public List<Reservation> findAll() {
         return reservations.values().stream().toList();
     }
 
-    public ReservationDAO store(ReservationDAO reservationDAO) {
-        reservationDAO.setId(index);
-        reservations.put(reservationDAO.getId(), reservationDAO);
+    public Reservation store(Reservation reservation) {
+        reservation.setId(index);
+        reservations.put(reservation.getId(), reservation);
         index++;
-        return reservationDAO;
+        return reservation;
     }
 
-    public Optional<ReservationDAO> findById(Long id) {
+    public Optional<Reservation> findById(Long id) {
         return Optional.ofNullable(reservations.get(id));
     }
 
-    public Optional<ReservationDAO> updateById(Long id, ReservationDAO reservationDAO) {
-        reservations.put(id, reservationDAO);
-        return Optional.ofNullable(reservationDAO);
+    public Optional<Reservation> updateById(Long id, Reservation reservation) {
+        reservations.put(id, reservation);
+        return Optional.ofNullable(reservation);
     }
 
     public void deleteById(Long id) {
         reservations.remove(id);
     }
 
-    public List<ReservationDAO> findAllActive() {
+    public List<Reservation> findAllActive() {
         OffsetDateTime currentDateTime = TimeProvider.now();
         return reservations
                 .values()
@@ -53,7 +53,7 @@ public class ReservationRepository {
                         reservationDAO.getReservedFrom().isBefore(currentDateTime)).toList();
     }
 
-    public List<ReservationDAO> findAllExpired() {
+    public List<Reservation> findAllExpired() {
         OffsetDateTime currentDateTime = TimeProvider.now();
         return reservations
                 .values()

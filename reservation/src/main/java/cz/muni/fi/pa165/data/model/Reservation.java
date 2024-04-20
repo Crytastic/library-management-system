@@ -9,7 +9,7 @@ import java.time.OffsetDateTime;
  *
  * @author Martin Suchánek
  */
-public class ReservationDAO {
+public class Reservation {
     private Long id;
     private String book;
     private String reservedBy;
@@ -18,7 +18,7 @@ public class ReservationDAO {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime reservedTo;
 
-    public ReservationDAO(String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
+    public Reservation(String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
         this.book = book;
         this.reservedBy = reservedBy;
         this.reservedFrom = reservedFrom;

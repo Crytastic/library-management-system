@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.data.model.ReservationDAO;
+import cz.muni.fi.pa165.data.model.Reservation;
 import cz.muni.fi.pa165.service.ReservationService;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,20 +31,20 @@ class ReservationFacadeTest {
     @InjectMocks
     private ReservationFacade reservationFacade;
 
-    private ReservationDAO reservationDAO;
-    private ReservationDAO expiredReservationDAO;
+    private Reservation reservation;
+    private Reservation expiredReservation;
 
     @BeforeEach
     void setUp() {
-        reservationDAO = new ReservationDAO("The Lord of the Rings", "John Doe", TimeProvider.now(), TimeProvider.now().plusDays(1));
-        expiredReservationDAO = new ReservationDAO("The Hobbit", "Franta Vopršálek", TimeProvider.now().minusDays(4), TimeProvider.now().minusDays(1));
+        reservation = new Reservation("The Lord of the Rings", "John Doe", TimeProvider.now(), TimeProvider.now().plusDays(1));
+        expiredReservation = new Reservation("The Hobbit", "Franta Vopršálek", TimeProvider.now().minusDays(4), TimeProvider.now().minusDays(1));
     }
 
     @Test
     void findAll_existingReservations_callsFindAllOnReservationService() {
         // Arrange
-        List<ReservationDAO> reservations = new ArrayList<>();
-        reservations.add(reservationDAO);
+        List<Reservation> reservations = new ArrayList<>();
+        reservations.add(reservation);
         when(reservationService.findAll()).thenReturn(reservations);
 
         // Act
@@ -60,7 +60,7 @@ class ReservationFacadeTest {
         // Arrange
         String book = "The Lord of the Rings";
         String reservedBy = "John Doe";
-        when(reservationService.createReservation(book, reservedBy)).thenReturn(reservationDAO);
+        when(reservationService.createReservation(book, reservedBy)).thenReturn(reservation);
 
         // Act
         ReservationDTO result = reservationFacade.createReservation(book, reservedBy);
@@ -76,7 +76,7 @@ class ReservationFacadeTest {
     void findById_reservationExists_returnsUpdatedReservationDTO() {
         // Arrange
         Long id = 1L;
-        when(reservationService.findById(id)).thenReturn(Optional.of(reservationDAO));
+        when(reservationService.findById(id)).thenReturn(Optional.of(reservation));
 
         // Act
         Optional<ReservationDTO> result = reservationFacade.findById(id);
@@ -106,18 +106,18 @@ class ReservationFacadeTest {
         Long id = 1L;
         OffsetDateTime reservedFrom = TimeProvider.now();
         OffsetDateTime reservedTo = TimeProvider.now().plusDays(1);
-        when(reservationService.updateById(id, reservationDAO.getBook(), reservationDAO.getReservedBy(), reservedFrom, reservedTo)).thenReturn(Optional.of(reservationDAO));
+        when(reservationService.updateById(id, reservation.getBook(), reservation.getReservedBy(), reservedFrom, reservedTo)).thenReturn(Optional.of(reservation));
 
         // Act
-        Optional<ReservationDTO> result = reservationFacade.updateById(id, reservationDAO.getBook(), reservationDAO.getReservedBy(), reservedFrom, reservedTo);
+        Optional<ReservationDTO> result = reservationFacade.updateById(id, reservation.getBook(), reservation.getReservedBy(), reservedFrom, reservedTo);
 
         // Assert
         assertThat(result).isPresent();
-        assertThat(result.get().getBook()).isEqualTo(reservationDAO.getBook());
-        assertThat(result.get().getReservedBy()).isEqualTo(reservationDAO.getReservedBy());
-        assertThat(result.get().getReservedFrom()).isEqualTo(reservationDAO.getReservedFrom());
-        assertThat(result.get().getReservedTo()).isEqualTo(reservationDAO.getReservedTo());
-        verify(reservationService, times(1)).updateById(id, reservationDAO.getBook(), reservationDAO.getReservedBy(), reservedFrom, reservedTo);
+        assertThat(result.get().getBook()).isEqualTo(reservation.getBook());
+        assertThat(result.get().getReservedBy()).isEqualTo(reservation.getReservedBy());
+        assertThat(result.get().getReservedFrom()).isEqualTo(reservation.getReservedFrom());
+        assertThat(result.get().getReservedTo()).isEqualTo(reservation.getReservedTo());
+        verify(reservationService, times(1)).updateById(id, reservation.getBook(), reservation.getReservedBy(), reservedFrom, reservedTo);
     }
 
     @Test
@@ -126,14 +126,14 @@ class ReservationFacadeTest {
         Long id = 1L;
         OffsetDateTime reservedFrom = TimeProvider.now();
         OffsetDateTime reservedTo = TimeProvider.now().plusDays(1);
-        when(reservationService.updateById(id, reservationDAO.getBook(), reservationDAO.getReservedBy(), reservedFrom, reservedTo)).thenReturn(Optional.empty());
+        when(reservationService.updateById(id, reservation.getBook(), reservation.getReservedBy(), reservedFrom, reservedTo)).thenReturn(Optional.empty());
 
         // Act
-        Optional<ReservationDTO> result = reservationFacade.updateById(id, reservationDAO.getBook(), reservationDAO.getReservedBy(), reservedFrom, reservedTo);
+        Optional<ReservationDTO> result = reservationFacade.updateById(id, reservation.getBook(), reservation.getReservedBy(), reservedFrom, reservedTo);
 
         // Assert
         assertThat(result).isEmpty();
-        verify(reservationService, times(1)).updateById(id, reservationDAO.getBook(), reservationDAO.getReservedBy(), reservedFrom, reservedTo);
+        verify(reservationService, times(1)).updateById(id, reservation.getBook(), reservation.getReservedBy(), reservedFrom, reservedTo);
     }
 
     @Test
@@ -151,8 +151,8 @@ class ReservationFacadeTest {
     @Test
     void findAllActive_validReservations_returnsListOfActiveReservations() {
         // Arrange
-        List<ReservationDAO> activeReservations = new ArrayList<>();
-        activeReservations.add(reservationDAO);
+        List<Reservation> activeReservations = new ArrayList<>();
+        activeReservations.add(reservation);
         when(reservationService.findAllActive()).thenReturn(activeReservations);
 
         // Act
@@ -160,18 +160,18 @@ class ReservationFacadeTest {
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.getFirst().getBook()).isEqualTo(reservationDAO.getBook());
-        assertThat(result.getFirst().getReservedBy()).isEqualTo(reservationDAO.getReservedBy());
-        assertThat(result.getFirst().getReservedFrom()).isEqualTo(reservationDAO.getReservedFrom());
-        assertThat(result.getFirst().getReservedTo()).isEqualTo(reservationDAO.getReservedTo());
+        assertThat(result.getFirst().getBook()).isEqualTo(reservation.getBook());
+        assertThat(result.getFirst().getReservedBy()).isEqualTo(reservation.getReservedBy());
+        assertThat(result.getFirst().getReservedFrom()).isEqualTo(reservation.getReservedFrom());
+        assertThat(result.getFirst().getReservedTo()).isEqualTo(reservation.getReservedTo());
         verify(reservationService, times(1)).findAllActive();
     }
 
     @Test
     void findAllExpired_validReservations_returnsListOfExpiredReservations() {
         // Arrange
-        List<ReservationDAO> expiredReservations = new ArrayList<>();
-        expiredReservations.add(expiredReservationDAO);
+        List<Reservation> expiredReservations = new ArrayList<>();
+        expiredReservations.add(expiredReservation);
         when(reservationService.findAllExpired()).thenReturn(expiredReservations);
 
         // Act
@@ -179,10 +179,10 @@ class ReservationFacadeTest {
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.getFirst().getBook()).isEqualTo(expiredReservationDAO.getBook());
-        assertThat(result.getFirst().getReservedBy()).isEqualTo(expiredReservationDAO.getReservedBy());
-        assertThat(result.getFirst().getReservedFrom()).isEqualTo(expiredReservationDAO.getReservedFrom());
-        assertThat(result.getFirst().getReservedTo()).isEqualTo(expiredReservationDAO.getReservedTo());
+        assertThat(result.getFirst().getBook()).isEqualTo(expiredReservation.getBook());
+        assertThat(result.getFirst().getReservedBy()).isEqualTo(expiredReservation.getReservedBy());
+        assertThat(result.getFirst().getReservedFrom()).isEqualTo(expiredReservation.getReservedFrom());
+        assertThat(result.getFirst().getReservedTo()).isEqualTo(expiredReservation.getReservedTo());
         verify(reservationService, times(1)).findAllExpired();
     }
 }
