@@ -19,6 +19,7 @@ import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -60,6 +61,18 @@ public class ReservationControllerIT {
         assertThat(response.getReservedBy()).isEqualTo(reservedBy);
         assertThat(response.getReservedFrom().truncatedTo(ChronoUnit.MILLIS)).isEqualTo(reservedFrom.withOffsetSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS));
         assertThat(response.getReservedTo().truncatedTo(ChronoUnit.MILLIS)).isEqualTo(reservedTo.withOffsetSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS));
+    }
+
+    @Test
+    void updateReservation_invalidId_returnsNotFound() throws Exception {
+        // Arrange
+        Long id = 10L;
+
+        // Act and Assert
+        mockMvc.perform(get("/api/books/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(""));
     }
 
 }
