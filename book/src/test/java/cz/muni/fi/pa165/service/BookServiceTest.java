@@ -206,16 +206,16 @@ public class BookServiceTest {
         String description = "Fantasy novel";
         String author = "J.R.R. Tolkien";
         Book createdBook = new Book(title, author, description, BookStatus.AVAILABLE);
-        when(bookRepository.save(any(Book.class))).thenReturn(createdBook);
+        when(bookRepository.save(createdBook)).thenReturn(createdBook);
 
         // Act
-        Book result = bookService.createBook(title, description, author);
+        Book result = bookService.createBook(title, author, description);
 
         // Assert
         assertThat(result).isNotNull().isEqualTo(createdBook);
         assertThat(result.getTitle()).isEqualTo(title);
         assertThat(result.getAuthor()).isEqualTo(author);
         assertThat(result.getDescription()).isEqualTo(description);
-        verify(bookRepository, times(1)).save(any(Book.class));
+        verify(bookRepository, times(1)).save(createdBook);
     }
 }
