@@ -2,7 +2,6 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.User;
 import cz.muni.fi.pa165.data.repository.JpaUserRepository;
-import cz.muni.fi.pa165.data.repository.UserRepository;
 import cz.muni.fi.pa165.exceptions.UnauthorisedException;
 import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
 import cz.muni.fi.pa165.util.TestDataFactory;
@@ -33,9 +32,6 @@ class UserServiceTest {
 
     @Mock
     private JpaUserRepository jpaUserRepository;
-
-    @Mock
-    private UserRepository userRepository;
 
     @InjectMocks
     private UserService userService;

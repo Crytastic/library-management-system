@@ -3,7 +3,6 @@ package cz.muni.fi.pa165.service;
 import com.google.common.hash.Hashing;
 import cz.muni.fi.pa165.data.model.User;
 import cz.muni.fi.pa165.data.repository.JpaUserRepository;
-import cz.muni.fi.pa165.data.repository.UserRepository;
 import cz.muni.fi.pa165.exceptions.UnauthorisedException;
 import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
 import org.openapitools.model.UserType;
@@ -28,12 +27,9 @@ public class UserService {
 
     private static final LocalDate dateOfAdultAge = LocalDate.now().minusYears(18);
 
-    private final UserRepository userRepository;
-
     private final JpaUserRepository jpaUserRepository;
 
-    public UserService(@Autowired UserRepository userRepository, @Autowired JpaUserRepository jpaUserRepository) {
-        this.userRepository = userRepository;
+    public UserService(@Autowired JpaUserRepository jpaUserRepository) {
         this.jpaUserRepository = jpaUserRepository;
     }
 
