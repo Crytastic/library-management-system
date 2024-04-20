@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.data.model;
 
+import jakarta.persistence.*;
 import org.openapitools.model.BookStatus;
 
 import java.util.Objects;
@@ -9,11 +10,21 @@ import java.util.Objects;
  *
  * @author Martin Suchánek
  */
+@Entity
+@Table(name = "book")
 public class Book {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "book_id")
     Long id;
+    @Column
     String title;
+    @Column
     String author;
+    @Column
     String description;
+    @Column
+    @Enumerated(EnumType.STRING)
     BookStatus status;
 
     public Book(String title, String author, String description, BookStatus status) {
@@ -21,6 +32,9 @@ public class Book {
         this.author = author;
         this.description = description;
         this.status = status;
+    }
+
+    public Book() {
     }
 
     public Long getId() {

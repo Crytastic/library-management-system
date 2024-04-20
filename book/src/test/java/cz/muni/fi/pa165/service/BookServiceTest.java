@@ -1,7 +1,7 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Book;
-import cz.muni.fi.pa165.repository.BookRepository;
+import cz.muni.fi.pa165.data.repository.BookRepository;
 import cz.muni.fi.pa165.stubs.RentalServiceStub;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,43 +53,37 @@ public class BookServiceTest {
     }
 
     @Test
-    void updateById_bookNotFound_returnsEmpty() {
+    void updateById_bookNotFound_returnsZero() {
         // Arrange
         Long id = 1L;
         String newTitle = "The Lord of the Rings: The Two Towers";
         String newAuthor = "J. R. R. Tolkien";
         String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
         BookStatus newStatus = BookStatus.RENTED;
-        when(bookRepository.findById(id)).thenReturn(Optional.empty());
+        when(bookRepository.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(0);
 
         // Act
-        Optional<Book> result = bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus);
+        int result = bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus);
 
         // Assert
-        assertThat(result).isEmpty();
+        assertThat(result).isEqualTo(0);
     }
 
     @Test
-    void updateById_bookFound_updatesBook() {
+    void updateById_bookFound_returnsOneOrMore() {
         // Arrange
         Long id = 1L;
         String newTitle = "The Lord of the Rings: The Two Towers";
         String newAuthor = "J. R. R. Tolkien";
         String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
         BookStatus newStatus = BookStatus.RENTED;
-        Book existingBook = new Book("The Lord of the Rings", "Tolkien", "Fantasy novel", BookStatus.AVAILABLE);
-        when(bookRepository.findById(id)).thenReturn(Optional.of(existingBook));
-        when(bookRepository.updateById(id, existingBook)).thenReturn(Optional.of(existingBook));
+        when(bookRepository.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(1);
 
         // Act
-        Optional<Book> result = bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus);
+        int result = bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus);
 
         // Assert
-        assertThat(result).isPresent().contains(existingBook);
-        assertThat(result.get().getTitle()).isEqualTo(newTitle);
-        assertThat(result.get().getAuthor()).isEqualTo(newAuthor);
-        assertThat(result.get().getDescription()).isEqualTo(newDescription);
-        assertThat(result.get().getStatus()).isEqualTo(newStatus);
+        assertThat(result).isEqualTo(1);
     }
 
     @Test
@@ -212,16 +206,16 @@ public class BookServiceTest {
         String description = "Fantasy novel";
         String author = "J.R.R. Tolkien";
         Book createdBook = new Book(title, author, description, BookStatus.AVAILABLE);
-        when(bookRepository.store(any(Book.class))).thenReturn(createdBook);
+        when(bookRepository.save(createdBook)).thenReturn(createdBook);
 
         // Act
-        Book result = bookService.createBook(title, description, author);
+        Book result = bookService.createBook(title, author, description);
 
         // Assert
         assertThat(result).isNotNull().isEqualTo(createdBook);
         assertThat(result.getTitle()).isEqualTo(title);
         assertThat(result.getAuthor()).isEqualTo(author);
         assertThat(result.getDescription()).isEqualTo(description);
-        verify(bookRepository, times(1)).store(any(Book.class));
+        verify(bookRepository, times(1)).save(createdBook);
     }
 }
