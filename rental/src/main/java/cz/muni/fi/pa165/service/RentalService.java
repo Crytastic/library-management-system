@@ -32,7 +32,7 @@ public class RentalService {
     }
 
     public List<Rental> findAll() {
-        return rentalRepository.findAll();
+        return jpaRentalRepository.findAll();
     }
 
     public Rental createRental(String book, String rentedBy, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {

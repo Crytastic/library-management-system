@@ -100,7 +100,7 @@ class RentalServiceTest {
         List<Rental> rentals = new ArrayList<>();
         rentals.add(TestDataFactory.activeRental);
         rentals.add(TestDataFactory.inActiveRental);
-        Mockito.when(rentalRepository.findAll()).thenReturn(rentals);
+        Mockito.when(jpaRentalRepository.findAll()).thenReturn(rentals);
 
         List<Rental> listOfRentals = rentalService.findAll();
 
