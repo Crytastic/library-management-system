@@ -75,7 +75,7 @@ public class UserService {
      * The MEMBERS can change only themselves, they can not change a type of user.
      */
     public Optional<User> updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) {
-        User userByUsername = userRepository.findUserByUsername(username);
+        User userByUsername = jpaUserRepository.findUserByUsername(username);
         if (userByUsername == null || !userByUsername.getPasswordHash().equals(createPasswordHash(password))) {
             throw new UnauthorisedException();
         }
@@ -93,6 +93,6 @@ public class UserService {
         if (address != null) updatedUser.setAddress(address);
         if (birthdate != null) updatedUser.setBirthDate(birthdate);
 
-        return Optional.ofNullable(userRepository.updateUser(updatedUser.getId(), updatedUser));
+        return Optional.of(jpaUserRepository.save(updatedUser));
     }
 }

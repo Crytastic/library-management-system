@@ -14,4 +14,7 @@ public interface JpaUserRepository extends JpaRepository<User, Long>  {
 
     @Query("SELECT u FROM User u WHERE u.birthDate <= :olderOrEqualThan")
     List<User> findAllByAge(LocalDate olderOrEqualThan);
+
+    @Query("SELECT u FROM User u WHERE u.username = :username")
+    User findUserByUsername(String username);
 }
