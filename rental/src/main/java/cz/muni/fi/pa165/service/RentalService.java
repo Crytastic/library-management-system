@@ -48,7 +48,7 @@ public class RentalService {
     }
 
     public Optional<Rental> findById(Long id) {
-        return rentalRepository.findById(id);
+        return jpaRentalRepository.findById(id);
     }
 
     public void deleteById(Long id) {
