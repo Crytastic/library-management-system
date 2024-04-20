@@ -2,7 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import com.google.common.hash.Hashing;
 import cz.muni.fi.pa165.data.model.User;
-import cz.muni.fi.pa165.data.repository.JpaUserRepository;
+import cz.muni.fi.pa165.data.repository.UserRepository;
 import cz.muni.fi.pa165.exceptions.UnauthorisedException;
 import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
 import org.openapitools.model.UserType;
@@ -27,24 +27,24 @@ public class UserService {
 
     private static final LocalDate dateOfAdultAge = LocalDate.now().minusYears(18);
 
-    private final JpaUserRepository jpaUserRepository;
+    private final UserRepository userRepository;
 
-    public UserService(@Autowired JpaUserRepository jpaUserRepository) {
-        this.jpaUserRepository = jpaUserRepository;
+    public UserService(@Autowired UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public List<User> findAll(UserType userType) {
-        return jpaUserRepository.findAllByUserType(userType);
+        return userRepository.findAllByUserType(userType);
     }
 
     public List<User> findAllAdults() {
-        return jpaUserRepository.findAllByAge(dateOfAdultAge);
+        return userRepository.findAllByAge(dateOfAdultAge);
     }
 
     public User createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {
         String passwordHashed = createPasswordHash(password);
         try {
-            return jpaUserRepository.save(new User(username, passwordHashed, userType, address, birthDate));
+            return userRepository.save(new User(username, passwordHashed, userType, address, birthDate));
         } catch (DataIntegrityViolationException e) {
             throw new UsernameAlreadyExistsException(e.getMessage());
         }
@@ -57,11 +57,11 @@ public class UserService {
     }
 
     public Optional<User> findById(Long id) {
-        return jpaUserRepository.findById(id);
+        return userRepository.findById(id);
     }
 
     public void deleteById(Long id) {
-        jpaUserRepository.deleteById(id);
+        userRepository.deleteById(id);
     }
 
 
@@ -71,7 +71,7 @@ public class UserService {
      * The MEMBERS can change only themselves, they can not change a type of user.
      */
     public Optional<User> updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) {
-        User userByUsername = jpaUserRepository.findUserByUsername(username);
+        User userByUsername = userRepository.findUserByUsername(username);
         if (userByUsername == null || !userByUsername.getPasswordHash().equals(createPasswordHash(password))) {
             throw new UnauthorisedException();
         }
@@ -80,7 +80,7 @@ public class UserService {
                 throw new UnauthorisedException();
             }
         }
-        Optional<User> optionalUpdatedUser = jpaUserRepository.findById(id);
+        Optional<User> optionalUpdatedUser = userRepository.findById(id);
         if (optionalUpdatedUser.isEmpty()) {
             return Optional.empty();
         }
@@ -89,6 +89,6 @@ public class UserService {
         if (address != null) updatedUser.setAddress(address);
         if (birthdate != null) updatedUser.setBirthDate(birthdate);
 
-        return Optional.of(jpaUserRepository.save(updatedUser));
+        return Optional.of(userRepository.save(updatedUser));
     }
 }
