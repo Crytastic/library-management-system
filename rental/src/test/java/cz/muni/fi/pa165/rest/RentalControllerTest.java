@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openapitools.model.RentalDTO;
 import org.springframework.http.HttpStatus;
@@ -20,8 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Sophia Zápotočná
@@ -38,7 +36,7 @@ class RentalControllerTest {
     void findById_rentalFound_returnsRentalAndOkStatus() {
         RentalDTO rental = createDTORental();
 
-        Mockito.when(rentalFacade.findById(1L)).thenReturn(Optional.of(rental));
+        when(rentalFacade.findById(1L)).thenReturn(Optional.of(rental));
 
         ResponseEntity<RentalDTO> response = rentalController.getRental(1L);
 
@@ -49,7 +47,7 @@ class RentalControllerTest {
 
     @Test
     void findById_rentalNotFound_returnsNotFoundStatus() {
-        Mockito.when(rentalFacade.findById(1L)).thenReturn(Optional.empty());
+        when(rentalFacade.findById(1L)).thenReturn(Optional.empty());
 
         ResponseEntity<RentalDTO> response = rentalController.getRental(1L);
 
@@ -67,7 +65,7 @@ class RentalControllerTest {
         RentalDTO rental = new RentalDTO().book(book).rentedBy(rentedBy).expectedReturnDate(expectedReturnDate)
                 .lateReturnWeeklyFine(lateReturnWeeklyFine);
 
-        Mockito.when(rentalFacade.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine)).thenReturn(rental);
+        when(rentalFacade.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine)).thenReturn(rental);
 
         ResponseEntity<RentalDTO> response = rentalController
                 .createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine);
@@ -82,7 +80,7 @@ class RentalControllerTest {
         RentalDTO rentalDTO = createDTORental();
         List<RentalDTO> rentals = new ArrayList<>();
         rentals.add(rentalDTO);
-        Mockito.when(rentalFacade.findAll()).thenReturn(rentals);
+        when(rentalFacade.findAll()).thenReturn(rentals);
 
         ResponseEntity<List<RentalDTO>> response = rentalController.getRentals();
 
@@ -103,7 +101,7 @@ class RentalControllerTest {
     @Test
     void updateRental_rentalFound_returnsOkStatus() {
         RentalDTO rentalDTO = createDTORental();
-        Mockito.when(rentalFacade.updateById(1L,
+        when(rentalFacade.updateById(1L,
                 rentalDTO.getBook(),
                 rentalDTO.getRentedBy(),
                 rentalDTO.getBorrowDate(),
@@ -129,7 +127,7 @@ class RentalControllerTest {
     @Test
     void updateRental_rentalNotFound_returnsNotFoundStatus() {
         RentalDTO rentalDTO = createDTORental();
-        Mockito.when(rentalFacade.updateById(1L,
+        when(rentalFacade.updateById(1L,
                 rentalDTO.getBook(),
                 rentalDTO.getRentedBy(),
                 rentalDTO.getBorrowDate(),
@@ -154,7 +152,7 @@ class RentalControllerTest {
 
     @Test
     void getFineById_rentalFound_returnsFineAndOkStatus() {
-        Mockito.when(rentalFacade.getFineById(1L)).thenReturn(Optional.ofNullable(BigDecimal.TWO));
+        when(rentalFacade.getFineById(1L)).thenReturn(Optional.ofNullable(BigDecimal.TWO));
 
         ResponseEntity<BigDecimal> response = rentalController.getFineById(1L);
 
@@ -165,7 +163,7 @@ class RentalControllerTest {
 
     @Test
     void getFineById_rentalNotFound_returnsNotFoundStatus() {
-        Mockito.when(rentalFacade.getFineById(1L)).thenReturn(Optional.empty());
+        when(rentalFacade.getFineById(1L)).thenReturn(Optional.empty());
 
         ResponseEntity<BigDecimal> response = rentalController.getFineById(1L);
 
