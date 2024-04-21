@@ -69,12 +69,12 @@ on [http://localhost:8081/swagger-ui/index.html#](http://localhost:8081/swagger-
 ReservationDTO class is generated via OpenAPI. Refer to [OpenAPI documentation](https://swagger.io/specification/) and
 reservation's respective [openapi config file](/reservation/src/main/resources/openapi.yaml).
 
-### Account Microservice
+### User Microservice
 
 #### Overview
 
-The Account microservice allows users to create, manage, and delete (own) accounts. Librarians can list and manage all
-accounts. It's accessible at [http://localhost:8082](http://localhost:8082). Also, via GUI
+The User microservice allows users to create, manage, and delete (own) accounts. Librarians can list and manage all
+users. It's accessible at [http://localhost:8082](http://localhost:8082). Also, via GUI
 on [http://localhost:8082/swagger-ui/index.html#](http://localhost:8082/swagger-ui/index.html#).
 
 #### Endpoints
@@ -88,7 +88,7 @@ on [http://localhost:8082/swagger-ui/index.html#](http://localhost:8082/swagger-
 
 #### Implementation details
 
-UserDTO class is generated via OpenAPI. Refer to [OpenAPI documentation](https://swagger.io/specification/) and rental's
+UserDTO class is generated via OpenAPI. Refer to [OpenAPI documentation](https://swagger.io/specification/) and users's
 respective [openapi config file](/user/src/main/resources/openapi.yaml).
 
 ### Book Microservice

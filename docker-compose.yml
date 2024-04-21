@@ -12,9 +12,9 @@ services:
       dockerfile: DockerFile
     ports:
       - "8081:8081"
-  account:
+  user:
     build:
-      context: ./account/
+      context: ./user/
       dockerfile: DockerFile
     ports:
       - "8082:8082"
