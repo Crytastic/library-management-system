@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.facade;
 
 import cz.muni.fi.pa165.data.model.Book;
+import cz.muni.fi.pa165.mappers.BookMapper;
 import cz.muni.fi.pa165.service.BookService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +24,9 @@ class BookFacadeTest {
     @Mock
     private BookService bookService;
 
+    @Mock
+    private BookMapper bookMapper;
+
     @InjectMocks
     private BookFacade bookFacade;
 
@@ -32,8 +36,12 @@ class BookFacadeTest {
         String title = "The Lord of the Rings";
         String author = "J.R.R. Tolkien";
         String description = "Fantasy";
+        BookStatus status = BookStatus.AVAILABLE;
         Book book = new Book(title, author, description, BookStatus.AVAILABLE);
+        BookDTO bookDTO = new BookDTO().author(author).title(title).description(description).status(status);
+
         when(bookService.createBook(title, author, description)).thenReturn(book);
+        when(bookMapper.mapToDto(book)).thenReturn(bookDTO);
 
         // Act
         BookDTO result = bookFacade.createBook(title, author, description);
@@ -53,9 +61,16 @@ class BookFacadeTest {
         String author = "J.R.R. Tolkien";
         String description = "Fantasy";
         BookStatus status = BookStatus.AVAILABLE;
+
         List<Book> books = new ArrayList<>();
         books.add(new Book(title, author, description, status));
+
+        List<BookDTO> booksDTO = new ArrayList<>();
+        booksDTO.add(new BookDTO().author(author).title(title).description(description).status(status));
+
         when(bookService.findByFilter(title, author, description, status)).thenReturn(books);
+        when(bookMapper.mapToList(books)).thenReturn(booksDTO);
+
 
         // Act
         List<BookDTO> result = bookFacade.findByFilter(title, author, description, status);
@@ -69,9 +84,15 @@ class BookFacadeTest {
     void findById_bookExists_returnsBookDTO() {
         // Arrange
         Long id = 1L;
-        Book book = new Book("The Lord of the Rings", "J.R.R. Tolkien", "Fantasy", BookStatus.AVAILABLE);
+        String title = "The Lord of the Rings";
+        String author = "J.R.R. Tolkien";
+        String description = "Fantasy";
+        BookStatus status = BookStatus.AVAILABLE;
+        Book book = new Book(title, author, description, status);
+        BookDTO bookDTO = new BookDTO().author(author).title(title).description(description).status(status);
+        book.setId(id);
         when(bookService.findById(id)).thenReturn(Optional.of(book));
-
+        when(bookMapper.mapToDto(book)).thenReturn(bookDTO);
         // Act
         Optional<BookDTO> result = bookFacade.findById(id);
 
