@@ -53,8 +53,8 @@ public class ReservationFacade {
         return reservationService.findById(id).map(this::convertToDTO);
     }
 
-    public Optional<ReservationDTO> updateById(Long id, String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
-        return reservationService.updateById(id, book, reservedBy, reservedFrom, reservedTo).map(this::convertToDTO);
+    public int updateById(Long id, String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
+        return reservationService.updateById(id, book, reservedBy, reservedFrom, reservedTo);
     }
 
     public void deleteById(Long id) {

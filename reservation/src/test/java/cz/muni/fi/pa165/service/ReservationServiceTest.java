@@ -1,7 +1,7 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Reservation;
-import cz.muni.fi.pa165.repository.ReservationRepository;
+import cz.muni.fi.pa165.data.repository.ReservationRepository;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -72,14 +72,14 @@ class ReservationServiceTest {
     @Test
     void createReservation_validReservation_callsReservationRepositoryStore() {
         // Arrange
-        when(reservationRepository.store(any(Reservation.class))).thenReturn(reservation);
+        when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
 
         // Act
         Reservation result = reservationService.createReservation("The Lord of the Rings", "Franta Vopršálek");
 
         // Assert
         assertThat(result).isEqualTo(reservation);
-        verify(reservationRepository, times(1)).store(any(Reservation.class));
+        verify(reservationRepository, times(1)).save(any(Reservation.class));
     }
 
     @Test
@@ -89,40 +89,38 @@ class ReservationServiceTest {
         String newBook = "Updated Book";
         String newReservedBy = "Updated User";
         OffsetDateTime newReservedFrom = TimeProvider.now().plusDays(1);
-        OffsetDateTime newReservedTo = TimeProvider.now().plusDays(4);
-        when(reservationRepository.findById(id)).thenReturn(Optional.of(reservation));
-        when(reservationRepository.updateById(eq(id), any(Reservation.class))).thenReturn(Optional.of(reservation));
+        OffsetDateTime newReservedTo = TimeProvider.now().plusDays(4);when(reservationRepository.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo)).thenReturn(1);
 
         // Act
-        Optional<Reservation> result = reservationService.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);
+        int result = reservationService.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);
 
         // Assert
-        assertThat(result).isPresent().contains(reservation);
-        assertThat(reservation.getBook()).isEqualTo(newBook);
-        assertThat(reservation.getReservedBy()).isEqualTo(newReservedBy);
-        assertThat(reservation.getReservedFrom()).isEqualTo(newReservedFrom);
-        assertThat(reservation.getReservedTo()).isEqualTo(newReservedTo);
-        verify(reservationRepository, times(1)).updateById(eq(id), any(Reservation.class));
+        assertThat(result).isEqualTo(1);
+        verify(reservationRepository, times(1)).updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);
     }
 
     @Test
     void updateById_nonExistingId_returnsEmptyOptional() {
         // Arrange
         Long id = 1L;
-        when(reservationRepository.findById(id)).thenReturn(Optional.empty());
+        String newBook = "New Book";
+        String newReservedBy = "New User";
+        OffsetDateTime newReservedFrom = TimeProvider.now().plusDays(1);
+        OffsetDateTime newReservedTo = TimeProvider.now().plusDays(4);
+        when(reservationRepository.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo)).thenReturn(0);
 
         // Act
-        Optional<Reservation> result = reservationService.updateById(id, "New Book", "New User", TimeProvider.now(), TimeProvider.now().plusDays(3));
+        int result = reservationService.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);
 
         // Assert
-        assertThat(result).isEmpty();
-        verify(reservationRepository, never()).updateById(anyLong(), any(Reservation.class));
+        assertThat(result).isEqualTo(0);
     }
 
     @Test
     void deleteById_validId_callsReservationRepositoryDeleteById() {
         // Arrange
         Long id = 1L;
+        doNothing().when(reservationRepository).deleteById(id);
 
         // Act
         reservationService.deleteById(id);
@@ -138,14 +136,14 @@ class ReservationServiceTest {
                 new Reservation("Active Book 1", "User 1", TimeProvider.now(), TimeProvider.now().plusDays(3)),
                 new Reservation("Active Book 2", "User 2", TimeProvider.now(), TimeProvider.now().plusDays(5))
         );
-        when(reservationRepository.findAllActive()).thenReturn(activeReservations);
+        when(reservationRepository.findAllActive(any(OffsetDateTime.class))).thenReturn(activeReservations);
 
         // Act
         List<Reservation> result = reservationService.findAllActive();
 
         // Assert
         assertThat(result).isEqualTo(activeReservations);
-        verify(reservationRepository, times(1)).findAllActive();
+        verify(reservationRepository, times(1)).findAllActive(any(OffsetDateTime.class));
     }
 
     @Test
@@ -155,13 +153,13 @@ class ReservationServiceTest {
                 new Reservation("Expired Book 1", "User 1", TimeProvider.now().minusDays(5), TimeProvider.now().minusDays(2)),
                 new Reservation("Expired Book 2", "User 2", TimeProvider.now().minusDays(3), TimeProvider.now().minusDays(1))
         );
-        when(reservationRepository.findAllExpired()).thenReturn(expiredReservations);
+        when(reservationRepository.findAllExpired(any(OffsetDateTime.class))).thenReturn(expiredReservations);
 
         // Act
         List<Reservation> result = reservationService.findAllExpired();
 
         // Assert
         assertThat(result).isEqualTo(expiredReservations);
-        verify(reservationRepository, times(1)).findAllExpired();
+        verify(reservationRepository, times(1)).findAllExpired(any(OffsetDateTime.class));
     }
 }

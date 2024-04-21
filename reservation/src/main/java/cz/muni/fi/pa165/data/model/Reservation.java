@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.data.model;
 
+import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.OffsetDateTime;
@@ -10,12 +11,20 @@ import java.util.Objects;
  *
  * @author Martin Suchánek
  */
+@Entity
 public class Reservation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column()
     private Long id;
+    @Column
     private String book;
+    @Column
     private String reservedBy;
+    @Column
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime reservedFrom;
+    @Column
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime reservedTo;
 
@@ -24,6 +33,9 @@ public class Reservation {
         this.reservedBy = reservedBy;
         this.reservedFrom = reservedFrom;
         this.reservedTo = reservedTo;
+    }
+
+    public Reservation() {
     }
 
     public void setId(Long id) {

@@ -69,9 +69,8 @@ public class ReservationController implements ReservationApi {
     }
 
     @Override
-    public ResponseEntity<ReservationDTO> updateReservation(Long id, String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
-        Optional<ReservationDTO> reservation = reservationFacade.updateById(id, book, reservedBy, reservedFrom, reservedTo);
-        return reservation.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<Void> updateReservation(Long id, String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
+        int modifiedCount = reservationFacade.updateById(id, book, reservedBy, reservedFrom, reservedTo);
+        return new ResponseEntity<>(modifiedCount > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 }
