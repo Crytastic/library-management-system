@@ -22,15 +22,15 @@ import java.util.Optional;
 @Service
 public class RentalService {
 
-    private final JpaRentalRepository jpaRentalRepository;
+    private final JpaRentalRepository rentalRepository;
 
     @Autowired
     public RentalService(JpaRentalRepository jpaBookRepository, RentalRepository rentalRepository) {
-        this.jpaRentalRepository = jpaBookRepository;
+        this.rentalRepository = jpaBookRepository;
     }
 
     public List<Rental> findAll() {
-        return jpaRentalRepository.findAll();
+        return rentalRepository.findAll();
     }
 
     public Rental createRental(String book, String rentedBy, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
@@ -42,19 +42,19 @@ public class RentalService {
                 null,
                 lateReturnWeeklyFine == null ? getDefaultLateReturnWeeklyFine() : lateReturnWeeklyFine,
                 false);
-        return jpaRentalRepository.save(rental);
+        return rentalRepository.save(rental);
     }
 
     public Optional<Rental> findById(Long id) {
-        return jpaRentalRepository.findById(id);
+        return rentalRepository.findById(id);
     }
 
     public void deleteById(Long id) {
-        jpaRentalRepository.deleteById(id);
+        rentalRepository.deleteById(id);
     }
 
     public int updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
-        return jpaRentalRepository.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
+        return rentalRepository.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
     }
 
     public Optional<BigDecimal> getFineById(Long id) {
