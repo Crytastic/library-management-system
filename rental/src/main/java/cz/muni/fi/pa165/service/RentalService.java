@@ -5,6 +5,7 @@ import cz.muni.fi.pa165.data.repository.RentalRepository;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -27,6 +28,7 @@ public class RentalService {
         this.rentalRepository = jpaBookRepository;
     }
 
+    @Transactional
     public List<Rental> findAll() {
         return rentalRepository.findAll();
     }
@@ -43,18 +45,22 @@ public class RentalService {
         return rentalRepository.save(rental);
     }
 
+    @Transactional
     public Optional<Rental> findById(Long id) {
         return rentalRepository.findById(id);
     }
 
+    @Transactional
     public void deleteById(Long id) {
         rentalRepository.deleteById(id);
     }
 
+    @Transactional
     public int updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
         return rentalRepository.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
     }
 
+    @Transactional
     public Optional<BigDecimal> getFineById(Long id) {
         Optional<Rental> optionalRental = findById(id);
 
