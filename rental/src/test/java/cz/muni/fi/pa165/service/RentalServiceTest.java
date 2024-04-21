@@ -36,19 +36,19 @@ class RentalServiceTest {
     void findById_rentalFound_returnsRental() {
         when(rentalRepository.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.activeRental));
 
-        Optional<Rental> foundDao = rentalService.findById(1L);
+        Optional<Rental> found = rentalService.findById(1L);
 
-        assertThat(foundDao).isPresent();
-        assertThat(foundDao.get()).isEqualTo(TestDataFactory.activeRental);
+        assertThat(found).isPresent();
+        assertThat(found.get()).isEqualTo(TestDataFactory.activeRental);
     }
 
     @Test
     void findById_rentalNotFound_returnsEmptyOptional() {
         when(rentalRepository.findById(11L)).thenReturn(Optional.empty());
 
-        Optional<Rental> foundDao = rentalService.findById(11L);
+        Optional<Rental> found = rentalService.findById(11L);
 
-        assertThat(foundDao).isEmpty();
+        assertThat(found).isEmpty();
     }
 
     @Test
@@ -200,7 +200,7 @@ class RentalServiceTest {
 
     @Test
     void getFineById_bookReturnedFineNotPaid_returnsSomeFine() {
-        Rental inActiveRental = TestDataFactory.inActiveRentalLateDAO;
+        Rental inActiveRental = TestDataFactory.inActiveRentalLate;
         when(rentalRepository.findById(inActiveRental.getId())).thenReturn(Optional.of(inActiveRental));
 
         Optional<BigDecimal> fine = rentalService.getFineById(inActiveRental.getId());
@@ -224,7 +224,7 @@ class RentalServiceTest {
 
     @Test
     void getFineById_bookNotReturnedNowIsLate_returnsSomeFine() {
-        Rental activeRental = TestDataFactory.activeRentalLateDAO;
+        Rental activeRental = TestDataFactory.activeRentalLate;
         when(rentalRepository.findById(activeRental.getId())).thenReturn(Optional.of(activeRental));
 
         try (MockedStatic<TimeProvider> timeProviderDummy = mockStatic(TimeProvider.class)) {
