@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -55,5 +56,17 @@ public class RentalControllerIT {
         assertThat(response.getReturned()).isEqualTo(rental.isReturned());
         assertThat(response.getLateReturnWeeklyFine().stripTrailingZeros()).isEqualTo(rental.getLateReturnWeeklyFine());
         assertThat(response.getFineResolved()).isEqualTo(rental.isFineResolved());
+    }
+
+    @Test
+    void getRental_invalidId_returnsNotFound() throws Exception {
+        // Arrange
+        Long id = 10L;
+
+        // Act and Assert
+        mockMvc.perform(get("/api/rentals/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(""));
     }
 }
