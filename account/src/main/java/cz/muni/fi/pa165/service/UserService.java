@@ -26,8 +26,6 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    private static final LocalDate dateOfAdultAge = LocalDate.now().minusYears(18);
-
     private final UserRepository userRepository;
 
     public UserService(@Autowired UserRepository userRepository) {
@@ -41,7 +39,7 @@ public class UserService {
 
     @Transactional
     public List<User> findAllAdults() {
-        return userRepository.findAllByAge(dateOfAdultAge);
+        return userRepository.findAllByAge(getDateForAdultAge());
     }
 
     @Transactional
@@ -97,5 +95,9 @@ public class UserService {
         if (birthdate != null) updatedUser.setBirthDate(birthdate);
 
         return Optional.of(userRepository.save(updatedUser));
+    }
+
+    private LocalDate getDateForAdultAge() {
+        return LocalDate.now().minusYears(18);
     }
 }
