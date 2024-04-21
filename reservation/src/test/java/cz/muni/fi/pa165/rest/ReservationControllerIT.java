@@ -64,7 +64,7 @@ public class ReservationControllerIT {
     }
 
     @Test
-    void updateReservation_invalidId_returnsNotFound() throws Exception {
+    void getReservation_invalidId_returnsNotFound() throws Exception {
         // Arrange
         Long id = 10L;
 
