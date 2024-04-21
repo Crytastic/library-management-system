@@ -69,7 +69,7 @@ public class ReservationControllerIT {
         Long id = 10L;
 
         // Act and Assert
-        mockMvc.perform(get("/api/books/{id}", id)
+        mockMvc.perform(get("/api/reservations/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(""));
