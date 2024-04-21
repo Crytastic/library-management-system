@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openapitools.model.UserDTO;
 import org.openapitools.model.UserType;
@@ -23,8 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Martin Suchánek
@@ -39,7 +37,7 @@ class UserFacadeTest {
 
     @Test
     void findById_userFound_returnsUser() {
-        Mockito.when(userService.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.firstMemberDAO));
+        when(userService.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.firstMemberDAO));
 
         Optional<UserDTO> userDTO = userFacade.findById(1L);
 
@@ -50,7 +48,7 @@ class UserFacadeTest {
 
     @Test
     void findById_userNotFound_returnsEmptyOptional() {
-        Mockito.when(userService.findById(1L)).thenReturn(Optional.empty());
+        when(userService.findById(1L)).thenReturn(Optional.empty());
 
         Optional<UserDTO> userDAO = userFacade.findById(1L);
 
@@ -64,9 +62,8 @@ class UserFacadeTest {
         UserType userType = UserType.MEMBER;
         String address = "Botanická 68a";
         LocalDate birthDate = LocalDate.parse("2000-02-02");
-        Long id = 1L;
         User testUser = new User(username, passwordHash, userType, address, birthDate);
-        Mockito.when(userService.createUser(
+        when(userService.createUser(
                 anyString(),
                 anyString(),
                 anyString(),
@@ -97,7 +94,7 @@ class UserFacadeTest {
         String address = "Botanická 68a";
         LocalDate birthDate = LocalDate.parse("2000-02-02");
 
-        Mockito.when(userService.createUser(anyString(), anyString(), anyString(), any(LocalDate.class), any(UserType.class))).thenThrow(UsernameAlreadyExistsException.class);
+        when(userService.createUser(anyString(), anyString(), anyString(), any(LocalDate.class), any(UserType.class))).thenThrow(UsernameAlreadyExistsException.class);
 
         assertThrows(UsernameAlreadyExistsException.class,
                 () -> userFacade.createUser(username, passwordHash, address, birthDate, userType));
@@ -115,7 +112,7 @@ class UserFacadeTest {
     @Test
     void updateUser_incorrectUsername_throwsUnauthorisedException() {
         User testUser = TestDataFactory.firstMemberDAO;
-        Mockito.when(userService.updateUser(
+        when(userService.updateUser(
                 TestDataFactory.secondMemberDAO.getId(),
                 "IncorrectUserName",
                 testUser.getPasswordHash(),
@@ -136,7 +133,7 @@ class UserFacadeTest {
     @Test
     void updateUser_incorrectPassword_throwsUnauthorisedException() {
         User testUser = TestDataFactory.firstMemberDAO;
-        Mockito.when(userService.updateUser(TestDataFactory.secondMemberDAO.getId(), testUser.getUsername(), "incorrectPassword", "Nová Adresa 123, Brno", null, null)).thenThrow(UnauthorisedException.class);
+        when(userService.updateUser(TestDataFactory.secondMemberDAO.getId(), testUser.getUsername(), "incorrectPassword", "Nová Adresa 123, Brno", null, null)).thenThrow(UnauthorisedException.class);
 
         assertThrows(UnauthorisedException.class, () ->
                 userFacade.updateUser(TestDataFactory.secondMemberDAO.getId(), testUser.getUsername(), "incorrectPassword", "Nová Adresa 123, Brno", null, null));
@@ -148,7 +145,7 @@ class UserFacadeTest {
         String actorPassword = TestDataFactory.firstLibrarianDAOPassword;
         Long notExistingId = 20L;
 
-        Mockito.when(userService.updateUser(notExistingId, actor.getUsername(), actorPassword, "Nová Adresa 123, Brno", null, null)).thenReturn(Optional.empty());
+        when(userService.updateUser(notExistingId, actor.getUsername(), actorPassword, "Nová Adresa 123, Brno", null, null)).thenReturn(Optional.empty());
 
         assertThat(userFacade.updateUser(notExistingId, actor.getUsername(), actorPassword, "Nová Adresa 123, Brno", null, null)).isEmpty();
     }
@@ -163,7 +160,7 @@ class UserFacadeTest {
         updatedUser.setAddress("Nová Adresa 132, Brno");
         updatedUser.setBirthDate(LocalDate.parse("1999-12-12"));
 
-        Mockito.when(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword, updatedUser.getAddress(), updatedUser.getBirthDate(), null)).thenReturn(Optional.of(updatedUser));
+        when(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword, updatedUser.getAddress(), updatedUser.getBirthDate(), null)).thenReturn(Optional.of(updatedUser));
 
         assertThat(userFacade.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
                 updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isPresent().contains(convertToDTO(updatedUser));
@@ -179,7 +176,7 @@ class UserFacadeTest {
         updatedUser.setAddress("Nová Adresa 132, Brno");
         updatedUser.setBirthDate(LocalDate.parse("1999-12-12"));
 
-        Mockito.when(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword, updatedUser.getAddress(), updatedUser.getBirthDate(), null)).thenReturn(Optional.of(updatedUser));
+        when(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword, updatedUser.getAddress(), updatedUser.getBirthDate(), null)).thenReturn(Optional.of(updatedUser));
 
         assertThat(userFacade.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
                 updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isPresent().contains(convertToDTO(updatedUser));
@@ -193,7 +190,7 @@ class UserFacadeTest {
         User updatedUser = TestDataFactory.secondMemberDAO;
         updatedUser.setUserType(UserType.LIBRARIAN);
 
-        Mockito.when(userService.updateUser(actor.getId(), actor.getUsername(), actorPassword,
+        when(userService.updateUser(actor.getId(), actor.getUsername(), actorPassword,
                 updatedUser.getAddress(), updatedUser.getBirthDate(), updatedUser.getUserType())).thenThrow(UnauthorisedException.class);
 
         assertThrows(UnauthorisedException.class, () -> userFacade.updateUser(actor.getId(), actor.getUsername(), actorPassword,
@@ -210,7 +207,7 @@ class UserFacadeTest {
         updatedUser.setAddress("Nová Adresa 132, Brno");
         updatedUser.setBirthDate(LocalDate.parse("1999-12-12"));
 
-        Mockito.when(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
+        when(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
                 updatedUser.getAddress(), updatedUser.getBirthDate(), null)).thenThrow(UnauthorisedException.class);
 
         assertThrows(UnauthorisedException.class, () -> userFacade.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
@@ -223,7 +220,7 @@ class UserFacadeTest {
         users.add(TestDataFactory.firstMemberDAO);
         users.add(TestDataFactory.secondMemberDAO);
 
-        Mockito.when(userService.findAll(UserType.MEMBER)).thenReturn(users);
+        when(userService.findAll(UserType.MEMBER)).thenReturn(users);
 
         assertThat(userFacade.findAll(UserType.MEMBER))
                 .isNotNull()
@@ -238,7 +235,7 @@ class UserFacadeTest {
         users.add(TestDataFactory.firstMemberDAO);
         users.add(TestDataFactory.secondMemberDAO);
 
-        Mockito.when(userService.findAllAdults()).thenReturn(users);
+        when(userService.findAllAdults()).thenReturn(users);
 
         assertThat(userFacade.findAllAdults())
                 .isNotNull()

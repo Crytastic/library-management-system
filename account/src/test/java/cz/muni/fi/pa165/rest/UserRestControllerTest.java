@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openapitools.model.UserDTO;
 import org.openapitools.model.UserType;
@@ -21,8 +20,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Martin Suchánek
@@ -44,7 +42,7 @@ class UserRestControllerTest {
         LocalDate birthDate = LocalDate.parse("2000-02-02");
         UserDTO user = new UserDTO().username(username).userType(userType).address(address).birthDate(birthDate);
 
-        Mockito.when(userFacade.findById(1L)).thenReturn(Optional.of(user));
+        when(userFacade.findById(1L)).thenReturn(Optional.of(user));
 
         ResponseEntity<UserDTO> response = userRestController.getUser(1L);
 
@@ -55,7 +53,7 @@ class UserRestControllerTest {
 
     @Test
     void findById_userNotFound_returnsNotFoundStatus() {
-        Mockito.when(userFacade.findById(1L)).thenReturn(Optional.empty());
+        when(userFacade.findById(1L)).thenReturn(Optional.empty());
 
         ResponseEntity<UserDTO> response = userRestController.getUser(1L);
 
@@ -72,7 +70,7 @@ class UserRestControllerTest {
         LocalDate birthDate = LocalDate.parse("2000-02-02");
         UserDTO user = new UserDTO().username(username).userType(userType).birthDate(birthDate).address(address);
 
-        Mockito.when(userFacade.createUser(username, password, address, birthDate, userType)).thenReturn(user);
+        when(userFacade.createUser(username, password, address, birthDate, userType)).thenReturn(user);
 
         ResponseEntity<UserDTO> response = userRestController.createUser(username, password, address, birthDate, userType);
 
@@ -89,7 +87,7 @@ class UserRestControllerTest {
         String address = "Botanická 68a";
         LocalDate birthDate = LocalDate.parse("2000-02-02");
 
-        Mockito.when(userFacade.createUser(username, password, address, birthDate, userType)).thenThrow(UsernameAlreadyExistsException.class);
+        when(userFacade.createUser(username, password, address, birthDate, userType)).thenThrow(UsernameAlreadyExistsException.class);
 
         ResponseEntity<UserDTO> response = userRestController.createUser(username, password, address, birthDate, userType);
 
@@ -117,7 +115,7 @@ class UserRestControllerTest {
         LocalDate birthDate = LocalDate.parse("2000-02-02");
         Long id = 1L;
 
-        Mockito.when(userFacade.updateUser(id, username, password, address, birthDate, userType)).thenThrow(UnauthorisedException.class);
+        when(userFacade.updateUser(id, username, password, address, birthDate, userType)).thenThrow(UnauthorisedException.class);
 
         ResponseEntity<UserDTO> response = userRestController.updateUser(id, username, password, address, birthDate, userType);
         assertThat(response.getBody()).isNull();
@@ -133,7 +131,7 @@ class UserRestControllerTest {
         LocalDate birthDate = LocalDate.parse("2000-02-02");
         Long id = 1L;
 
-        Mockito.when(userFacade.updateUser(id, username, password, address, birthDate, userType)).thenReturn(Optional.empty());
+        when(userFacade.updateUser(id, username, password, address, birthDate, userType)).thenReturn(Optional.empty());
 
         ResponseEntity<UserDTO> response = userRestController.updateUser(id, username, password, address, birthDate, userType);
         assertThat(response.getBody()).isNull();
@@ -150,7 +148,7 @@ class UserRestControllerTest {
         Long id = 1L;
         UserDTO user = new UserDTO().username(username).userType(userType).address(address).birthDate(birthDate);
 
-        Mockito.when(userFacade.updateUser(id, username, password, address, birthDate, userType)).thenReturn(Optional.of(user));
+        when(userFacade.updateUser(id, username, password, address, birthDate, userType)).thenReturn(Optional.of(user));
 
         ResponseEntity<UserDTO> response = userRestController.updateUser(id, username, password, address, birthDate, userType);
 
@@ -169,7 +167,7 @@ class UserRestControllerTest {
         List<UserDTO> users = new ArrayList<>();
         users.add(user);
 
-        Mockito.when(userFacade.findAll(any(UserType.class))).thenReturn(users);
+        when(userFacade.findAll(any(UserType.class))).thenReturn(users);
 
         ResponseEntity<List<UserDTO>> response = userRestController.getUsers(UserType.MEMBER);
 
@@ -188,7 +186,7 @@ class UserRestControllerTest {
         List<UserDTO> users = new ArrayList<>();
         users.add(user);
 
-        Mockito.when(userFacade.findAllAdults()).thenReturn(users);
+        when(userFacade.findAllAdults()).thenReturn(users);
 
         ResponseEntity<List<UserDTO>> response = userRestController.getAdultUsers();
 

@@ -3,7 +3,6 @@ package cz.muni.fi.pa165.rest;
 import cz.muni.fi.pa165.facade.UserFacade;
 import cz.muni.fi.pa165.util.ObjectConverter;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.openapitools.model.UserDTO;
 import org.openapitools.model.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,7 +42,7 @@ public class UserRestControllerWebMvcTest {
         UserDTO userDTO = new UserDTO().id(id).username(username).userType(userType)
                 .address(address).birthDate(birthDate);
 
-        Mockito.when(userFacade.findById(id)).thenReturn(Optional.of(userDTO));
+        when(userFacade.findById(id)).thenReturn(Optional.of(userDTO));
 
         String responseJson = mockMvc.perform(get("/api/users/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -60,7 +60,7 @@ public class UserRestControllerWebMvcTest {
     @Test
     void getUser_invalidId_returnsNotFound() throws Exception {
         Long id = 11L;
-        Mockito.when(userFacade.findById(id)).thenReturn(Optional.empty());
+        when(userFacade.findById(id)).thenReturn(Optional.empty());
 
         String responseJson = mockMvc.perform(get("/api/users/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
