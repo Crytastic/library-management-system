@@ -9,6 +9,7 @@ import org.openapitools.model.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -33,14 +34,17 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public List<User> findAll(UserType userType) {
         return userRepository.findAllByUserType(userType);
     }
 
+    @Transactional
     public List<User> findAllAdults() {
         return userRepository.findAllByAge(dateOfAdultAge);
     }
 
+    @Transactional
     public User createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {
         String passwordHashed = createPasswordHash(password);
         try {
@@ -56,10 +60,12 @@ public class UserService {
                 .toString();
     }
 
+    @Transactional
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
 
+    @Transactional
     public void deleteById(Long id) {
         userRepository.deleteById(id);
     }
@@ -70,6 +76,7 @@ public class UserService {
      * The LIBRARIANS can change any of parameters of any USER.
      * The MEMBERS can change only themselves, they can not change a type of user.
      */
+    @Transactional
     public Optional<User> updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) {
         User userByUsername = userRepository.findUserByUsername(username);
         if (userByUsername == null || !userByUsername.getPasswordHash().equals(createPasswordHash(password))) {
