@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.facade;
 import cz.muni.fi.pa165.data.model.User;
 import cz.muni.fi.pa165.exceptions.UnauthorisedException;
 import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
+import cz.muni.fi.pa165.mappers.UserMapper;
 import cz.muni.fi.pa165.service.UserService;
 import cz.muni.fi.pa165.util.TestDataFactory;
 import org.junit.jupiter.api.Test;
@@ -20,8 +21,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 /**
@@ -32,17 +31,21 @@ class UserFacadeTest {
     @Mock
     UserService userService;
 
+    @Mock
+    UserMapper userMapper;
+
     @InjectMocks
     UserFacade userFacade;
 
     @Test
     void findById_userFound_returnsUser() {
         when(userService.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.firstMemberDAO));
+        when(userMapper.mapToDto(TestDataFactory.firstMemberDAO)).thenReturn(TestDataFactory.firstMemberDTO);
 
         Optional<UserDTO> userDTO = userFacade.findById(1L);
 
         assertThat(userDTO).isPresent();
-        assertThat(userDTO.get()).isEqualTo(convertToDTO(TestDataFactory.firstMemberDAO));
+        assertThat(userDTO.get()).isEqualTo(TestDataFactory.firstMemberDTO);
 
     }
 
@@ -63,13 +66,21 @@ class UserFacadeTest {
         String address = "Botanická 68a";
         LocalDate birthDate = LocalDate.parse("2000-02-02");
         User testUser = new User(username, passwordHash, userType, address, birthDate);
+        UserDTO testUserDTO = new UserDTO()
+                .username(username)
+                .userType(userType)
+                .address(address)
+                .birthDate(birthDate);
+
         when(userService.createUser(
-                anyString(),
-                anyString(),
-                anyString(),
-                any(LocalDate.class),
-                any(UserType.class))
-        ).thenReturn(testUser);
+                username,
+                passwordHash,
+                address,
+                birthDate,
+                userType
+        )).thenReturn(testUser);
+
+        when(userMapper.mapToDto(testUser)).thenReturn(testUserDTO);
 
 
         UserDTO userDTO = userFacade.createUser(username, passwordHash, address, birthDate, userType);
@@ -79,11 +90,11 @@ class UserFacadeTest {
         assertThat(userDTO.getUserType()).isEqualTo(userType);
 
         verify(userService, times(1))
-                .createUser(anyString(),
-                        anyString(),
-                        anyString(),
-                        any(LocalDate.class),
-                        any(UserType.class));
+                .createUser(username,
+                        passwordHash,
+                        address,
+                        birthDate,
+                        userType);
     }
 
     @Test
@@ -94,7 +105,7 @@ class UserFacadeTest {
         String address = "Botanická 68a";
         LocalDate birthDate = LocalDate.parse("2000-02-02");
 
-        when(userService.createUser(anyString(), anyString(), anyString(), any(LocalDate.class), any(UserType.class))).thenThrow(UsernameAlreadyExistsException.class);
+        when(userService.createUser(username, passwordHash, address, birthDate, userType)).thenThrow(UsernameAlreadyExistsException.class);
 
         assertThrows(UsernameAlreadyExistsException.class,
                 () -> userFacade.createUser(username, passwordHash, address, birthDate, userType));
@@ -160,10 +171,15 @@ class UserFacadeTest {
         updatedUser.setAddress("Nová Adresa 132, Brno");
         updatedUser.setBirthDate(LocalDate.parse("1999-12-12"));
 
+        UserDTO updatedUserDTO = TestDataFactory.firstLibrarianDTO;
+        updatedUserDTO.setAddress("Nová Adresa 132, Brno");
+        updatedUserDTO.setBirthDate(LocalDate.parse("1999-12-12"));
+
         when(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword, updatedUser.getAddress(), updatedUser.getBirthDate(), null)).thenReturn(Optional.of(updatedUser));
+        when(userMapper.mapToDto(updatedUser)).thenReturn(updatedUserDTO);
 
         assertThat(userFacade.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
-                updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isPresent().contains(convertToDTO(updatedUser));
+                updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isPresent().contains(updatedUserDTO);
     }
 
     @Test
@@ -176,10 +192,15 @@ class UserFacadeTest {
         updatedUser.setAddress("Nová Adresa 132, Brno");
         updatedUser.setBirthDate(LocalDate.parse("1999-12-12"));
 
+        UserDTO updatedUserDTO = TestDataFactory.firstMemberDTO;
+        updatedUserDTO.setAddress("Nová Adresa 132, Brno");
+        updatedUserDTO.setBirthDate(LocalDate.parse("1999-12-12"));
+
         when(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword, updatedUser.getAddress(), updatedUser.getBirthDate(), null)).thenReturn(Optional.of(updatedUser));
+        when(userMapper.mapToDto(updatedUser)).thenReturn(updatedUserDTO);
 
         assertThat(userFacade.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
-                updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isPresent().contains(convertToDTO(updatedUser));
+                updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isPresent().contains(updatedUserDTO);
     }
 
     @Test
@@ -221,11 +242,12 @@ class UserFacadeTest {
         users.add(TestDataFactory.secondMemberDAO);
 
         when(userService.findAll(UserType.MEMBER)).thenReturn(users);
+        when(userMapper.mapToList(users)).thenReturn(List.of(TestDataFactory.firstMemberDTO, TestDataFactory.secondMemberDTO));
 
         assertThat(userFacade.findAll(UserType.MEMBER))
                 .isNotNull()
                 .hasSize(2)
-                .containsExactlyInAnyOrder(convertToDTO(TestDataFactory.firstMemberDAO), convertToDTO(TestDataFactory.secondMemberDAO));
+                .containsExactlyInAnyOrder(TestDataFactory.firstMemberDTO, TestDataFactory.secondMemberDTO);
         verify(userService, times(1)).findAll(UserType.MEMBER);
     }
 
@@ -236,22 +258,13 @@ class UserFacadeTest {
         users.add(TestDataFactory.secondMemberDAO);
 
         when(userService.findAllAdults()).thenReturn(users);
+        when(userMapper.mapToList(users)).thenReturn(List.of(TestDataFactory.firstMemberDTO, TestDataFactory.secondMemberDTO));
 
         assertThat(userFacade.findAllAdults())
                 .isNotNull()
                 .hasSize(2)
-                .containsExactlyInAnyOrder(convertToDTO(TestDataFactory.firstMemberDAO), convertToDTO(TestDataFactory.secondMemberDAO));
+                .containsExactlyInAnyOrder(TestDataFactory.firstMemberDTO, TestDataFactory.secondMemberDTO);
         verify(userService, times(1)).findAllAdults();
-    }
-
-    // Will be replaced by mapper in the future
-    private UserDTO convertToDTO(User user) {
-        return new UserDTO()
-                .id(user.getId())
-                .username(user.getUsername())
-                .address(user.getAddress())
-                .birthDate(user.getBirthDate())
-                .userType(user.getUserType());
     }
 
 }

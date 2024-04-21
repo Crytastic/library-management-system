@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.data.model.User;
+import cz.muni.fi.pa165.mappers.UserMapper;
 import cz.muni.fi.pa165.service.UserService;
 import org.openapitools.model.UserDTO;
 import org.openapitools.model.UserType;
@@ -22,31 +22,27 @@ public class UserFacade {
 
     private final UserService userService;
 
-    public UserFacade(@Autowired UserService userService) {
+    private final UserMapper userMapper;
+
+    public UserFacade(@Autowired UserService userService, UserMapper userMapper) {
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     public List<UserDTO> findAll(UserType userType) {
-        List<User> users = userService.findAll(userType);
-        return users.stream()
-                .map(this::convertToDTO)
-                .toList();
+        return userMapper.mapToList(userService.findAll(userType));
     }
 
     public List<UserDTO> findAllAdults() {
-        List<User> users = userService.findAllAdults();
-        return users.stream()
-                .map(this::convertToDTO)
-                .toList();
+        return userMapper.mapToList(userService.findAllAdults());
     }
 
     public UserDTO createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {
-        User user = userService.createUser(username, password, address, birthDate, userType);
-        return convertToDTO(user);
+        return userMapper.mapToDto(userService.createUser(username, password, address, birthDate, userType));
     }
 
     public Optional<UserDTO> findById(Long id) {
-        return userService.findById(id).map(this::convertToDTO);
+        return userService.findById(id).map(userMapper::mapToDto);
     }
 
     public void deleteById(Long id) {
@@ -54,17 +50,7 @@ public class UserFacade {
     }
 
     public Optional<UserDTO> updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) {
-        return userService.updateUser(id, username, password, address, birthdate, userType)
-                .map(this::convertToDTO);
+        return userService.updateUser(id, username, password, address, birthdate, userType).map(userMapper::mapToDto);
     }
 
-    // Will be replaced by mapper in the future
-    private UserDTO convertToDTO(User user) {
-        return new UserDTO()
-                .id(user.getId())
-                .username(user.getUsername())
-                .address(user.getAddress())
-                .birthDate(user.getBirthDate())
-                .userType(user.getUserType());
-    }
 }
