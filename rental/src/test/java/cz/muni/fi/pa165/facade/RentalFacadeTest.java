@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 /**
@@ -64,10 +62,10 @@ class RentalFacadeTest {
                 null, lateReturnWeeklyFine, false);
 
         when(rentalService.createRental(
-                anyString(),
-                anyString(),
-                any(OffsetDateTime.class),
-                any(BigDecimal.class)))
+                book,
+                rentedBy,
+                expectedReturnDate,
+                lateReturnWeeklyFine))
                 .thenReturn(newRental);
 
         RentalDTO rentalDTO = rentalFacade.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine);
@@ -82,10 +80,10 @@ class RentalFacadeTest {
         assertThat(rentalDTO.getReturned()).isFalse();
         assertThat(rentalDTO.getFineResolved()).isFalse();
         verify(rentalService, times(1)).createRental(
-                anyString(),
-                anyString(),
-                any(OffsetDateTime.class),
-                any(BigDecimal.class));
+                book,
+                rentedBy,
+                expectedReturnDate,
+                lateReturnWeeklyFine);
     }
 
     @Test
