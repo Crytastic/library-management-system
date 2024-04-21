@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.data.model.Rental;
+import cz.muni.fi.pa165.mappers.RentalMapper;
 import cz.muni.fi.pa165.service.RentalService;
 import org.openapitools.model.RentalDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Facade layer for managing rental.
@@ -23,26 +22,24 @@ public class RentalFacade {
 
     private final RentalService rentalService;
 
+    private final RentalMapper rentalMapper;
+
     @Autowired
-    public RentalFacade(RentalService rentalService) {
+    public RentalFacade(RentalService rentalService, RentalMapper rentalMapper) {
         this.rentalService = rentalService;
+        this.rentalMapper = rentalMapper;
     }
 
     public List<RentalDTO> findAll() {
-        return rentalService
-                .findAll()
-                .stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        return rentalMapper.mapToList(rentalService.findAll());
     }
 
     public RentalDTO createRental(String book, String rentedBy, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
-        Rental rental = rentalService.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine);
-        return convertToDTO(rental);
+        return rentalMapper.mapToDto(rentalService.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine));
     }
 
     public Optional<RentalDTO> findById(Long id) {
-        return rentalService.findById(id).map(this::convertToDTO);
+        return rentalService.findById(id).map(rentalMapper::mapToDto);
     }
 
     public void deleteById(Long id) {
@@ -57,16 +54,4 @@ public class RentalFacade {
         return rentalService.getFineById(id);
     }
 
-    private RentalDTO convertToDTO(Rental rental) {
-        return new RentalDTO()
-                .id(rental.getId())
-                .book(rental.getBook())
-                .rentedBy(rental.getRentedBy())
-                .borrowDate(rental.getBorrowDate())
-                .expectedReturnDate(rental.getExpectedReturnDate())
-                .returned(rental.isReturned())
-                .returnDate(rental.getReturnDate())
-                .lateReturnWeeklyFine(rental.getLateReturnWeeklyFine())
-                .fineResolved(rental.isFineResolved());
-    }
 }
