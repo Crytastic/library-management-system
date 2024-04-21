@@ -1,8 +1,7 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Rental;
-import cz.muni.fi.pa165.data.repository.JpaRentalRepository;
-import cz.muni.fi.pa165.repository.RentalRepository;
+import cz.muni.fi.pa165.data.repository.RentalRepository;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,11 +20,10 @@ import java.util.Optional;
  */
 @Service
 public class RentalService {
-
-    private final JpaRentalRepository rentalRepository;
+    private final RentalRepository rentalRepository;
 
     @Autowired
-    public RentalService(JpaRentalRepository jpaBookRepository, RentalRepository rentalRepository) {
+    public RentalService(RentalRepository jpaBookRepository, RentalRepository rentalRepository) {
         this.rentalRepository = jpaBookRepository;
     }
 

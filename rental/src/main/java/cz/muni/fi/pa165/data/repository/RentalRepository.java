@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Repository
-public interface JpaRentalRepository extends JpaRepository<Rental, Long> {
+public interface RentalRepository extends JpaRepository<Rental, Long> {
     @Modifying
     @Query("UPDATE Rental rental SET " +
             "rental.book = coalesce(:book, rental.book), " +

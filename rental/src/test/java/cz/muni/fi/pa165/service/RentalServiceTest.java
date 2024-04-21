@@ -1,7 +1,7 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Rental;
-import cz.muni.fi.pa165.data.repository.JpaRentalRepository;
+import cz.muni.fi.pa165.data.repository.RentalRepository;
 import cz.muni.fi.pa165.util.TestDataFactory;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class RentalServiceTest {
     @Mock
-    private JpaRentalRepository rentalRepository;
+    private RentalRepository rentalRepository;
 
     @InjectMocks
     private RentalService rentalService;
