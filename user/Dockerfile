@@ -1,4 +1,4 @@
 FROM eclipse-temurin:latest
-COPY target/*.jar /account-service.jar
+COPY target/*.jar /user-service.jar
 EXPOSE 8082
-ENTRYPOINT ["java", "-jar", "/account-service.jar"]
+ENTRYPOINT ["java", "-jar", "/user-service.jar"]

@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 /**
- * This class encapsulates information about a user account.
+ * This class encapsulates information about a user.
  *
  * @author Sophia Zápotočná
  */

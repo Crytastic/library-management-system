@@ -9,8 +9,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Repository layer for managing user account.
- * Provides methods for storing, retrieving and updating user account.
+ * Repository layer for managing user.
+ * Provides methods for storing, retrieving and updating user.
  *
  * @author Sophia Zápotočná
  */

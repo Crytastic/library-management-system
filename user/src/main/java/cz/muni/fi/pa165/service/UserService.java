@@ -18,8 +18,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Service layer for managing user account.
- * Provides methods to interact with user account.
+ * Service layer for managing user.
+ * Provides methods to interact with user.
  *
  * @author Sophia Zápotočná
  */

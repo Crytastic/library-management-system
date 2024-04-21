@@ -10,9 +10,9 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>account</artifactId>
+  <artifactId>user</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>account</name>
+  <name>user</name>
 
   <build>
     <defaultGoal>spring-boot:run</defaultGoal>

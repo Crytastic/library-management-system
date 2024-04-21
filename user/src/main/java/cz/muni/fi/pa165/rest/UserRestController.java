@@ -17,7 +17,7 @@ import java.util.Optional;
 
 /**
  * REST controller layer for managing users.
- * Handles HTTP requests related to users account management.
+ * Handles HTTP requests related to user management.
  *
  * @author Sophia Zápotočná
  */

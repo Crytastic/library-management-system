@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Facade layer for managing user account.
- * Provides methods for interacting with user account properties.
+ * Facade layer for managing user.
+ * Provides methods for interacting with user properties.
  *
  * @author Sophia Zápotočná
  */

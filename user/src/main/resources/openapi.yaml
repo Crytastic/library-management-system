@@ -52,7 +52,7 @@ paths:
     post:
       tags:
         - User
-      summary: Creates new user account
+      summary: Creates new user
       operationId: createUser
       parameters:
         - { name: username, in: query, required: true, schema: { type: string }, description: "Username of user" }
