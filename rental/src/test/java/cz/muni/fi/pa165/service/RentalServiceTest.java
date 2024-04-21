@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -64,7 +63,7 @@ class RentalServiceTest {
                 null, lateReturnWeeklyFine, false);
         when(rentalRepository.save(newRental)).thenReturn(newRental);
 
-        try (MockedStatic<TimeProvider> timeProviderDummy = Mockito.mockStatic(TimeProvider.class)) {
+        try (MockedStatic<TimeProvider> timeProviderDummy = mockStatic(TimeProvider.class)) {
             timeProviderDummy.when(TimeProvider::now).thenReturn(borrowDate);
             Rental rental = rentalService.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine);
 
@@ -228,8 +227,8 @@ class RentalServiceTest {
         Rental activeRental = TestDataFactory.activeRentalLateDAO;
         when(rentalRepository.findById(activeRental.getId())).thenReturn(Optional.of(activeRental));
 
-        try (MockedStatic<TimeProvider> dummy = Mockito.mockStatic(TimeProvider.class)) {
-            dummy.when(TimeProvider::now).thenReturn(activeRental.getExpectedReturnDate().plusWeeks(5));
+        try (MockedStatic<TimeProvider> timeProviderDummy = mockStatic(TimeProvider.class)) {
+            timeProviderDummy.when(TimeProvider::now).thenReturn(activeRental.getExpectedReturnDate().plusWeeks(5));
 
             Optional<BigDecimal> fine = rentalService.getFineById(activeRental.getId());
 
