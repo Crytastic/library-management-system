@@ -45,12 +45,12 @@ public class RentalFacade {
         return rentalService.findById(id).map(this::convertToDTO);
     }
 
-    public boolean deleteById(Long id) {
-        return rentalService.deleteById(id);
+    public void deleteById(Long id) {
+        rentalService.deleteById(id);
     }
 
-    public Optional<RentalDTO> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
-        return rentalService.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved).map(this::convertToDTO);
+    public int updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
+        return rentalService.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
     }
 
     public Optional<BigDecimal> getFineById(Long id) {

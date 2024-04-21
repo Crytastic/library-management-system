@@ -1,10 +1,11 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Rental;
-import cz.muni.fi.pa165.repository.RentalRepository;
+import cz.muni.fi.pa165.data.repository.RentalRepository;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -20,14 +21,14 @@ import java.util.Optional;
  */
 @Service
 public class RentalService {
-
     private final RentalRepository rentalRepository;
 
     @Autowired
-    public RentalService(RentalRepository rentalRepository) {
-        this.rentalRepository = rentalRepository;
+    public RentalService(RentalRepository jpaBookRepository, RentalRepository rentalRepository) {
+        this.rentalRepository = jpaBookRepository;
     }
 
+    @Transactional
     public List<Rental> findAll() {
         return rentalRepository.findAll();
     }
@@ -41,38 +42,25 @@ public class RentalService {
                 null,
                 lateReturnWeeklyFine == null ? getDefaultLateReturnWeeklyFine() : lateReturnWeeklyFine,
                 false);
-        return rentalRepository.store(rental);
+        return rentalRepository.save(rental);
     }
 
+    @Transactional
     public Optional<Rental> findById(Long id) {
         return rentalRepository.findById(id);
     }
 
-    public boolean deleteById(Long id) {
-        return rentalRepository.deleteById(id);
+    @Transactional
+    public void deleteById(Long id) {
+        rentalRepository.deleteById(id);
     }
 
-    public Optional<Rental> updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
-        Optional<Rental> optionalRental = rentalRepository.findById(id);
-
-        if (optionalRental.isEmpty()) {
-            return Optional.empty();
-        }
-
-        Rental rental = optionalRental.get();
-
-        rental.setBook(book != null ? book : rental.getBook());
-        rental.setRentedBy(rentedBy != null ? rentedBy : rental.getRentedBy());
-        rental.setBorrowDate(borrowDate != null ? borrowDate : rental.getBorrowDate());
-        rental.setExpectedReturnDate(expectedReturnDate != null ? expectedReturnDate : rental.getExpectedReturnDate());
-        rental.setReturned(returned != null ? returned : rental.isReturned());
-        rental.setReturnDate(returnDate != null ? returnDate : rental.getReturnDate());
-        rental.setLateReturnWeeklyFine(lateReturnWeeklyFine != null ? lateReturnWeeklyFine : rental.getLateReturnWeeklyFine());
-        rental.setFineResolved(fineResolved != null ? fineResolved : rental.isFineResolved());
-
-        return rentalRepository.updateById(rental.getId(), rental);
+    @Transactional
+    public int updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
+        return rentalRepository.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
     }
 
+    @Transactional
     public Optional<BigDecimal> getFineById(Long id) {
         Optional<Rental> optionalRental = findById(id);
 

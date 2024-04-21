@@ -13,12 +13,12 @@ import java.time.ZoneOffset;
 @Component
 public class TestDataFactory {
 
-    public static Rental activeRental = getActiveRentalDAOFactory();
-    public static Rental inActiveRental = getInActiveRentalDAOFactory();
-    public static Rental activeRentalLateDAO = getActiveLateRentalDAOFactory();
-    public static Rental inActiveRentalLateDAO = getInActiveLateRentalDAOFactory();
+    public static Rental activeRental = getActiveRentalFactory();
+    public static Rental inActiveRental = getInActiveRentalFactory();
+    public static Rental activeRentalLate = getActiveLateRentalFactory();
+    public static Rental inActiveRentalLate = getInActiveLateRentalFactory();
 
-    private static Rental getInActiveRentalDAOFactory() {
+    private static Rental getInActiveRentalFactory() {
         OffsetDateTime borrowDate = OffsetDateTime.of(2024, 3, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 4, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         Rental inActiveRental = new Rental(
@@ -34,7 +34,7 @@ public class TestDataFactory {
         return inActiveRental;
     }
 
-    private static Rental getActiveRentalDAOFactory() {
+    private static Rental getActiveRentalFactory() {
         OffsetDateTime borrowDate = OffsetDateTime.of(2024, 4, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 5, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         Rental activeRental = new Rental(
@@ -50,7 +50,7 @@ public class TestDataFactory {
         return activeRental;
     }
 
-    private static Rental getInActiveLateRentalDAOFactory() {
+    private static Rental getInActiveLateRentalFactory() {
         OffsetDateTime borrowDate = OffsetDateTime.of(2024, 3, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 4, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         Rental inActiveRental = new Rental(
@@ -66,7 +66,7 @@ public class TestDataFactory {
         return inActiveRental;
     }
 
-    private static Rental getActiveLateRentalDAOFactory() {
+    private static Rental getActiveLateRentalFactory() {
         OffsetDateTime borrowDate = OffsetDateTime.of(2024, 2, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 3, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         Rental activeRental = new Rental(

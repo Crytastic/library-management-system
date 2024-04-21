@@ -1,5 +1,7 @@
 package cz.muni.fi.pa165.data.model;
 
+import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Objects;
@@ -9,16 +11,28 @@ import java.util.Objects;
  *
  * @author Maxmilián Šeffer
  */
+@Entity
 public class Rental {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "rental_id")
     private Long id;
+    @Column
     private String book;
+    @Column
     private String rentedBy;
+    @Column
     private OffsetDateTime borrowDate;
+    @Column
     private OffsetDateTime expectedReturnDate;
+    @Column
     private boolean returned;
+    @Column
     private OffsetDateTime returnDate;
     // Single currency for simplicity, e.g. EUR
+    @Column
     private BigDecimal lateReturnWeeklyFine;
+    @Column
     private boolean fineResolved;
 
     public Rental(String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, boolean fineResolved) {
@@ -30,6 +44,9 @@ public class Rental {
         this.returnDate = returnDate;
         this.lateReturnWeeklyFine = lateReturnWeeklyFine;
         this.fineResolved = fineResolved;
+    }
+
+    public Rental() {
     }
 
     public Long getId() {
