@@ -36,7 +36,7 @@ public class BookRestControllerTest {
         String description = "Fantasy novel";
         String author = "J.R.R. Tolkien";
         BookStatus status = BookStatus.AVAILABLE;
-        BookDTO createdBook = BookDTOFactory.createBook(id,title, description, author, status);
+        BookDTO createdBook = BookDTOFactory.createBook(id, title, description, author, status);
         when(bookFacade.createBook(title, description, author)).thenReturn(createdBook);
 
         // Act

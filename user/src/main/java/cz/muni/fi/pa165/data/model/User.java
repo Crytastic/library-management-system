@@ -1,6 +1,5 @@
 package cz.muni.fi.pa165.data.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import cz.muni.fi.pa165.util.ObjectConverter;
 import jakarta.persistence.*;
 import org.openapitools.model.UserType;

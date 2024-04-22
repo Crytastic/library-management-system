@@ -101,6 +101,7 @@ public class TestDataFactory {
                 fineResolved(true).
                 id(2L);
     }
+
     private static RentalDTO getActiveRentalDTOFactory() {
         OffsetDateTime borrowDate = OffsetDateTime.of(2024, 4, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 5, 1, 12, 0, 0, 0, ZoneOffset.UTC);

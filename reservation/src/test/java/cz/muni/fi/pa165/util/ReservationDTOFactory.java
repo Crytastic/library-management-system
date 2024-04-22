@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
  * @author Maxmilián Šeffer
  */
 public class ReservationDTOFactory {
-    public static ReservationDTO createReservation(Long id,String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
+    public static ReservationDTO createReservation(Long id, String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
         ReservationDTO reservationDTO = new ReservationDTO();
         reservationDTO.setId(id);
         reservationDTO.setBook(book);
