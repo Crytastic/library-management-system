@@ -98,10 +98,6 @@ public class Book {
 
     @Override
     public String toString() {
-        try {
-            return "Book" + ObjectConverter.convertObjectToJson(this);
-        } catch (JsonProcessingException e) {
-            return "Error converting object to JSON: " + e.getMessage();
-        }
+        return ObjectConverter.convertObjectToJsonWithClassnamePrefix(this);
     }
 }

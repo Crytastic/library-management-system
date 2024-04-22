@@ -29,4 +29,12 @@ public class ObjectConverter {
     public static <T> T convertJsonToObject(String object, TypeReference<T> typeReference) throws IOException {
         return OBJECT_MAPPER.readValue(object, typeReference);
     }
+
+    public static String convertObjectToJsonWithClassnamePrefix(Object object) {
+        try {
+            return object.getClass().getSimpleName() + convertObjectToJson(object);
+        } catch (JsonProcessingException e) {
+            return "Error converting object to JSON: " + e.getMessage();
+        }
+    }
 }

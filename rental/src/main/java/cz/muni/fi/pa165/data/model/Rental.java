@@ -146,10 +146,6 @@ public class Rental {
 
     @Override
     public String toString() {
-        try {
-            return "Rental" + ObjectConverter.convertObjectToJson(this);
-        } catch (JsonProcessingException e) {
-            return "Error converting object to JSON: " + e.getMessage();
-        }
+        return ObjectConverter.convertObjectToJsonWithClassnamePrefix(this);
     }
 }
