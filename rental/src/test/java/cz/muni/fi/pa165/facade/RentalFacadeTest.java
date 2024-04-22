@@ -58,16 +58,16 @@ class RentalFacadeTest {
 
     @Test
     void createRental_rentalCreated_returnsNewRental() {
-        String book = "Rented book";
-        String rentedBy = "User";
+        Long bookId = 17L;
+        Long borrowerId = 18L;
         OffsetDateTime expectedReturnDate = OffsetDateTime
                 .of(2024, 5, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         BigDecimal lateReturnWeeklyFine = new BigDecimal(100);
-        Rental newRental = new Rental(book, rentedBy, null, expectedReturnDate, false,
+        Rental newRental = new Rental(bookId, borrowerId, null, expectedReturnDate, false,
                 null, lateReturnWeeklyFine, false);
         RentalDTO newRentalDTO = new RentalDTO()
-                .book(book)
-                .rentedBy(rentedBy)
+                .bookId(bookId)
+                .borrowerId(borrowerId)
                 .borrowDate(null)
                 .expectedReturnDate(expectedReturnDate)
                 .returned(false)
@@ -76,18 +76,18 @@ class RentalFacadeTest {
 
 
         when(rentalService.createRental(
-                book,
-                rentedBy,
+                bookId,
+                borrowerId,
                 expectedReturnDate,
                 lateReturnWeeklyFine))
                 .thenReturn(newRental);
         when(rentalMapper.mapToDto(newRental)).thenReturn(newRentalDTO);
 
-        RentalDTO rentalDTO = rentalFacade.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine);
+        RentalDTO rentalDTO = rentalFacade.createRental(bookId, borrowerId, expectedReturnDate, lateReturnWeeklyFine);
 
         assertThat(rentalDTO).isNotNull();
-        assertThat(rentalDTO.getBook()).isEqualTo(book);
-        assertThat(rentalDTO.getRentedBy()).isEqualTo(rentedBy);
+        assertThat(rentalDTO.getBookId()).isEqualTo(bookId);
+        assertThat(rentalDTO.getBorrowerId()).isEqualTo(borrowerId);
         assertThat(rentalDTO.getExpectedReturnDate()).isEqualTo(expectedReturnDate);
         assertThat(rentalDTO.getLateReturnWeeklyFine()).isEqualTo(lateReturnWeeklyFine);
         assertThat(rentalDTO.getBorrowDate()).isNull();
@@ -95,8 +95,8 @@ class RentalFacadeTest {
         assertThat(rentalDTO.getReturned()).isFalse();
         assertThat(rentalDTO.getFineResolved()).isFalse();
         verify(rentalService, times(1)).createRental(
-                book,
-                rentedBy,
+                bookId,
+                borrowerId,
                 expectedReturnDate,
                 lateReturnWeeklyFine);
     }
@@ -129,8 +129,8 @@ class RentalFacadeTest {
     @Test
     void updateById_validParameters_callsUpdateByIdOnService() {
         Rental updatedRental = new Rental(
-                "Inactive test book",
-                "Rental creator",
+                17L,
+                18L,
                 TimeProvider.now(),
                 TimeProvider.now(),
                 true,
@@ -141,8 +141,8 @@ class RentalFacadeTest {
 
         when(rentalService.updateById(
                 updatedRental.getId(),
-                updatedRental.getBook(),
-                updatedRental.getRentedBy(),
+                updatedRental.getBookId(),
+                updatedRental.getBorrowerId(),
                 updatedRental.getBorrowDate(),
                 updatedRental.getExpectedReturnDate(),
                 updatedRental.isReturned(),
@@ -153,8 +153,8 @@ class RentalFacadeTest {
 
         int numberOfUpdatedRentals = rentalFacade.updateById(
                 updatedRental.getId(),
-                updatedRental.getBook(),
-                updatedRental.getRentedBy(),
+                updatedRental.getBookId(),
+                updatedRental.getBorrowerId(),
                 updatedRental.getBorrowDate(),
                 updatedRental.getExpectedReturnDate(),
                 updatedRental.isReturned(),
@@ -165,8 +165,8 @@ class RentalFacadeTest {
         assertThat(numberOfUpdatedRentals).isEqualTo(1);
         verify(rentalService, times(1)).updateById(
                 updatedRental.getId(),
-                updatedRental.getBook(),
-                updatedRental.getRentedBy(),
+                updatedRental.getBookId(),
+                updatedRental.getBorrowerId(),
                 updatedRental.getBorrowDate(),
                 updatedRental.getExpectedReturnDate(),
                 updatedRental.isReturned(),

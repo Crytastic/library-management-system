@@ -42,8 +42,8 @@ public class RentalController implements RentalApi {
     }
 
     @Override
-    public ResponseEntity<RentalDTO> createRental(String book, String rentedBy, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
-        RentalDTO createdRental = rentalFacade.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine);
+    public ResponseEntity<RentalDTO> createRental(Long bookId, Long borrowerId, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
+        RentalDTO createdRental = rentalFacade.createRental(bookId, borrowerId, expectedReturnDate, lateReturnWeeklyFine);
         return new ResponseEntity<>(createdRental, HttpStatus.CREATED);
     }
 
@@ -55,8 +55,8 @@ public class RentalController implements RentalApi {
     }
 
     @Override
-    public ResponseEntity<Void> updateRental(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
-        int numberOfUpdatedRentals = rentalFacade.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
+    public ResponseEntity<Void> updateRental(Long id, Long bookId, Long borrowerId, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
+        int numberOfUpdatedRentals = rentalFacade.updateById(id, bookId, borrowerId, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
         return new ResponseEntity<>(numberOfUpdatedRentals == 1 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 

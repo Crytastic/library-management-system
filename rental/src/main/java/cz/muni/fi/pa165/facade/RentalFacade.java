@@ -34,8 +34,8 @@ public class RentalFacade {
         return rentalMapper.mapToList(rentalService.findAll());
     }
 
-    public RentalDTO createRental(String book, String rentedBy, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
-        return rentalMapper.mapToDto(rentalService.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine));
+    public RentalDTO createRental(Long bookId, Long borrowerId, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
+        return rentalMapper.mapToDto(rentalService.createRental(bookId, borrowerId, expectedReturnDate, lateReturnWeeklyFine));
     }
 
     public Optional<RentalDTO> findById(Long id) {
@@ -46,8 +46,8 @@ public class RentalFacade {
         rentalService.deleteById(id);
     }
 
-    public int updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
-        return rentalService.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
+    public int updateById(Long id, Long bookId, Long borrowerId, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
+        return rentalService.updateById(id, bookId, borrowerId, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
     }
 
     public Optional<BigDecimal> getFineById(Long id) {

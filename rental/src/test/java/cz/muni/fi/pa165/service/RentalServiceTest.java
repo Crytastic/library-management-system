@@ -53,23 +53,23 @@ class RentalServiceTest {
 
     @Test
     void createRental_rentalCreated_returnsNewRental() {
-        String book = "Rented book";
-        String rentedBy = "User";
+        Long bookId = 7L;
+        Long borrowerId = 8L;
         OffsetDateTime borrowDate = OffsetDateTime
                 .of(2024, 5, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime expectedReturnDate = borrowDate.plusWeeks(6);
         BigDecimal lateReturnWeeklyFine = new BigDecimal(100);
-        Rental newRental = new Rental(book, rentedBy, borrowDate, expectedReturnDate, false,
+        Rental newRental = new Rental(bookId, borrowerId, borrowDate, expectedReturnDate, false,
                 null, lateReturnWeeklyFine, false);
         when(rentalRepository.save(newRental)).thenReturn(newRental);
 
         try (MockedStatic<TimeProvider> timeProviderDummy = mockStatic(TimeProvider.class)) {
             timeProviderDummy.when(TimeProvider::now).thenReturn(borrowDate);
-            Rental rental = rentalService.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine);
+            Rental rental = rentalService.createRental(bookId, borrowerId, expectedReturnDate, lateReturnWeeklyFine);
 
             assertThat(rental).isNotNull().isEqualTo(newRental);
-            assertThat(rental.getBook()).isEqualTo(book);
-            assertThat(rental.getRentedBy()).isEqualTo(rentedBy);
+            assertThat(rental.getBookId()).isEqualTo(bookId);
+            assertThat(rental.getBorrowerId()).isEqualTo(borrowerId);
             assertThat(rental.getExpectedReturnDate()).isEqualTo(expectedReturnDate);
             assertThat(rental.getLateReturnWeeklyFine()).isEqualTo(lateReturnWeeklyFine);
             assertThat(rental.getBorrowDate()).isEqualTo(borrowDate);
@@ -106,7 +106,7 @@ class RentalServiceTest {
 
     @Test
     void updateById_oneItemChanged_returnsOne() {
-        String changedBook = "New changed book";
+        Long changedBook = 2L;
         Rental updatedRental = TestDataFactory.activeRental;
         when(rentalRepository.updateById(updatedRental.getId(), changedBook, null, null,
                 null, null, null, null, null))
@@ -122,7 +122,7 @@ class RentalServiceTest {
 
     @Test
     void updateById_someItemChanged_returnsOne() {
-        String changedBook = "New changed book";
+        Long changedBook = 3L;
         Boolean returned = true;
         OffsetDateTime returnDate = TimeProvider.now();
         Rental updatedRental = TestDataFactory.activeRental;
@@ -142,8 +142,8 @@ class RentalServiceTest {
 
     @Test
     void updateById_allItemChanged_returnsOne() {
-        String changedBook = "New changed book";
-        String rentedBy = "Changed user";
+        Long changedBook = 4L;
+        Long borrowerId = 5L;
         Boolean returned = true;
         OffsetDateTime returnedDate = TimeProvider.now();
         OffsetDateTime expectedReturnDate = TimeProvider.now();
@@ -151,21 +151,21 @@ class RentalServiceTest {
         Boolean fineResolved = true;
         BigDecimal lateReturnWeeklyFine = new BigDecimal(2);
         Rental updatedRental = TestDataFactory.activeRental;
-        when(rentalRepository.updateById(updatedRental.getId(), changedBook, rentedBy,
+        when(rentalRepository.updateById(updatedRental.getId(), changedBook, borrowerId,
                 borrowDate, expectedReturnDate, returned, returnedDate, lateReturnWeeklyFine, fineResolved)).thenReturn(1);
 
-        int numberOfUpdatedRentals = rentalService.updateById(updatedRental.getId(), changedBook, rentedBy,
+        int numberOfUpdatedRentals = rentalService.updateById(updatedRental.getId(), changedBook, borrowerId,
                 borrowDate, expectedReturnDate, returned, returnedDate, lateReturnWeeklyFine, fineResolved);
 
         assertThat(numberOfUpdatedRentals).isEqualTo(1);
-        verify(rentalRepository, times(1)).updateById(updatedRental.getId(), changedBook, rentedBy,
+        verify(rentalRepository, times(1)).updateById(updatedRental.getId(), changedBook, borrowerId,
                 borrowDate, expectedReturnDate, returned, returnedDate, lateReturnWeeklyFine, fineResolved);
     }
 
     @Test
     void updateById_rentalNotFound_returnsZero() {
         Long nonExistingId = 11L;
-        String changedBook = "New changed book";
+        Long changedBook = 3L;
         when(rentalRepository.updateById(nonExistingId, changedBook, null, null, null, null, null, null, null)).thenReturn(0);
 
         int numberOfUpdatedRentals = rentalService.updateById(nonExistingId, changedBook, null, null,

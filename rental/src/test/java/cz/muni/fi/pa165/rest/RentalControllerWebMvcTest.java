@@ -34,15 +34,15 @@ public class RentalControllerWebMvcTest {
     void getRental_existingId_returnsOk() throws Exception {
         // Arrange
         Long id = 1L;
-        String book = "The Lord of the Rings";
-        String rentedBy = "Franta Vopršálek";
+        Long bookId = 1L;
+        Long borrowerId = 2L;
         String borrowDateFromString = "2024-04-21T20:29:59.123456Z";
         OffsetDateTime borrowDate = OffsetDateTime.parse(borrowDateFromString);
         OffsetDateTime expectedReturnDate = borrowDate.plusMonths(3);
         BigDecimal lateReturnWeeklyFine = new BigDecimal(100);
         RentalDTO rentalDTO = RentalDTOFactory.createRental(id,
-                book,
-                rentedBy,
+                bookId,
+                borrowerId,
                 borrowDate,
                 expectedReturnDate,
                 false,
@@ -62,7 +62,7 @@ public class RentalControllerWebMvcTest {
 
         // Assert
 
-        assertThat(responseJson).isEqualTo(String.format("{\"id\":1,\"book\":\"%s\",\"rentedBy\":\"%s\",\"borrowDate\":\"%s\",\"expectedReturnDate\":\"%s\",\"returned\":%b,\"returnDate\":%s,\"lateReturnWeeklyFine\":100,\"fineResolved\":false}", book, rentedBy, borrowDate, expectedReturnDate, false, null));
+        assertThat(responseJson).isEqualTo(String.format("{\"id\":1,\"bookId\":%d,\"borrowerId\":%d,\"borrowDate\":\"%s\",\"expectedReturnDate\":\"%s\",\"returned\":%b,\"returnDate\":%s,\"lateReturnWeeklyFine\":100,\"fineResolved\":false}", bookId, borrowerId, borrowDate, expectedReturnDate, false, null));
         assertThat(response).isEqualTo(rentalDTO);
     }
 

@@ -26,8 +26,8 @@ public class TestDataFactory {
         OffsetDateTime borrowDate = OffsetDateTime.of(2024, 3, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 4, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         Rental inActiveRental = new Rental(
-                "Inactive test book",
-                "Rental creator",
+                17L,
+                18L,
                 borrowDate,
                 expectedReturnDate,
                 true,
@@ -42,8 +42,8 @@ public class TestDataFactory {
         OffsetDateTime borrowDate = OffsetDateTime.of(2024, 4, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 5, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         Rental activeRental = new Rental(
-                "Active test book",
-                "Rental creator",
+                27L,
+                28L,
                 borrowDate,
                 expectedReturnDate,
                 false,
@@ -58,8 +58,8 @@ public class TestDataFactory {
         OffsetDateTime borrowDate = OffsetDateTime.of(2024, 3, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 4, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         Rental inActiveRental = new Rental(
-                "Inactive test book",
-                "Rental creator",
+                37L,
+                38L,
                 borrowDate,
                 expectedReturnDate,
                 true,
@@ -74,8 +74,8 @@ public class TestDataFactory {
         OffsetDateTime borrowDate = OffsetDateTime.of(2024, 2, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 3, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         Rental activeRental = new Rental(
-                "Active test book",
-                "Rental creator",
+                47L,
+                48L,
                 borrowDate,
                 expectedReturnDate,
                 false,
@@ -91,8 +91,8 @@ public class TestDataFactory {
         OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 4, 1, 12, 0, 0, 0, ZoneOffset.UTC);
 
         return new RentalDTO().
-                book("Inactive test book").
-                rentedBy("Rental creator").
+                bookId(17L).
+                borrowerId(18L).
                 borrowDate(borrowDate).
                 expectedReturnDate(expectedReturnDate).
                 returned(true).
@@ -107,8 +107,8 @@ public class TestDataFactory {
         OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 5, 1, 12, 0, 0, 0, ZoneOffset.UTC);
 
         return new RentalDTO()
-                .book("Active test book")
-                .rentedBy("Rental creator")
+                .bookId(27L)
+                .borrowerId(28L)
                 .borrowDate(borrowDate)
                 .expectedReturnDate(expectedReturnDate)
                 .returned(false)
