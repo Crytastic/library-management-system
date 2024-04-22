@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.facade;
 
 import cz.muni.fi.pa165.data.model.Reservation;
+import cz.muni.fi.pa165.mappers.ReservationMapper;
 import cz.muni.fi.pa165.service.ReservationService;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,16 +29,29 @@ class ReservationFacadeTest {
     @Mock
     private ReservationService reservationService;
 
+    @Mock
+    private ReservationMapper reservationMapper;
+
     @InjectMocks
     private ReservationFacade reservationFacade;
 
     private Reservation reservation;
     private Reservation expiredReservation;
+    private ReservationDTO reservationDTO;
+    private ReservationDTO expiredReservationDTO;
 
     @BeforeEach
     void setUp() {
-        reservation = new Reservation("The Lord of the Rings", "John Doe", TimeProvider.now(), TimeProvider.now().plusDays(1));
-        expiredReservation = new Reservation("The Hobbit", "Franta Vopršálek", TimeProvider.now().minusDays(4), TimeProvider.now().minusDays(1));
+        OffsetDateTime now = TimeProvider.now();
+        OffsetDateTime nowPlusOneDay = TimeProvider.now().plusDays(1);
+        OffsetDateTime nowMinusFourDays = TimeProvider.now().minusDays(4);
+        OffsetDateTime nowMinusOneDay = TimeProvider.now().minusDays(1);
+
+        reservation = new Reservation("The Lord of the Rings", "John Doe", now, nowPlusOneDay);
+        expiredReservation = new Reservation("The Hobbit", "Franta Vopršálek", nowMinusFourDays, nowMinusOneDay);
+
+        reservationDTO = new ReservationDTO().book("The Lord of the Rings").reservedBy("John Doe").reservedFrom(now).reservedTo(nowPlusOneDay);
+        expiredReservationDTO = new ReservationDTO().book("The Hobbit").reservedBy("Franta Vopršálek").reservedFrom(nowMinusFourDays).reservedTo(nowMinusOneDay);
     }
 
     @Test
@@ -46,6 +60,7 @@ class ReservationFacadeTest {
         List<Reservation> reservations = new ArrayList<>();
         reservations.add(reservation);
         when(reservationService.findAll()).thenReturn(reservations);
+        when(reservationMapper.mapToList(reservations)).thenReturn(List.of(reservationDTO));
 
         // Act
         List<ReservationDTO> result = reservationFacade.findAll();
@@ -61,6 +76,7 @@ class ReservationFacadeTest {
         String book = "The Lord of the Rings";
         String reservedBy = "John Doe";
         when(reservationService.createReservation(book, reservedBy)).thenReturn(reservation);
+        when(reservationMapper.mapToDto(reservation)).thenReturn(reservationDTO);
 
         // Act
         ReservationDTO result = reservationFacade.createReservation(book, reservedBy);
@@ -77,6 +93,7 @@ class ReservationFacadeTest {
         // Arrange
         Long id = 1L;
         when(reservationService.findById(id)).thenReturn(Optional.of(reservation));
+        when(reservationMapper.mapToDto(reservation)).thenReturn(reservationDTO);
 
         // Act
         Optional<ReservationDTO> result = reservationFacade.findById(id);
@@ -151,6 +168,7 @@ class ReservationFacadeTest {
         List<Reservation> activeReservations = new ArrayList<>();
         activeReservations.add(reservation);
         when(reservationService.findAllActive()).thenReturn(activeReservations);
+        when(reservationMapper.mapToList(activeReservations)).thenReturn(List.of(reservationDTO));
 
         // Act
         List<ReservationDTO> result = reservationFacade.findAllActive();
@@ -170,6 +188,7 @@ class ReservationFacadeTest {
         List<Reservation> expiredReservations = new ArrayList<>();
         expiredReservations.add(expiredReservation);
         when(reservationService.findAllExpired()).thenReturn(expiredReservations);
+        when(reservationMapper.mapToList(expiredReservations)).thenReturn(List.of(expiredReservationDTO));
 
         // Act
         List<ReservationDTO> result = reservationFacade.findAllExpired();

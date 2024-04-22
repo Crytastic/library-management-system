@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.util;
 
 import cz.muni.fi.pa165.data.model.Rental;
+import org.openapitools.model.RentalDTO;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -17,6 +18,9 @@ public class TestDataFactory {
     public static Rental inActiveRental = getInActiveRentalFactory();
     public static Rental activeRentalLate = getActiveLateRentalFactory();
     public static Rental inActiveRentalLate = getInActiveLateRentalFactory();
+
+    public static RentalDTO activeRentalDTO = getActiveRentalDTOFactory();
+    public static RentalDTO inAactiveRentalDTO = getInActiveRentalDTOFactory();
 
     private static Rental getInActiveRentalFactory() {
         OffsetDateTime borrowDate = OffsetDateTime.of(2024, 3, 1, 12, 0, 0, 0, ZoneOffset.UTC);
@@ -81,5 +85,37 @@ public class TestDataFactory {
         activeRental.setId(2L);
         return activeRental;
     }
+
+    private static RentalDTO getInActiveRentalDTOFactory() {
+        OffsetDateTime borrowDate = OffsetDateTime.of(2024, 3, 1, 12, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 4, 1, 12, 0, 0, 0, ZoneOffset.UTC);
+
+        return new RentalDTO().
+                book("Inactive test book").
+                rentedBy("Rental creator").
+                borrowDate(borrowDate).
+                expectedReturnDate(expectedReturnDate).
+                returned(true).
+                returnDate(expectedReturnDate).
+                lateReturnWeeklyFine(new BigDecimal(3)).
+                fineResolved(true).
+                id(2L);
+    }
+
+    private static RentalDTO getActiveRentalDTOFactory() {
+        OffsetDateTime borrowDate = OffsetDateTime.of(2024, 4, 1, 12, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 5, 1, 12, 0, 0, 0, ZoneOffset.UTC);
+
+        return new RentalDTO()
+                .book("Active test book")
+                .rentedBy("Rental creator")
+                .borrowDate(borrowDate)
+                .expectedReturnDate(expectedReturnDate)
+                .returned(false)
+                .returnDate(null)
+                .lateReturnWeeklyFine(new BigDecimal(1))
+                .fineResolved(false);
+    }
+
 
 }

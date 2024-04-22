@@ -89,7 +89,8 @@ class ReservationServiceTest {
         String newBook = "Updated Book";
         String newReservedBy = "Updated User";
         OffsetDateTime newReservedFrom = TimeProvider.now().plusDays(1);
-        OffsetDateTime newReservedTo = TimeProvider.now().plusDays(4);when(reservationRepository.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo)).thenReturn(1);
+        OffsetDateTime newReservedTo = TimeProvider.now().plusDays(4);
+        when(reservationRepository.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo)).thenReturn(1);
 
         // Act
         int result = reservationService.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);

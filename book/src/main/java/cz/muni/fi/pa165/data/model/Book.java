@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.data.model;
 
+import cz.muni.fi.pa165.util.ObjectConverter;
 import jakarta.persistence.*;
 import org.openapitools.model.BookStatus;
 
@@ -96,12 +97,6 @@ public class Book {
 
     @Override
     public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", title='" + title +
-                ", author='" + author +
-                ", description='" + description +
-                ", status=" + status +
-                '}';
+        return ObjectConverter.convertObjectToJsonWithClassnamePrefix(this);
     }
 }

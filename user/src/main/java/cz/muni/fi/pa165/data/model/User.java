@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.data.model;
 
+import cz.muni.fi.pa165.util.ObjectConverter;
 import jakarta.persistence.*;
 import org.openapitools.model.UserType;
 
@@ -106,13 +107,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username +
-                ", passwordHash='" + passwordHash +
-                ", address='" + address +
-                ", userType=" + userType +
-                ", birthDate=" + birthDate +
-                '}';
+        return ObjectConverter.convertObjectToJsonWithClassnamePrefix(this);
     }
 }

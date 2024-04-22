@@ -1,6 +1,6 @@
 package cz.muni.fi.pa165.facade;
 
-import cz.muni.fi.pa165.data.model.Book;
+import cz.muni.fi.pa165.mappers.BookMapper;
 import cz.muni.fi.pa165.service.BookService;
 import org.openapitools.model.BookDTO;
 import org.openapitools.model.BookStatus;
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Facade layer for managing books.
@@ -22,25 +21,24 @@ public class BookFacade {
 
     private final BookService bookService;
 
+    private final BookMapper bookMapper;
+
     @Autowired
-    public BookFacade(BookService bookService) {
+    public BookFacade(BookService bookService, BookMapper bookMapper) {
         this.bookService = bookService;
+        this.bookMapper = bookMapper;
     }
 
     public List<BookDTO> findByFilter(String title, String author, String description, BookStatus status) {
-        return bookService
-                .findByFilter(title, author, description, status)
-                .stream()
-                .map(this::convertToDTO).collect(Collectors.toList());
+        return bookMapper.mapToList(bookService.findByFilter(title, author, description, status));
     }
 
     public BookDTO createBook(String title, String author, String description) {
-        Book book = bookService.createBook(title, author, description);
-        return convertToDTO(book);
+        return bookMapper.mapToDto(bookService.createBook(title, author, description));
     }
 
     public Optional<BookDTO> findById(Long id) {
-        return bookService.findById(id).map(this::convertToDTO);
+        return bookService.findById(id).map(bookMapper::mapToDto);
     }
 
     public void deleteById(Long id) {
@@ -55,13 +53,4 @@ public class BookFacade {
         return bookService.findBookRentals(id);
     }
 
-    // Will be replaced by mapper in the future
-    private BookDTO convertToDTO(Book book) {
-        return new BookDTO()
-                .id(book.getId())
-                .title(book.getTitle())
-                .author(book.getAuthor())
-                .description(book.getDescription())
-                .status(book.getStatus());
-    }
 }

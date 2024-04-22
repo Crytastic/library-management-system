@@ -11,6 +11,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.IOException;
 
 public class ObjectConverter {
+
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             .registerModule(new JavaTimeModule())
@@ -27,5 +28,13 @@ public class ObjectConverter {
 
     public static <T> T convertJsonToObject(String object, TypeReference<T> typeReference) throws IOException {
         return OBJECT_MAPPER.readValue(object, typeReference);
+    }
+
+    public static String convertObjectToJsonWithClassnamePrefix(Object object) {
+        try {
+            return object.getClass().getSimpleName() + convertObjectToJson(object);
+        } catch (JsonProcessingException e) {
+            return "Error converting object to JSON: " + e.getMessage();
+        }
     }
 }

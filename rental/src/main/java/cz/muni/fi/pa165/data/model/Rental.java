@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.data.model;
 
+import cz.muni.fi.pa165.util.ObjectConverter;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -144,16 +145,6 @@ public class Rental {
 
     @Override
     public String toString() {
-        return "Rental{" +
-                "id=" + id +
-                ", book='" + book +
-                ", rentedBy='" + rentedBy +
-                ", borrowDate=" + borrowDate +
-                ", expectedReturnDate=" + expectedReturnDate +
-                ", returned=" + returned +
-                ", returnDate=" + returnDate +
-                ", lateReturnWeeklyFine=" + lateReturnWeeklyFine +
-                ", fineResolved=" + fineResolved +
-                '}';
+        return ObjectConverter.convertObjectToJsonWithClassnamePrefix(this);
     }
 }

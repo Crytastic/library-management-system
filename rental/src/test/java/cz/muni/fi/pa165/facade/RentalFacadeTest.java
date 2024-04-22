@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.facade;
 
 import cz.muni.fi.pa165.data.model.Rental;
+import cz.muni.fi.pa165.mappers.RentalMapper;
 import cz.muni.fi.pa165.service.RentalService;
 import cz.muni.fi.pa165.util.TestDataFactory;
 import cz.muni.fi.pa165.util.TimeProvider;
@@ -29,17 +30,21 @@ class RentalFacadeTest {
     @Mock
     RentalService rentalService;
 
+    @Mock
+    RentalMapper rentalMapper;
+
     @InjectMocks
     RentalFacade rentalFacade;
 
     @Test
     void findById_rentalFound_returnsRental() {
         when(rentalService.findById(2L)).thenReturn(Optional.ofNullable(TestDataFactory.activeRental));
+        when(rentalMapper.mapToDto(TestDataFactory.activeRental)).thenReturn(TestDataFactory.activeRentalDTO);
 
         Optional<RentalDTO> rentalDTO = rentalFacade.findById(2L);
 
         assertThat(rentalDTO).isPresent();
-        assertThat(rentalDTO.get()).isEqualTo(convertToDTO(TestDataFactory.activeRental));
+        assertThat(rentalDTO.get()).isEqualTo(TestDataFactory.activeRentalDTO);
     }
 
     @Test
@@ -60,6 +65,15 @@ class RentalFacadeTest {
         BigDecimal lateReturnWeeklyFine = new BigDecimal(100);
         Rental newRental = new Rental(book, rentedBy, null, expectedReturnDate, false,
                 null, lateReturnWeeklyFine, false);
+        RentalDTO newRentalDTO = new RentalDTO()
+                .book(book)
+                .rentedBy(rentedBy)
+                .borrowDate(null)
+                .expectedReturnDate(expectedReturnDate)
+                .returned(false)
+                .lateReturnWeeklyFine(lateReturnWeeklyFine)
+                .fineResolved(false);
+
 
         when(rentalService.createRental(
                 book,
@@ -67,6 +81,7 @@ class RentalFacadeTest {
                 expectedReturnDate,
                 lateReturnWeeklyFine))
                 .thenReturn(newRental);
+        when(rentalMapper.mapToDto(newRental)).thenReturn(newRentalDTO);
 
         RentalDTO rentalDTO = rentalFacade.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine);
 
@@ -101,14 +116,14 @@ class RentalFacadeTest {
         rentals.add(TestDataFactory.activeRental);
         rentals.add(TestDataFactory.inActiveRental);
         when(rentalService.findAll()).thenReturn(rentals);
+        when(rentalMapper.mapToList(rentals)).thenReturn(List.of(TestDataFactory.activeRentalDTO, TestDataFactory.inAactiveRentalDTO));
 
         List<RentalDTO> listOfRentals = rentalFacade.findAll();
 
         assertThat(listOfRentals)
                 .isNotNull()
                 .hasSize(2)
-                .containsExactlyInAnyOrder(convertToDTO(TestDataFactory.activeRental),
-                        convertToDTO(TestDataFactory.inActiveRental));
+                .containsExactlyInAnyOrder(TestDataFactory.activeRentalDTO, TestDataFactory.inAactiveRentalDTO);
     }
 
     @Test
@@ -169,19 +184,6 @@ class RentalFacadeTest {
         assertThat(fine).isPresent();
         assertThat(fine.get()).isEqualTo(BigDecimal.ZERO);
         verify(rentalService, times(1)).getFineById(1L);
-    }
-
-    private RentalDTO convertToDTO(Rental rental) {
-        return new RentalDTO()
-                .id(rental.getId())
-                .book(rental.getBook())
-                .rentedBy(rental.getRentedBy())
-                .borrowDate(rental.getBorrowDate())
-                .expectedReturnDate(rental.getExpectedReturnDate())
-                .returned(rental.isReturned())
-                .returnDate(rental.getReturnDate())
-                .lateReturnWeeklyFine(rental.getLateReturnWeeklyFine())
-                .fineResolved(rental.isFineResolved());
     }
 
 }
