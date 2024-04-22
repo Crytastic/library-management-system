@@ -90,7 +90,7 @@ paths:
     post:
       tags:
         - Rental
-      summary: Creates new rental
+      summary: Borrow a book
       operationId: createRental
       parameters:
         - { name: bookId,

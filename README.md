@@ -35,7 +35,7 @@ on [http://localhost:8080/swagger-ui/index.html#](http://localhost:8080/swagger-
 #### Endpoints
 
 - **GET /api/rentals:** Retrieve all rentals.
-- **POST /api/rentals:** Create a new rental.
+- **POST /api/rentals:** Borrow a book.
 - **GET /api/rentals/{id}:** Retrieve a rental by its ID.
 - **PATCH /api/rentals/{id}:** Update an existing rental.
 - **DELETE /api/rentals/{id}:** Delete a rental by its ID.
