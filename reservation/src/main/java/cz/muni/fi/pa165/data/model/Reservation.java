@@ -1,5 +1,7 @@
 package cz.muni.fi.pa165.data.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import cz.muni.fi.pa165.util.ObjectConverter;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -97,12 +99,10 @@ public class Reservation {
 
     @Override
     public String toString() {
-        return "Reservation{" +
-                "id=" + id +
-                ", book='" + book +
-                ", reservedBy='" + reservedBy +
-                ", reservedFrom=" + reservedFrom +
-                ", reservedTo=" + reservedTo +
-                '}';
+        try {
+            return "Reservation" + ObjectConverter.convertObjectToJson(this);
+        } catch (JsonProcessingException e) {
+            return "Error converting object to JSON: " + e.getMessage();
+        }
     }
 }
