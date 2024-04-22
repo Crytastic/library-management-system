@@ -1,5 +1,7 @@
 package cz.muni.fi.pa165.data.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import cz.muni.fi.pa165.util.ObjectConverter;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -144,16 +146,10 @@ public class Rental {
 
     @Override
     public String toString() {
-        return "Rental{" +
-                "id=" + id +
-                ", book='" + book +
-                ", rentedBy='" + rentedBy +
-                ", borrowDate=" + borrowDate +
-                ", expectedReturnDate=" + expectedReturnDate +
-                ", returned=" + returned +
-                ", returnDate=" + returnDate +
-                ", lateReturnWeeklyFine=" + lateReturnWeeklyFine +
-                ", fineResolved=" + fineResolved +
-                '}';
+        try {
+            return "Rental" + ObjectConverter.convertObjectToJson(this);
+        } catch (JsonProcessingException e) {
+            return "Error converting object to JSON: " + e.getMessage();
+        }
     }
 }
