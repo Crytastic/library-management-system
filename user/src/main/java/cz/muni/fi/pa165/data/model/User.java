@@ -1,5 +1,7 @@
 package cz.muni.fi.pa165.data.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import cz.muni.fi.pa165.util.ObjectConverter;
 import jakarta.persistence.*;
 import org.openapitools.model.UserType;
 
@@ -106,13 +108,10 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username +
-                ", passwordHash='" + passwordHash +
-                ", address='" + address +
-                ", userType=" + userType +
-                ", birthDate=" + birthDate +
-                '}';
+        try {
+            return "User" + ObjectConverter.convertObjectToJson(this);
+        } catch (JsonProcessingException e) {
+            return "Error converting object to JSON: " + e.getMessage();
+        }
     }
 }
