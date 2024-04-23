@@ -72,5 +72,4 @@ Librarian --> "Remove borrowing"
 "Registered user" --> "Borrow book"
 "Registered user" --> "Show borrowing details"
 
-
 @enduml
