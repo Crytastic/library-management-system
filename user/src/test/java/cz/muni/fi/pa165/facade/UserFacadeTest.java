@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.facade;
 
 import cz.muni.fi.pa165.data.model.User;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceAlreadyExistsException;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.exceptions.UnauthorisedException;
 import cz.muni.fi.pa165.mappers.UserMapper;
 import cz.muni.fi.pa165.service.UserService;
@@ -39,23 +40,21 @@ class UserFacadeTest {
 
     @Test
     void findById_userFound_returnsUser() {
-        when(userService.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.firstMemberDAO));
+        when(userService.findById(1L)).thenReturn(TestDataFactory.firstMemberDAO);
         when(userMapper.mapToDto(TestDataFactory.firstMemberDAO)).thenReturn(TestDataFactory.firstMemberDTO);
 
-        Optional<UserDTO> userDTO = userFacade.findById(1L);
+        UserDTO userDTO = userFacade.findById(1L);
 
-        assertThat(userDTO).isPresent();
-        assertThat(userDTO.get()).isEqualTo(TestDataFactory.firstMemberDTO);
-
+        assertThat(userDTO).isEqualTo(TestDataFactory.firstMemberDTO);
     }
 
     @Test
-    void findById_userNotFound_returnsEmptyOptional() {
-        when(userService.findById(1L)).thenReturn(Optional.empty());
+    void findById_userNotFound_throwsResourceNotFoundException() {
+        when(userService.findById(1L)).thenThrow(new ResourceNotFoundException(String.format("User with id: %d not found", 1L)));
 
-        Optional<UserDTO> userDAO = userFacade.findById(1L);
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> userFacade.findById(1L));
 
-        assertThat(userDAO).isEmpty();
+        assertThat(exception.getMessage()).isEqualTo(String.format("User with id: %d not found", 1L));
     }
 
     @Test

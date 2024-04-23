@@ -41,8 +41,8 @@ public class UserFacade {
         return userMapper.mapToDto(userService.createUser(username, password, address, birthDate, userType));
     }
 
-    public Optional<UserDTO> findById(Long id) {
-        return userService.findById(id).map(userMapper::mapToDto);
+    public UserDTO findById(Long id) {
+        return userMapper.mapToDto(userService.findById(id));
     }
 
     public void deleteById(Long id) {

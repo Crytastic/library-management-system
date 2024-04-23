@@ -44,8 +44,7 @@ public class UserRestController implements UserApi {
 
     @Override
     public ResponseEntity<UserDTO> getUser(Long id) {
-        Optional<UserDTO> user = userFacade.findById(id);
-        return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return new ResponseEntity<>(userFacade.findById(id), HttpStatus.OK);
     }
 
     @Override

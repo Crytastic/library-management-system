@@ -4,6 +4,7 @@ import com.google.common.hash.Hashing;
 import cz.muni.fi.pa165.data.model.User;
 import cz.muni.fi.pa165.data.repository.UserRepository;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceAlreadyExistsException;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.exceptions.UnauthorisedException;
 import org.openapitools.model.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,8 +60,9 @@ public class UserService {
     }
 
     @Transactional
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("User with id: %d not found", id)));
     }
 
     @Transactional

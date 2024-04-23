@@ -41,23 +41,13 @@ class UserRestControllerTest {
         LocalDate birthDate = LocalDate.parse("2000-02-02");
         UserDTO user = new UserDTO().username(username).userType(userType).address(address).birthDate(birthDate);
 
-        when(userFacade.findById(1L)).thenReturn(Optional.of(user));
+        when(userFacade.findById(1L)).thenReturn(user);
 
         ResponseEntity<UserDTO> response = userRestController.getUser(1L);
 
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody()).isEqualTo(user);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    void findById_userNotFound_returnsNotFoundStatus() {
-        when(userFacade.findById(1L)).thenReturn(Optional.empty());
-
-        ResponseEntity<UserDTO> response = userRestController.getUser(1L);
-
-        assertThat(response.getBody()).isNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test

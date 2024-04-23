@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.rest;
 
 import cz.muni.fi.pa165.data.model.User;
 import cz.muni.fi.pa165.data.repository.UserRepository;
+import cz.muni.fi.pa165.exceptionhandling.ApiError;
 import cz.muni.fi.pa165.util.ObjectConverter;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.UserDTO;
@@ -17,7 +18,6 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -64,9 +64,14 @@ public class UserRestControllerIT {
     void getUser_invalidId_returnsNotFound() throws Exception {
         Long id = 11L;
 
-        mockMvc.perform(get("/api/users/{id}", id)
+        String responseJson = mockMvc.perform(get("/api/users/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string(""));
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+        ApiError apiError = ObjectConverter.convertJsonToObject(responseJson, ApiError.class);
+
+        assertThat(apiError.getMessage()).isEqualTo(String.format("User with id: %d not found", id));
     }
 }

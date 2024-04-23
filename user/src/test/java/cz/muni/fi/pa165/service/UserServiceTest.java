@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.service;
 import cz.muni.fi.pa165.data.model.User;
 import cz.muni.fi.pa165.data.repository.UserRepository;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceAlreadyExistsException;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.exceptions.UnauthorisedException;
 import cz.muni.fi.pa165.util.TestDataFactory;
 import org.junit.jupiter.api.Test;
@@ -40,19 +41,18 @@ class UserServiceTest {
     void findById_userFound_returnsUser() {
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.firstMemberDAO));
 
-        Optional<User> userDAO = userService.findById(1L);
+        User userDAO = userService.findById(1L);
 
-        assertThat(userDAO).isPresent();
-        assertThat(userDAO.get()).isEqualTo(TestDataFactory.firstMemberDAO);
+        assertThat(userDAO).isEqualTo(TestDataFactory.firstMemberDAO);
     }
 
     @Test
-    void findById_userNotFound_returnsEmptyOptional() {
+    void findById_userNotFound_throwsResourceNotFoundException() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-        Optional<User> userDAO = userService.findById(1L);
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> userService.findById(1L));
 
-        assertThat(userDAO).isEmpty();
+        assertThat(exception.getMessage()).isEqualTo(String.format("User with id: %d not found", 1L));
     }
 
     @Test
