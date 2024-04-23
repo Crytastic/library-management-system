@@ -30,6 +30,6 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
                    Boolean returned,
                    OffsetDateTime returnDate,
                    BigDecimal lateReturnWeeklyFine,
-                   Boolean fineResolve
+                   Boolean fineResolved
     );
 }
