@@ -23,7 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = {ReservationController.class})
 public class ReservationControllerWebMvcTest {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -73,5 +72,4 @@ public class ReservationControllerWebMvcTest {
 
         assertThat(responseJson).isEqualTo("");
     }
-
 }

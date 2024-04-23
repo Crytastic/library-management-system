@@ -25,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class ReservationControllerIT {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -74,5 +73,4 @@ public class ReservationControllerIT {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(""));
     }
-
 }

@@ -25,7 +25,6 @@ import static org.mockito.Mockito.*;
  */
 @ExtendWith(MockitoExtension.class)
 public class ReservationControllerTest {
-
     @Mock
     private ReservationFacade reservationFacade;
 

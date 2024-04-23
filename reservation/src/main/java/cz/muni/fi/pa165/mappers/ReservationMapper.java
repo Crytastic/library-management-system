@@ -10,7 +10,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ReservationMapper {
-
     ReservationDTO mapToDto(Reservation reservation);
 
     List<ReservationDTO> mapToList(List<Reservation> reservations);

@@ -21,7 +21,6 @@ import java.util.Optional;
  */
 @RestController
 public class ReservationController implements ReservationApi {
-
     ReservationFacade reservationFacade;
 
     @Autowired

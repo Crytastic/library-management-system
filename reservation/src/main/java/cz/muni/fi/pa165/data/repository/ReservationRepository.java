@@ -9,7 +9,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-
     @Modifying
     @Query("UPDATE Reservation r SET " +
             "r.bookId = coalesce(:bookId, r.bookId), " +
@@ -24,5 +23,4 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     @Query("SELECT r FROM Reservation r WHERE r.reservedFrom < :currentDate AND r.reservedTo < :currentDate")
     List<Reservation> findAllExpired(OffsetDateTime currentDate);
-
 }
