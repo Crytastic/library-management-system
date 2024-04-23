@@ -3,8 +3,8 @@ package cz.muni.fi.pa165.service;
 import com.google.common.hash.Hashing;
 import cz.muni.fi.pa165.data.model.User;
 import cz.muni.fi.pa165.data.repository.UserRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceAlreadyExistsException;
 import cz.muni.fi.pa165.exceptions.UnauthorisedException;
-import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
 import org.openapitools.model.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -48,7 +48,7 @@ public class UserService {
         try {
             return userRepository.save(new User(username, passwordHashed, userType, address, birthDate));
         } catch (DataIntegrityViolationException e) {
-            throw new UsernameAlreadyExistsException(e.getMessage());
+            throw new ResourceAlreadyExistsException(e.getMessage());
         }
     }
 

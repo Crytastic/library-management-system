@@ -2,8 +2,8 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.User;
 import cz.muni.fi.pa165.data.repository.UserRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceAlreadyExistsException;
 import cz.muni.fi.pa165.exceptions.UnauthorisedException;
-import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
 import cz.muni.fi.pa165.util.TestDataFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -84,7 +84,7 @@ class UserServiceTest {
         LocalDate birthDate = LocalDate.parse("2000-02-02");
         when(userRepository.save(any(User.class))).thenThrow(DataIntegrityViolationException.class);
 
-        assertThrows(UsernameAlreadyExistsException.class,
+        assertThrows(ResourceAlreadyExistsException.class,
                 () -> userService.createUser(username, passwordHash, address, birthDate, userType));
     }
 

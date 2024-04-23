@@ -1,8 +1,8 @@
 package cz.muni.fi.pa165.facade;
 
 import cz.muni.fi.pa165.data.model.User;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceAlreadyExistsException;
 import cz.muni.fi.pa165.exceptions.UnauthorisedException;
-import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
 import cz.muni.fi.pa165.mappers.UserMapper;
 import cz.muni.fi.pa165.service.UserService;
 import cz.muni.fi.pa165.util.TestDataFactory;
@@ -105,9 +105,9 @@ class UserFacadeTest {
         String address = "Botanická 68a";
         LocalDate birthDate = LocalDate.parse("2000-02-02");
 
-        when(userService.createUser(username, passwordHash, address, birthDate, userType)).thenThrow(UsernameAlreadyExistsException.class);
+        when(userService.createUser(username, passwordHash, address, birthDate, userType)).thenThrow(ResourceAlreadyExistsException.class);
 
-        assertThrows(UsernameAlreadyExistsException.class,
+        assertThrows(ResourceAlreadyExistsException.class,
                 () -> userFacade.createUser(username, passwordHash, address, birthDate, userType));
     }
 
