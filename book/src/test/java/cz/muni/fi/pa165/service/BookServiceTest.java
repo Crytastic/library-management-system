@@ -95,10 +95,10 @@ public class BookServiceTest {
         when(bookRepository.findById(id)).thenReturn(Optional.of(new Book("", "", "", BookStatus.AVAILABLE)));
 
         // Act
-        Optional<List<String>> result = bookService.findBookRentals(id);
+        List<String> result = bookService.findBookRentals(id);
 
         // Assert
-        assertThat(result).isPresent().contains(rentals);
+        assertThat(result).isEqualTo(rentals);
     }
 
     @Test
@@ -107,11 +107,11 @@ public class BookServiceTest {
         Long id = 1L;
         when(bookRepository.findById(id)).thenReturn(Optional.empty());
 
-        // Act
-        Optional<List<String>> result = bookService.findBookRentals(id);
+        // Act + Assert
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookService.findBookRentals(id));
+        assertThat(exception.getMessage()).isEqualTo(String.format("Book with id: %d not found", id));
 
-        // Assert
-        assertThat(result).isEmpty();
+
     }
 
     @Test

@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -89,7 +88,7 @@ public class BookRestControllerTest {
         List<String> rentals = new ArrayList<>();
         rentals.add("Rental 1");
         rentals.add("Rental 2");
-        when(bookFacade.findBookRentals(id)).thenReturn(Optional.of(rentals));
+        when(bookFacade.findBookRentals(id)).thenReturn(rentals);
 
         // Act
         ResponseEntity<List<String>> response = bookRestController.getBookRentals(id);
@@ -97,20 +96,6 @@ public class BookRestControllerTest {
         // Assert
         assertThat(response.getBody()).isEqualTo(rentals);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    void getBookRentals_invalidId_returnsNotFound() {
-        // Arrange
-        Long id = 1L;
-        when(bookFacade.findBookRentals(id)).thenReturn(Optional.empty());
-
-        // Act
-        ResponseEntity<List<String>> response = bookRestController.getBookRentals(id);
-
-        // Assert
-        assertThat(response.getBody()).isNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test

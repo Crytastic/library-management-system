@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Service layer for managing books.
@@ -43,7 +42,8 @@ public class BookService {
 
     @Transactional
     public Book findById(Long id) {
-        return bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Book with id: %d not found",id)));
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Book with id: %d not found", id)));
     }
 
     @Transactional
@@ -57,11 +57,11 @@ public class BookService {
     }
 
     @Transactional
-    public Optional<List<String>> findBookRentals(Long id) {
+    public List<String> findBookRentals(Long id) {
         if (bookRepository.findById(id).isEmpty()) {
-            return Optional.empty();
+            throw new ResourceNotFoundException(String.format("Book with id: %d not found", id));
         } else {
-            return Optional.ofNullable(rentalServiceStub.apiCallToRentalServiceToFindBookRentals(id));
+            return rentalServiceStub.apiCallToRentalServiceToFindBookRentals(id);
         }
     }
 }

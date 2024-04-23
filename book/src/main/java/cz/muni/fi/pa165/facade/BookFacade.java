@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Facade layer for managing books.
@@ -49,7 +48,7 @@ public class BookFacade {
         return bookService.updateById(id, title, author, description, status);
     }
 
-    public Optional<List<String>> findBookRentals(Long id) {
+    public List<String> findBookRentals(Long id) {
         return bookService.findBookRentals(id);
     }
 

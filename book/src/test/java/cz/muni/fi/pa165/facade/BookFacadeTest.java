@@ -14,7 +14,6 @@ import org.openapitools.model.BookStatus;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -170,14 +169,14 @@ class BookFacadeTest {
         List<String> rentals = new ArrayList<>();
         rentals.add("Pepa z Depa");
         rentals.add("Miloš Vokuřil");
-        when(bookService.findBookRentals(id)).thenReturn(Optional.of(rentals));
+        when(bookService.findBookRentals(id)).thenReturn(rentals);
 
         // Act
-        Optional<List<String>> result = bookFacade.findBookRentals(id);
+        List<String> result = bookFacade.findBookRentals(id);
 
         // Assert
-        assertThat(result).isPresent();
-        assertThat(result.get()).hasSize(2);
+
+        assertThat(result).hasSize(2);
         verify(bookService, times(1)).findBookRentals(id);
     }
 
@@ -185,13 +184,12 @@ class BookFacadeTest {
     void findBookRentals_invalidId_returnsEmptyOptional() {
         // Arrange
         Long id = 1L;
-        when(bookService.findBookRentals(id)).thenReturn(Optional.empty());
+        when(bookService.findBookRentals(id)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found", id)));
 
-        // Act
-        Optional<List<String>> result = bookFacade.findBookRentals(id);
+        // Act + Assert
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookFacade.findBookRentals(id));
+        assertThat(exception.getMessage()).isEqualTo(String.format("Book with id: %d not found", id));
 
-        // Assert
-        assertThat(result).isEmpty();
         verify(bookService, times(1)).findBookRentals(id);
     }
 }
