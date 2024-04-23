@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -31,7 +30,6 @@ class RentalServiceTest {
     private RentalRepository rentalRepository;
 
     @InjectMocks
-    @Spy
     private RentalService rentalService;
 
     @Test
@@ -114,7 +112,7 @@ class RentalServiceTest {
         when(rentalRepository.updateById(rental.getId(), null, null, null,
                 null, true, returnDate, null, true))
                 .thenReturn(1);
-        when(rentalService.getFineById(2L)).thenReturn(Optional.of(BigDecimal.ZERO));
+        when(rentalRepository.findById(rental.getId())).thenReturn(Optional.of(rental));
 
         try (MockedStatic<TimeProvider> timeProviderDummy = mockStatic(TimeProvider.class)) {
             timeProviderDummy.when(TimeProvider::now).thenReturn(returnDate);
