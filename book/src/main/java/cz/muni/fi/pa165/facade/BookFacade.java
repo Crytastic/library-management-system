@@ -48,8 +48,8 @@ public class BookFacade {
         return bookService.updateById(id, title, author, description, status);
     }
 
-    public List<String> findBookRentals(Long id) {
-        return bookService.findBookRentals(id);
+    public List<String> findBookBorrowings(Long id) {
+        return bookService.findBookBorrowings(id);
     }
 
 }

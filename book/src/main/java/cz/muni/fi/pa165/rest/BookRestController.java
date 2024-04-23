@@ -45,8 +45,8 @@ public class BookRestController implements BookApi {
     }
 
     @Override
-    public ResponseEntity<List<String>> getBookRentals(Long id) {
-        return new ResponseEntity<>(bookFacade.findBookRentals(id), HttpStatus.OK);
+    public ResponseEntity<List<String>> getBookBorrowings(Long id) {
+        return new ResponseEntity<>(bookFacade.findBookBorrowings(id), HttpStatus.OK);
     }
 
     @Override

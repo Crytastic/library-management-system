@@ -21,30 +21,30 @@ directories: ```mvn spring-boot:run```
 or
 Run all microservices at once via containerization: ```podman-compose up -d``` / ```docker-compose up -d```
 
-### Rental Microservice
+### Borrowing Microservice
 
 #### Overview
 
-Facilitates operations related to book rentals. It provides functionalities for creating, updating, retrieving, and
-deleting rentals. This microservice manages information about book rentals, including details such as the book title,
-the person renting the book, dates of borrowing and expected return, and any associated fines.
+Facilitates operations related to book borrowings. It provides functionalities for creating, updating, retrieving, and
+deleting borrowings. This microservice manages information about book borrowings, including details such as the book title,
+the person borrowing the book, dates of borrowing and expected return, and any associated fines.
 
 It's accessible at [http://localhost:8080](http://localhost:8080). Also, via GUI
 on [http://localhost:8080/swagger-ui/index.html#](http://localhost:8080/swagger-ui/index.html#).
 
 #### Endpoints
 
-- **GET /api/rentals:** Retrieve all rentals.
-- **POST /api/rentals:** Create a new rental.
-- **GET /api/rentals/{id}:** Retrieve a rental by its ID.
-- **PATCH /api/rentals/{id}:** Update an existing rental.
-- **DELETE /api/rentals/{id}:** Delete a rental by its ID.
-- **GET /api/rentals/{id}/fine:** Retrieve the fine associated with a rental by its ID.
+- **GET /api/borrowings:** Retrieve all borrowings.
+- **POST /api/borrowings:** Create a new borrowing.
+- **GET /api/borrowings/{id}:** Retrieve a borrowing by its ID.
+- **PATCH /api/borrowings/{id}:** Update an existing borrowing.
+- **DELETE /api/borrowings/{id}:** Delete a borrowing by its ID.
+- **GET /api/borrowings/{id}/fine:** Retrieve the fine associated with a borrowing by its ID.
 
 #### Implementation details
 
-RentalDTO class is generated via OpenAPI. Refer to [OpenAPI documentation](https://swagger.io/specification/) and
-rental's respective [openapi config file](/rental/src/main/resources/openapi.yaml).
+BorrowingDTO class is generated via OpenAPI. Refer to [OpenAPI documentation](https://swagger.io/specification/) and
+borrowing's respective [openapi config file](/borrowing/src/main/resources/openapi.yaml).
 
 ### Reservation Microservice
 
@@ -96,7 +96,7 @@ respective [openapi config file](/user/src/main/resources/openapi.yaml).
 #### Overview
 
 The Book microservice allows users to retrieve, create, delete, and update books. It also provides some additional
-functionality, such as enumerating rentals of a specific book. It's accessible
+functionality, such as enumerating borrowings of a specific book. It's accessible
 at [http://localhost:8083](http://localhost:8083). Also, via GUI
 on [http://localhost:8083/swagger-ui/index.html#](http://localhost:8083/swagger-ui/index.html#).
 
@@ -107,7 +107,7 @@ on [http://localhost:8083/swagger-ui/index.html#](http://localhost:8083/swagger-
 - **GET /api/books/{id}:** Retrieves a book by its ID.
 - **PATCH /api/books/{id}:** Updates an existing book.
 - **DELETE /api/books/{id}:** Deletes a book by its ID.
-- **GET /api/books/{id}/rentals:** Retrieves all rentals of a specific book.
+- **GET /api/books/{id}/borrowings:** Retrieves all borrowings of a specific book.
 
 #### Implementation details
 

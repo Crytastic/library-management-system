@@ -82,19 +82,19 @@ public class BookRestControllerTest {
     }
 
     @Test
-    void getBookRentals_validId_returnsRentals() {
+    void getBookBorrowings_validId_returnsBorrowings() {
         // Arrange
         Long id = 1L;
-        List<String> rentals = new ArrayList<>();
-        rentals.add("Rental 1");
-        rentals.add("Rental 2");
-        when(bookFacade.findBookRentals(id)).thenReturn(rentals);
+        List<String> borrowings = new ArrayList<>();
+        borrowings.add("Borrowing 1");
+        borrowings.add("Borrowing 2");
+        when(bookFacade.findBookBorrowings(id)).thenReturn(borrowings);
 
         // Act
-        ResponseEntity<List<String>> response = bookRestController.getBookRentals(id);
+        ResponseEntity<List<String>> response = bookRestController.getBookBorrowings(id);
 
         // Assert
-        assertThat(response.getBody()).isEqualTo(rentals);
+        assertThat(response.getBody()).isEqualTo(borrowings);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
@@ -105,7 +105,7 @@ public class BookRestControllerTest {
         String newTitle = "The Lord of the Rings: The Two Towers";
         String newAuthor = "J. R. R. Tolkien";
         String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
-        BookStatus newStatus = BookStatus.RENTED;
+        BookStatus newStatus = BookStatus.BORROWED;
 
         when(bookFacade.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(1);
 

@@ -118,7 +118,7 @@
   <modules>
     <module>reservation</module>
     <module>book</module>
-    <module>rental</module>
+    <module>borrowing</module>
     <module>user</module>
     <module>infrastructure</module>
   </modules>
