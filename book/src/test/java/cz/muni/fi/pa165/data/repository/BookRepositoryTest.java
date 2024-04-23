@@ -7,9 +7,10 @@ import org.openapitools.model.BookStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 class BookRepositoryTest {
@@ -24,13 +25,14 @@ class BookRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Book book = new Book();
-        book.setAuthor("J. R. R. Tolkien");
-        book.setTitle("The Lord of the Rings");
-        book.setStatus(BookStatus.AVAILABLE);
-        book.setDescription("The Lord of the Rings is an epic high fantasy novel by the English author " +
-                "and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's " +
-                "1937 children's book The Hobbit, but eventually developed into a much larger work.");
+        Book book = new Book(
+                "The Lord of the Rings",
+                "J. R. R. Tolkien",
+                "The Lord of the Rings is an epic high fantasy novel by the English author " +
+                        "and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's " +
+                        "1937 children's book The Hobbit, but eventually developed into a much larger work.",
+                BookStatus.AVAILABLE
+        );
 
         Book persistedBook = testEntityManager.persist(book);
         bookId = persistedBook.getId();
@@ -44,7 +46,7 @@ class BookRepositoryTest {
 
     @Test
     void updateById_idNotFound_returnsZero() {
-        int updatedCount = bookRepository.updateById(10L, null, null, null, BookStatus.RESERVED);
+        int updatedCount = bookRepository.updateById(bookId - 1, null, null, null, BookStatus.RESERVED);
         assertThat(updatedCount).isEqualTo(0);
     }
 
