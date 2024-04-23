@@ -1,6 +1,5 @@
 package cz.muni.fi.pa165.rest;
 
-import cz.muni.fi.pa165.exceptions.UnauthorisedException;
 import cz.muni.fi.pa165.facade.UserFacade;
 import org.openapitools.api.UserApi;
 import org.openapitools.model.UserDTO;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller layer for managing users.
@@ -32,7 +30,7 @@ public class UserRestController implements UserApi {
 
     @Override
     public ResponseEntity<UserDTO> createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {
-            return new ResponseEntity<>(userFacade.createUser(username, password, address, birthDate, userType), HttpStatus.CREATED);
+        return new ResponseEntity<>(userFacade.createUser(username, password, address, birthDate, userType), HttpStatus.CREATED);
     }
 
     @Override
@@ -59,11 +57,6 @@ public class UserRestController implements UserApi {
 
     @Override
     public ResponseEntity<UserDTO> updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) {
-        try {
-            Optional<UserDTO> user = userFacade.updateUser(id, username, password, address, birthdate, userType);
-            return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-        } catch (UnauthorisedException e) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+        return new ResponseEntity<>(userFacade.updateUser(id, username, password, address, birthdate, userType), HttpStatus.OK);
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Facade layer for managing user.
@@ -49,8 +48,8 @@ public class UserFacade {
         userService.deleteById(id);
     }
 
-    public Optional<UserDTO> updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) {
-        return userService.updateUser(id, username, password, address, birthdate, userType).map(userMapper::mapToDto);
+    public UserDTO updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) {
+        return userMapper.mapToDto(userService.updateUser(id, username, password, address, birthdate, userType));
     }
 
 }

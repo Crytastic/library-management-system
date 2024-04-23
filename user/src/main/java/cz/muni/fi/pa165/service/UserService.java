@@ -5,7 +5,7 @@ import cz.muni.fi.pa165.data.model.User;
 import cz.muni.fi.pa165.data.repository.UserRepository;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceAlreadyExistsException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
-import cz.muni.fi.pa165.exceptions.UnauthorisedException;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.UnauthorizedException;
 import org.openapitools.model.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -77,26 +77,26 @@ public class UserService {
      * The MEMBERS can change only themselves, they can not change a type of user.
      */
     @Transactional
-    public Optional<User> updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) {
+    public User updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) {
         User userByUsername = userRepository.findUserByUsername(username);
         if (userByUsername == null || !userByUsername.getPasswordHash().equals(createPasswordHash(password))) {
-            throw new UnauthorisedException();
+            throw new UnauthorizedException();
         }
         if (userByUsername.getUserType().equals(UserType.MEMBER)) {
             if (!Objects.equals(userByUsername.getId(), id) || userType != null) {
-                throw new UnauthorisedException();
+                throw new UnauthorizedException();
             }
         }
         Optional<User> optionalUpdatedUser = userRepository.findById(id);
         if (optionalUpdatedUser.isEmpty()) {
-            return Optional.empty();
+            throw new ResourceNotFoundException(String.format("User with id: %d not found", id));
         }
         User updatedUser = optionalUpdatedUser.get();
         if (userType != null) updatedUser.setUserType(userType);
         if (address != null) updatedUser.setAddress(address);
         if (birthdate != null) updatedUser.setBirthDate(birthdate);
 
-        return Optional.of(userRepository.save(updatedUser));
+        return userRepository.save(updatedUser);
     }
 
     private LocalDate getDateForAdultAge() {

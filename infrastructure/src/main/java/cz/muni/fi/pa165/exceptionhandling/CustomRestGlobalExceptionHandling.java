@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.exceptionhandling;
 
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceAlreadyExistsException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,16 @@ public class CustomRestGlobalExceptionHandling {
         final ApiError apiError = new ApiError(
                 LocalDateTime.now(Clock.systemUTC()),
                 HttpStatus.UNPROCESSABLE_ENTITY,
+                ex.getLocalizedMessage(),
+                URL_PATH_HELPER.getRequestUri(request));
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler({UnauthorizedException.class})
+    public ResponseEntity<ApiError> handleResourceAlreadyExists(final UnauthorizedException ex, final HttpServletRequest request) {
+        final ApiError apiError = new ApiError(
+                LocalDateTime.now(Clock.systemUTC()),
+                HttpStatus.UNAUTHORIZED,
                 ex.getLocalizedMessage(),
                 URL_PATH_HELPER.getRequestUri(request));
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());

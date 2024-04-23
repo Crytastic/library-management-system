@@ -1,6 +1,5 @@
 package cz.muni.fi.pa165.rest;
 
-import cz.muni.fi.pa165.exceptions.UnauthorisedException;
 import cz.muni.fi.pa165.facade.UserFacade;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -80,38 +78,6 @@ class UserRestControllerTest {
     }
 
     @Test
-    void updateUser_incorrectCredentialsOrNoRights_returnsUnauthorizedStatus() {
-        String username = "programmer123";
-        String password = "password";
-        UserType userType = UserType.MEMBER;
-        String address = "Botanická 68a";
-        LocalDate birthDate = LocalDate.parse("2000-02-02");
-        Long id = 1L;
-
-        when(userFacade.updateUser(id, username, password, address, birthDate, userType)).thenThrow(UnauthorisedException.class);
-
-        ResponseEntity<UserDTO> response = userRestController.updateUser(id, username, password, address, birthDate, userType);
-        assertThat(response.getBody()).isNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
-
-    @Test
-    void updateUser_userUpdatesNotExistingUser_returnsNotFoundStatus() {
-        String username = "programmer123";
-        String password = "password";
-        UserType userType = UserType.MEMBER;
-        String address = "Botanická 68a";
-        LocalDate birthDate = LocalDate.parse("2000-02-02");
-        Long id = 1L;
-
-        when(userFacade.updateUser(id, username, password, address, birthDate, userType)).thenReturn(Optional.empty());
-
-        ResponseEntity<UserDTO> response = userRestController.updateUser(id, username, password, address, birthDate, userType);
-        assertThat(response.getBody()).isNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    }
-
-    @Test
     void updateUser_sufficientRightsAndUserExists_returnsUserAndOkStatus() {
         String username = "programmer123";
         String password = "password";
@@ -121,7 +87,7 @@ class UserRestControllerTest {
         Long id = 1L;
         UserDTO user = new UserDTO().username(username).userType(userType).address(address).birthDate(birthDate);
 
-        when(userFacade.updateUser(id, username, password, address, birthDate, userType)).thenReturn(Optional.of(user));
+        when(userFacade.updateUser(id, username, password, address, birthDate, userType)).thenReturn(user);
 
         ResponseEntity<UserDTO> response = userRestController.updateUser(id, username, password, address, birthDate, userType);
 
