@@ -14,14 +14,13 @@ import org.springframework.web.util.UrlPathHelper;
 import java.time.Clock;
 import java.time.LocalDateTime;
 
-@RestControllerAdvice
 /**
  * Taken from seminar-spring-boot-testing.
  *
- * @authoer Adam Krídl
+ * @author Adam Krídl
  */
+@RestControllerAdvice
 public class CustomRestGlobalExceptionHandling {
-
     private static final UrlPathHelper URL_PATH_HELPER = new UrlPathHelper();
 
     @ExceptionHandler({ResourceNotFoundException.class})
