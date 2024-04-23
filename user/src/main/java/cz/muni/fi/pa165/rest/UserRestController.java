@@ -21,7 +21,6 @@ import java.util.List;
 
 @RestController
 public class UserRestController implements UserApi {
-
     private final UserFacade userFacade;
 
     public UserRestController(@Autowired UserFacade userFacade) {
