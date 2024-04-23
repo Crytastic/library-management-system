@@ -21,14 +21,21 @@ class UserRepositoryTest {
     @Autowired
     private TestEntityManager testEntityManager;
 
+    private static final String USERNAME = "username";
+    private static final String PASSWORD_HASH = "passwordHash";
+    private static final UserType USER_TYPE = UserType.MEMBER;
+    private static final String ADDRESS = "Address";
+    private static final LocalDate BIRTH_DATE = LocalDate.parse("2000-02-02");
+
+
     @BeforeEach
     void setUp() {
         User user = new User(
-                "username",
-                "passwordHash",
-                UserType.MEMBER,
-                "Address",
-                LocalDate.parse("2000-02-02")
+                USERNAME,
+                PASSWORD_HASH,
+                USER_TYPE,
+                ADDRESS,
+                BIRTH_DATE
         );
         testEntityManager.persist(user);
     }
@@ -39,11 +46,11 @@ class UserRepositoryTest {
         assertThat(users).hasSize(1);
 
         User user = users.getFirst();
-        assertThat(user.getUserType()).isEqualTo(UserType.MEMBER);
-        assertThat(user.getAddress()).isEqualTo("Address");
-        assertThat(user.getPasswordHash()).isEqualTo("passwordHash");
-        assertThat(user.getUsername()).isEqualTo("username");
-        assertThat(user.getBirthDate()).isEqualTo(LocalDate.parse("2000-02-02"));
+        assertThat(user.getUserType()).isEqualTo(USER_TYPE);
+        assertThat(user.getAddress()).isEqualTo(ADDRESS);
+        assertThat(user.getPasswordHash()).isEqualTo(PASSWORD_HASH);
+        assertThat(user.getUsername()).isEqualTo(USERNAME);
+        assertThat(user.getBirthDate()).isEqualTo(BIRTH_DATE);
 
     }
 
@@ -59,11 +66,11 @@ class UserRepositoryTest {
         assertThat(users).hasSize(1);
 
         User user = users.getFirst();
-        assertThat(user.getUserType()).isEqualTo(UserType.MEMBER);
-        assertThat(user.getAddress()).isEqualTo("Address");
-        assertThat(user.getPasswordHash()).isEqualTo("passwordHash");
-        assertThat(user.getUsername()).isEqualTo("username");
-        assertThat(user.getBirthDate()).isEqualTo(LocalDate.parse("2000-02-02"));
+        assertThat(user.getUserType()).isEqualTo(USER_TYPE);
+        assertThat(user.getAddress()).isEqualTo(ADDRESS);
+        assertThat(user.getPasswordHash()).isEqualTo(PASSWORD_HASH);
+        assertThat(user.getUsername()).isEqualTo(USERNAME);
+        assertThat(user.getBirthDate()).isEqualTo(BIRTH_DATE);
     }
 
     @Test
@@ -77,11 +84,11 @@ class UserRepositoryTest {
         User user = userRepository.findUserByUsername("username");
 
         assertThat(user).isNotNull();
-        assertThat(user.getUserType()).isEqualTo(UserType.MEMBER);
-        assertThat(user.getAddress()).isEqualTo("Address");
-        assertThat(user.getPasswordHash()).isEqualTo("passwordHash");
-        assertThat(user.getUsername()).isEqualTo("username");
-        assertThat(user.getBirthDate()).isEqualTo(LocalDate.parse("2000-02-02"));
+        assertThat(user.getUserType()).isEqualTo(USER_TYPE);
+        assertThat(user.getAddress()).isEqualTo(ADDRESS);
+        assertThat(user.getPasswordHash()).isEqualTo(PASSWORD_HASH);
+        assertThat(user.getUsername()).isEqualTo(USERNAME);
+        assertThat(user.getBirthDate()).isEqualTo(BIRTH_DATE);
     }
 
     @Test
