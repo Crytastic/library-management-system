@@ -23,7 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = {BorrowingController.class})
 public class BorrowingControllerWebMvcTest {
-
     @Autowired
     private MockMvc mockMvc;
 

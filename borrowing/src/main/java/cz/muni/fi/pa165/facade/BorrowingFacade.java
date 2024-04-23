@@ -19,7 +19,6 @@ import java.util.Optional;
  */
 @Service
 public class BorrowingFacade {
-
     private final BorrowingService borrowingService;
 
     private final BorrowingMapper borrowingMapper;
@@ -53,5 +52,4 @@ public class BorrowingFacade {
     public Optional<BigDecimal> getFineById(Long id) {
         return borrowingService.getFineById(id);
     }
-
 }

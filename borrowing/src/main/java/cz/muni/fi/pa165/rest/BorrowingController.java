@@ -22,7 +22,6 @@ import java.util.Optional;
  */
 @Controller
 public class BorrowingController implements BorrowingApi {
-
     private final BorrowingFacade borrowingFacade;
 
     @Autowired

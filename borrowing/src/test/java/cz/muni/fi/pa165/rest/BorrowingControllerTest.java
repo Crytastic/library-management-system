@@ -183,5 +183,4 @@ class BorrowingControllerTest {
                 .lateReturnWeeklyFine(BigDecimal.TWO)
                 .fineResolved(false);
     }
-
 }

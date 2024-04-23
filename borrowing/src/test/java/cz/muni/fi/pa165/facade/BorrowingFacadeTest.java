@@ -185,5 +185,4 @@ class BorrowingFacadeTest {
         assertThat(fine.get()).isEqualTo(BigDecimal.ZERO);
         verify(borrowingService, times(1)).getFineById(1L);
     }
-
 }

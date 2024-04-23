@@ -13,7 +13,6 @@ import java.time.ZoneOffset;
  */
 @Component
 public class TestDataFactory {
-
     public static Borrowing activeBorrowing = getActiveBorrowingFactory();
     public static Borrowing inActiveBorrowing = getInActiveBorrowingFactory();
     public static Borrowing activeBorrowingLate = getActiveLateBorrowingFactory();
@@ -116,6 +115,4 @@ public class TestDataFactory {
                 .lateReturnWeeklyFine(new BigDecimal(1))
                 .fineResolved(false);
     }
-
-
 }

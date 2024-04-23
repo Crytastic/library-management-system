@@ -10,7 +10,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface BorrowingMapper {
-
     BorrowingDTO mapToDto(Borrowing borrowing);
 
     List<BorrowingDTO> mapToList(List<Borrowing> borrowings);
