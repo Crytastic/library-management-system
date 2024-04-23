@@ -11,7 +11,6 @@ import java.util.List;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
-
     @Modifying
     @Query("UPDATE Book b SET " +
             "b.author = coalesce(:author, b.author), " +
@@ -26,5 +25,4 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "b.description = coalesce(:description, b.description) AND " +
             "b.status = coalesce(:status, b.status)")
     List<Book> findByFilter(String title, String author, String description, BookStatus status);
-
 }

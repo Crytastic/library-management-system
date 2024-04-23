@@ -17,7 +17,6 @@ import java.util.List;
  */
 @Service
 public class BookFacade {
-
     private final BookService bookService;
 
     private final BookMapper bookMapper;
@@ -51,5 +50,4 @@ public class BookFacade {
     public List<String> findBookBorrowings(Long id) {
         return bookService.findBookBorrowings(id);
     }
-
 }

@@ -19,7 +19,6 @@ import java.util.List;
  */
 @Service
 public class BookService {
-
     private final BookRepository bookRepository;
 
     private final BorrowingServiceStub borrowingServiceStub;

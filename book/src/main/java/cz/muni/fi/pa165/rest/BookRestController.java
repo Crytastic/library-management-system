@@ -20,7 +20,6 @@ import java.util.List;
  */
 @RestController
 public class BookRestController implements BookApi {
-
     private final BookFacade bookFacade;
 
     @Autowired
