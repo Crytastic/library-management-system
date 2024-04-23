@@ -46,15 +46,15 @@ public class RentalService {
     }
 
     @Transactional
-    public int returnBook(Long id) {
-        Optional<BigDecimal> optionalFineToPay = getFineById(id);
+    public int returnBook(Long rentalId) {
+        Optional<BigDecimal> optionalFineToPay = getFineById(rentalId);
         if (optionalFineToPay.isEmpty()) {
             return 0;
         }
 
         boolean fineResolved = optionalFineToPay.get().equals(BigDecimal.ZERO);
 
-        return rentalRepository.updateById(id, null, null, null, null, true, TimeProvider.now(), null, fineResolved);
+        return rentalRepository.updateById(rentalId, null, null, null, null, true, TimeProvider.now(), null, fineResolved);
     }
 
     @Transactional
