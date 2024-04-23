@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Book;
 import cz.muni.fi.pa165.data.repository.BookRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.stubs.RentalServiceStub;
 import org.openapitools.model.BookStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,8 @@ public class BookService {
     }
 
     @Transactional
-    public Optional<Book> findById(Long id) {
-        return bookRepository.findById(id);
+    public Book findById(Long id) {
+        return bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Book with id: %d not found",id)));
     }
 
     @Transactional

@@ -71,7 +71,7 @@ public class BookRestControllerTest {
         String author = "J.R.R. Tolkien";
         BookStatus status = BookStatus.AVAILABLE;
         BookDTO book = BookDTOFactory.createBook(id, title, description, author, status);
-        when(bookFacade.findById(id)).thenReturn(Optional.of(book));
+        when(bookFacade.findById(id)).thenReturn(book);
 
         // Act
         ResponseEntity<BookDTO> response = bookRestController.getBook(id);
@@ -80,20 +80,6 @@ public class BookRestControllerTest {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody()).isEqualTo(book);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    void getBook_invalidId_returnsNotFound() {
-        // Arrange
-        Long id = 1L;
-        when(bookFacade.findById(id)).thenReturn(Optional.empty());
-
-        // Act
-        ResponseEntity<BookDTO> response = bookRestController.getBook(id);
-
-        // Assert
-        assertThat(response.getBody()).isNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test

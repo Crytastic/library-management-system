@@ -42,8 +42,7 @@ public class BookRestController implements BookApi {
 
     @Override
     public ResponseEntity<BookDTO> getBook(Long id) {
-        Optional<BookDTO> book = bookFacade.findById(id);
-        return book.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return new ResponseEntity<>(bookFacade.findById(id), HttpStatus.OK);
     }
 
     @Override

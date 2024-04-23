@@ -37,8 +37,8 @@ public class BookFacade {
         return bookMapper.mapToDto(bookService.createBook(title, author, description));
     }
 
-    public Optional<BookDTO> findById(Long id) {
-        return bookService.findById(id).map(bookMapper::mapToDto);
+    public BookDTO findById(Long id) {
+        return bookMapper.mapToDto(bookService.findById(id));
     }
 
     public void deleteById(Long id) {
