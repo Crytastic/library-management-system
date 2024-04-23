@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Book;
 import cz.muni.fi.pa165.data.repository.BookRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.stubs.RentalServiceStub;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,26 +36,24 @@ public class BookServiceTest {
         when(bookRepository.findById(1L)).thenReturn(Optional.of(foundBook));
 
         // Act
-        Optional<Book> result = bookService.findById(1L);
+        Book result = bookService.findById(1L);
 
         // Assert
-        assertThat(result).isPresent().contains(foundBook);
+        assertThat(result).isEqualTo(foundBook);
     }
 
     @Test
-    void findById_bookNotFound_returnsEmpty() {
+    void findById_bookNotFound_throwsResourceNotFoundException() {
         // Arrange
-        when(bookRepository.findById(1L)).thenReturn(Optional.empty());
+        when(bookRepository.findById(1L)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found",1L)));
 
-        // Act
-        Optional<Book> result = bookService.findById(1L);
-
-        // Assert
-        assertThat(result).isEmpty();
+        // Act + Assert
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookRepository.findById(1L));
+        assertThat(exception.getMessage()).isEqualTo("Book with id: %d not found",1L);
     }
 
     @Test
-    void updateById_bookNotFound_returnsZero() {
+    void updateById_bookNotFound_throwsResourceNotFoundException() {
         // Arrange
         Long id = 1L;
         String newTitle = "The Lord of the Rings: The Two Towers";
@@ -62,11 +62,11 @@ public class BookServiceTest {
         BookStatus newStatus = BookStatus.RENTED;
         when(bookRepository.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(0);
 
-        // Act
-        int result = bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus);
+        // Act + Assert
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus));
 
-        // Assert
-        assertThat(result).isEqualTo(0);
+        assertThat(exception.getMessage()).isEqualTo(String.format("Book with id: %d not found", id));
+
     }
 
     @Test
@@ -95,10 +95,10 @@ public class BookServiceTest {
         when(bookRepository.findById(id)).thenReturn(Optional.of(new Book("", "", "", BookStatus.AVAILABLE)));
 
         // Act
-        Optional<List<String>> result = bookService.findBookRentals(id);
+        List<String> result = bookService.findBookRentals(id);
 
         // Assert
-        assertThat(result).isPresent().contains(rentals);
+        assertThat(result).isEqualTo(rentals);
     }
 
     @Test
@@ -107,11 +107,11 @@ public class BookServiceTest {
         Long id = 1L;
         when(bookRepository.findById(id)).thenReturn(Optional.empty());
 
-        // Act
-        Optional<List<String>> result = bookService.findBookRentals(id);
+        // Act + Assert
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookService.findBookRentals(id));
+        assertThat(exception.getMessage()).isEqualTo(String.format("Book with id: %d not found", id));
 
-        // Assert
-        assertThat(result).isEmpty();
+
     }
 
     @Test

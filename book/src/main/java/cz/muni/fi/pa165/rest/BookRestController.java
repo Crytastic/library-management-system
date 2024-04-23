@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller layer for managing books.
@@ -42,14 +41,12 @@ public class BookRestController implements BookApi {
 
     @Override
     public ResponseEntity<BookDTO> getBook(Long id) {
-        Optional<BookDTO> book = bookFacade.findById(id);
-        return book.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return new ResponseEntity<>(bookFacade.findById(id), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<List<String>> getBookRentals(Long id) {
-        Optional<List<String>> rentals = bookFacade.findBookRentals(id);
-        return rentals.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return new ResponseEntity<>(bookFacade.findBookRentals(id), HttpStatus.OK);
     }
 
     @Override
@@ -64,7 +61,7 @@ public class BookRestController implements BookApi {
 
     @Override
     public ResponseEntity<Void> updateBook(Long id, String title, String author, String description, BookStatus status) {
-        int modifiedCount = bookFacade.updateById(id, title, author, description, status);
-        return new ResponseEntity<>(modifiedCount > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+        bookFacade.updateById(id, title, author, description, status);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -1,5 +1,7 @@
 package cz.muni.fi.pa165.rest;
 
+import cz.muni.fi.pa165.exceptionhandling.ApiError;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.facade.BookFacade;
 import cz.muni.fi.pa165.util.BookDTOFactory;
 import cz.muni.fi.pa165.util.ObjectConverter;
@@ -14,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,7 +39,7 @@ public class BookRestControllerWebMvcTest {
         String author = "J.R.R. Tolkien";
         BookStatus status = BookStatus.AVAILABLE;
         BookDTO bookDTO = BookDTOFactory.createBook(id, title, author, description, status);
-        Mockito.when(bookFacade.findById(id)).thenReturn(Optional.of(bookDTO));
+        Mockito.when(bookFacade.findById(id)).thenReturn(bookDTO);
 
         // Act
         String responseJson = mockMvc.perform(get("/api/books/{id}", id)
@@ -60,7 +61,7 @@ public class BookRestControllerWebMvcTest {
     void getBook_invalidId_returnsNotFound() throws Exception {
         // Arrange
         Long id = 10L;
-        Mockito.when(bookFacade.findById(id)).thenReturn(Optional.empty());
+        Mockito.when(bookFacade.findById(id)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found",id)));
         // Act and Assert
         String responseJson = mockMvc.perform(get("/api/books/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -69,7 +70,9 @@ public class BookRestControllerWebMvcTest {
                 .getResponse()
                 .getContentAsString(StandardCharsets.UTF_8);
 
-        assertThat(responseJson).isEqualTo("");
+       ApiError error = ObjectConverter.convertJsonToObject(responseJson, ApiError.class);
+       assertThat(error.getMessage()).isEqualTo(String.format("Book with id: %d not found",id));
+
     }
 
 }

@@ -2,8 +2,9 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.User;
 import cz.muni.fi.pa165.data.repository.UserRepository;
-import cz.muni.fi.pa165.exceptions.UnauthorisedException;
-import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceAlreadyExistsException;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.UnauthorizedException;
 import cz.muni.fi.pa165.util.TestDataFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,19 +41,18 @@ class UserServiceTest {
     void findById_userFound_returnsUser() {
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.firstMemberDAO));
 
-        Optional<User> userDAO = userService.findById(1L);
+        User userDAO = userService.findById(1L);
 
-        assertThat(userDAO).isPresent();
-        assertThat(userDAO.get()).isEqualTo(TestDataFactory.firstMemberDAO);
+        assertThat(userDAO).isEqualTo(TestDataFactory.firstMemberDAO);
     }
 
     @Test
-    void findById_userNotFound_returnsEmptyOptional() {
+    void findById_userNotFound_throwsResourceNotFoundException() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-        Optional<User> userDAO = userService.findById(1L);
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> userService.findById(1L));
 
-        assertThat(userDAO).isEmpty();
+        assertThat(exception.getMessage()).isEqualTo(String.format("User with id: %d not found", 1L));
     }
 
     @Test
@@ -84,7 +84,7 @@ class UserServiceTest {
         LocalDate birthDate = LocalDate.parse("2000-02-02");
         when(userRepository.save(any(User.class))).thenThrow(DataIntegrityViolationException.class);
 
-        assertThrows(UsernameAlreadyExistsException.class,
+        assertThrows(ResourceAlreadyExistsException.class,
                 () -> userService.createUser(username, passwordHash, address, birthDate, userType));
     }
 
@@ -102,7 +102,7 @@ class UserServiceTest {
         User testUser = TestDataFactory.firstMemberDAO;
         when(userRepository.findUserByUsername(anyString())).thenReturn(null);
 
-        assertThrows(UnauthorisedException.class, () ->
+        assertThrows(UnauthorizedException.class, () ->
                 userService.updateUser(TestDataFactory.secondMemberDAO.getId(), "IncorrectUserName", testUser.getPasswordHash(), "Nová Adresa 123, Brno", null, null));
 
         verify(userRepository, times(0)).save(testUser);
@@ -113,23 +113,25 @@ class UserServiceTest {
         User testUser = TestDataFactory.firstMemberDAO;
         when(userRepository.findUserByUsername(anyString())).thenReturn(TestDataFactory.secondMemberDAO);
 
-        assertThrows(UnauthorisedException.class, () ->
+        assertThrows(UnauthorizedException.class, () ->
                 userService.updateUser(TestDataFactory.secondMemberDAO.getId(), testUser.getUsername(), "incorrectPassword", "Nová Adresa 123, Brno", null, null));
 
         verify(userRepository, times(0)).save(testUser);
     }
 
     @Test
-    void updateUser_userUpdatesNotExistingUser_notCallsUserRepositoryUpdateUserAndReturnsEmptyOptional() {
+    void updateUser_userUpdatesNotExistingUser_notCallsUserRepositoryUpdateUserAndThrowsResourceNotFoundException() {
         User actor = TestDataFactory.firstLibrarianDAO;
         String actorPassword = TestDataFactory.firstLibrarianDAOPassword;
         Long notExistingId = 20L;
 
         when(userRepository.findUserByUsername(actor.getUsername())).thenReturn(actor);
-        when(userRepository.findById(notExistingId)).thenReturn(Optional.empty());
+        when(userRepository.findById(notExistingId)).thenThrow(new ResourceNotFoundException(String.format("User with id: %d not found", notExistingId)));
 
-        assertThat(userService.updateUser(notExistingId, actor.getUsername(), actorPassword,
-                "Nová Adresa 132, Brno", null, null)).isEmpty();
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> userService.updateUser(notExistingId, actor.getUsername(), actorPassword,
+                "Nová Adresa 132, Brno", null, null));
+
+        assertThat(exception.getMessage()).isEqualTo(String.format("User with id: %d not found", notExistingId));
 
         verify(userRepository, times(1)).findUserByUsername(actor.getUsername());
         verify(userRepository, times(1)).findById(notExistingId);
@@ -151,7 +153,7 @@ class UserServiceTest {
         when(userRepository.save(updatedUser)).thenReturn(updatedUser);
 
         assertThat(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
-                updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isPresent().contains(updatedUser);
+                updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isEqualTo(updatedUser);
 
         verify(userRepository, times(1)).findUserByUsername(actor.getUsername());
         verify(userRepository, times(1)).findById(userToBeUpdated.getId());
@@ -173,7 +175,7 @@ class UserServiceTest {
         when(userRepository.save(updatedUser)).thenReturn(updatedUser);
 
         assertThat(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
-                updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isPresent().contains(updatedUser);
+                updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isEqualTo(updatedUser);
 
         verify(userRepository, times(1)).findUserByUsername(actor.getUsername());
         verify(userRepository, times(1)).findById(userToBeUpdated.getId());
@@ -191,7 +193,7 @@ class UserServiceTest {
 
         when(userRepository.findUserByUsername(actor.getUsername())).thenReturn(actor);
 
-        assertThrows(UnauthorisedException.class, () -> userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
+        assertThrows(UnauthorizedException.class, () -> userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
                 updatedUser.getAddress(), updatedUser.getBirthDate(), updatedUser.getUserType()));
 
         verify(userRepository, times(1)).findUserByUsername(actor.getUsername());
@@ -211,7 +213,7 @@ class UserServiceTest {
 
         when(userRepository.findUserByUsername(actor.getUsername())).thenReturn(actor);
 
-        assertThrows(UnauthorisedException.class, () -> userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
+        assertThrows(UnauthorizedException.class, () -> userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
                 updatedUser.getAddress(), updatedUser.getBirthDate(), null));
 
         verify(userRepository, times(1)).findUserByUsername(actor.getUsername());

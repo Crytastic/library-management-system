@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Book;
 import cz.muni.fi.pa165.data.repository.BookRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.stubs.RentalServiceStub;
 import org.openapitools.model.BookStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Service layer for managing books.
@@ -41,8 +41,9 @@ public class BookService {
     }
 
     @Transactional
-    public Optional<Book> findById(Long id) {
-        return bookRepository.findById(id);
+    public Book findById(Long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Book with id: %d not found", id)));
     }
 
     @Transactional
@@ -52,15 +53,20 @@ public class BookService {
 
     @Transactional
     public int updateById(Long id, String title, String author, String description, BookStatus status) {
-        return bookRepository.updateById(id, title, author, description, status);
+        int updatedCount = bookRepository.updateById(id, title, author, description, status);
+        if (updatedCount > 0) {
+            return updatedCount;
+        } else {
+            throw new ResourceNotFoundException(String.format("Book with id: %d not found", id));
+        }
     }
 
     @Transactional
-    public Optional<List<String>> findBookRentals(Long id) {
+    public List<String> findBookRentals(Long id) {
         if (bookRepository.findById(id).isEmpty()) {
-            return Optional.empty();
+            throw new ResourceNotFoundException(String.format("Book with id: %d not found", id));
         } else {
-            return Optional.ofNullable(rentalServiceStub.apiCallToRentalServiceToFindBookRentals(id));
+            return rentalServiceStub.apiCallToRentalServiceToFindBookRentals(id);
         }
     }
 }

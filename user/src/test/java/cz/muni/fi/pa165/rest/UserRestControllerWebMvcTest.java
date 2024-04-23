@@ -1,5 +1,7 @@
 package cz.muni.fi.pa165.rest;
 
+import cz.muni.fi.pa165.exceptionhandling.ApiError;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.facade.UserFacade;
 import cz.muni.fi.pa165.util.ObjectConverter;
 import org.junit.jupiter.api.Test;
@@ -13,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -42,7 +43,7 @@ public class UserRestControllerWebMvcTest {
         UserDTO userDTO = new UserDTO().id(id).username(username).userType(userType)
                 .address(address).birthDate(birthDate);
 
-        when(userFacade.findById(id)).thenReturn(Optional.of(userDTO));
+        when(userFacade.findById(id)).thenReturn(userDTO);
 
         String responseJson = mockMvc.perform(get("/api/users/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -60,7 +61,7 @@ public class UserRestControllerWebMvcTest {
     @Test
     void getUser_invalidId_returnsNotFound() throws Exception {
         Long id = 11L;
-        when(userFacade.findById(id)).thenReturn(Optional.empty());
+        when(userFacade.findById(id)).thenThrow(new ResourceNotFoundException(String.format("User with id: %d not found", id)));
 
         String responseJson = mockMvc.perform(get("/api/users/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -69,6 +70,8 @@ public class UserRestControllerWebMvcTest {
                 .getResponse()
                 .getContentAsString(StandardCharsets.UTF_8);
 
-        assertThat(responseJson).isEqualTo("");
+        ApiError apiError = ObjectConverter.convertJsonToObject(responseJson, ApiError.class);
+
+        assertThat(apiError.getMessage()).isEqualTo(String.format("User with id: %d not found", id));
     }
 }

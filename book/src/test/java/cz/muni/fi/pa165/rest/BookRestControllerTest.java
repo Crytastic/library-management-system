@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -71,7 +70,7 @@ public class BookRestControllerTest {
         String author = "J.R.R. Tolkien";
         BookStatus status = BookStatus.AVAILABLE;
         BookDTO book = BookDTOFactory.createBook(id, title, description, author, status);
-        when(bookFacade.findById(id)).thenReturn(Optional.of(book));
+        when(bookFacade.findById(id)).thenReturn(book);
 
         // Act
         ResponseEntity<BookDTO> response = bookRestController.getBook(id);
@@ -83,27 +82,13 @@ public class BookRestControllerTest {
     }
 
     @Test
-    void getBook_invalidId_returnsNotFound() {
-        // Arrange
-        Long id = 1L;
-        when(bookFacade.findById(id)).thenReturn(Optional.empty());
-
-        // Act
-        ResponseEntity<BookDTO> response = bookRestController.getBook(id);
-
-        // Assert
-        assertThat(response.getBody()).isNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    }
-
-    @Test
     void getBookRentals_validId_returnsRentals() {
         // Arrange
         Long id = 1L;
         List<String> rentals = new ArrayList<>();
         rentals.add("Rental 1");
         rentals.add("Rental 2");
-        when(bookFacade.findBookRentals(id)).thenReturn(Optional.of(rentals));
+        when(bookFacade.findBookRentals(id)).thenReturn(rentals);
 
         // Act
         ResponseEntity<List<String>> response = bookRestController.getBookRentals(id);
@@ -111,20 +96,6 @@ public class BookRestControllerTest {
         // Assert
         assertThat(response.getBody()).isEqualTo(rentals);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    void getBookRentals_invalidId_returnsNotFound() {
-        // Arrange
-        Long id = 1L;
-        when(bookFacade.findBookRentals(id)).thenReturn(Optional.empty());
-
-        // Act
-        ResponseEntity<List<String>> response = bookRestController.getBookRentals(id);
-
-        // Assert
-        assertThat(response.getBody()).isNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
@@ -143,23 +114,6 @@ public class BookRestControllerTest {
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    void updateBook_invalidId_returnsNotFound() {
-        // Arrange
-        Long id = 1L;
-        String title = "The Lord of the Rings";
-        String author = "Tolkien";
-        String description = "Fantasy novel";
-        BookStatus status = BookStatus.AVAILABLE;
-        when(bookFacade.updateById(id, title, author, description, status)).thenReturn(0);
-
-        // Act
-        ResponseEntity<Void> response = bookRestController.updateBook(id, title, author, description, status);
-
-        // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test

@@ -1,8 +1,9 @@
 package cz.muni.fi.pa165.facade;
 
 import cz.muni.fi.pa165.data.model.User;
-import cz.muni.fi.pa165.exceptions.UnauthorisedException;
-import cz.muni.fi.pa165.exceptions.UsernameAlreadyExistsException;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceAlreadyExistsException;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.UnauthorizedException;
 import cz.muni.fi.pa165.mappers.UserMapper;
 import cz.muni.fi.pa165.service.UserService;
 import cz.muni.fi.pa165.util.TestDataFactory;
@@ -17,7 +18,6 @@ import org.openapitools.model.UserType;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -39,23 +39,21 @@ class UserFacadeTest {
 
     @Test
     void findById_userFound_returnsUser() {
-        when(userService.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.firstMemberDAO));
+        when(userService.findById(1L)).thenReturn(TestDataFactory.firstMemberDAO);
         when(userMapper.mapToDto(TestDataFactory.firstMemberDAO)).thenReturn(TestDataFactory.firstMemberDTO);
 
-        Optional<UserDTO> userDTO = userFacade.findById(1L);
+        UserDTO userDTO = userFacade.findById(1L);
 
-        assertThat(userDTO).isPresent();
-        assertThat(userDTO.get()).isEqualTo(TestDataFactory.firstMemberDTO);
-
+        assertThat(userDTO).isEqualTo(TestDataFactory.firstMemberDTO);
     }
 
     @Test
-    void findById_userNotFound_returnsEmptyOptional() {
-        when(userService.findById(1L)).thenReturn(Optional.empty());
+    void findById_userNotFound_throwsResourceNotFoundException() {
+        when(userService.findById(1L)).thenThrow(new ResourceNotFoundException(String.format("User with id: %d not found", 1L)));
 
-        Optional<UserDTO> userDAO = userFacade.findById(1L);
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> userFacade.findById(1L));
 
-        assertThat(userDAO).isEmpty();
+        assertThat(exception.getMessage()).isEqualTo(String.format("User with id: %d not found", 1L));
     }
 
     @Test
@@ -105,9 +103,9 @@ class UserFacadeTest {
         String address = "Botanická 68a";
         LocalDate birthDate = LocalDate.parse("2000-02-02");
 
-        when(userService.createUser(username, passwordHash, address, birthDate, userType)).thenThrow(UsernameAlreadyExistsException.class);
+        when(userService.createUser(username, passwordHash, address, birthDate, userType)).thenThrow(ResourceAlreadyExistsException.class);
 
-        assertThrows(UsernameAlreadyExistsException.class,
+        assertThrows(ResourceAlreadyExistsException.class,
                 () -> userFacade.createUser(username, passwordHash, address, birthDate, userType));
     }
 
@@ -129,9 +127,9 @@ class UserFacadeTest {
                 testUser.getPasswordHash(),
                 "Nová Adresa 123, Brno",
                 null,
-                null)).thenThrow(UnauthorisedException.class);
+                null)).thenThrow(UnauthorizedException.class);
 
-        assertThrows(UnauthorisedException.class, () ->
+        assertThrows(UnauthorizedException.class, () ->
                 userFacade.updateUser(
                         TestDataFactory.secondMemberDAO.getId(),
                         "IncorrectUserName",
@@ -144,21 +142,22 @@ class UserFacadeTest {
     @Test
     void updateUser_incorrectPassword_throwsUnauthorisedException() {
         User testUser = TestDataFactory.firstMemberDAO;
-        when(userService.updateUser(TestDataFactory.secondMemberDAO.getId(), testUser.getUsername(), "incorrectPassword", "Nová Adresa 123, Brno", null, null)).thenThrow(UnauthorisedException.class);
+        when(userService.updateUser(TestDataFactory.secondMemberDAO.getId(), testUser.getUsername(), "incorrectPassword", "Nová Adresa 123, Brno", null, null)).thenThrow(UnauthorizedException.class);
 
-        assertThrows(UnauthorisedException.class, () ->
+        assertThrows(UnauthorizedException.class, () ->
                 userFacade.updateUser(TestDataFactory.secondMemberDAO.getId(), testUser.getUsername(), "incorrectPassword", "Nová Adresa 123, Brno", null, null));
     }
 
     @Test
-    void updateUser_userUpdatesNotExistingUser_returnsEmptyOptional() {
+    void updateUser_userUpdatesNotExistingUser_throwsResourceNotFoundException() {
         User actor = TestDataFactory.firstLibrarianDAO;
         String actorPassword = TestDataFactory.firstLibrarianDAOPassword;
         Long notExistingId = 20L;
 
-        when(userService.updateUser(notExistingId, actor.getUsername(), actorPassword, "Nová Adresa 123, Brno", null, null)).thenReturn(Optional.empty());
+        when(userService.updateUser(notExistingId, actor.getUsername(), actorPassword, "Nová Adresa 123, Brno", null, null)).thenThrow(new ResourceNotFoundException(String.format("User with id: %d not found", notExistingId)));
 
-        assertThat(userFacade.updateUser(notExistingId, actor.getUsername(), actorPassword, "Nová Adresa 123, Brno", null, null)).isEmpty();
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> userFacade.updateUser(notExistingId, actor.getUsername(), actorPassword, "Nová Adresa 123, Brno", null, null));
+        assertThat(exception.getMessage()).isEqualTo(String.format("User with id: %d not found", notExistingId));
     }
 
     @Test
@@ -175,11 +174,11 @@ class UserFacadeTest {
         updatedUserDTO.setAddress("Nová Adresa 132, Brno");
         updatedUserDTO.setBirthDate(LocalDate.parse("1999-12-12"));
 
-        when(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword, updatedUser.getAddress(), updatedUser.getBirthDate(), null)).thenReturn(Optional.of(updatedUser));
+        when(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword, updatedUser.getAddress(), updatedUser.getBirthDate(), null)).thenReturn(updatedUser);
         when(userMapper.mapToDto(updatedUser)).thenReturn(updatedUserDTO);
 
         assertThat(userFacade.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
-                updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isPresent().contains(updatedUserDTO);
+                updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isEqualTo(updatedUserDTO);
     }
 
     @Test
@@ -196,11 +195,11 @@ class UserFacadeTest {
         updatedUserDTO.setAddress("Nová Adresa 132, Brno");
         updatedUserDTO.setBirthDate(LocalDate.parse("1999-12-12"));
 
-        when(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword, updatedUser.getAddress(), updatedUser.getBirthDate(), null)).thenReturn(Optional.of(updatedUser));
+        when(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword, updatedUser.getAddress(), updatedUser.getBirthDate(), null)).thenReturn(updatedUser);
         when(userMapper.mapToDto(updatedUser)).thenReturn(updatedUserDTO);
 
         assertThat(userFacade.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
-                updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isPresent().contains(updatedUserDTO);
+                updatedUser.getAddress(), updatedUser.getBirthDate(), null)).isEqualTo(updatedUserDTO);
     }
 
     @Test
@@ -212,9 +211,9 @@ class UserFacadeTest {
         updatedUser.setUserType(UserType.LIBRARIAN);
 
         when(userService.updateUser(actor.getId(), actor.getUsername(), actorPassword,
-                updatedUser.getAddress(), updatedUser.getBirthDate(), updatedUser.getUserType())).thenThrow(UnauthorisedException.class);
+                updatedUser.getAddress(), updatedUser.getBirthDate(), updatedUser.getUserType())).thenThrow(UnauthorizedException.class);
 
-        assertThrows(UnauthorisedException.class, () -> userFacade.updateUser(actor.getId(), actor.getUsername(), actorPassword,
+        assertThrows(UnauthorizedException.class, () -> userFacade.updateUser(actor.getId(), actor.getUsername(), actorPassword,
                 updatedUser.getAddress(), updatedUser.getBirthDate(), updatedUser.getUserType()));
     }
 
@@ -229,9 +228,9 @@ class UserFacadeTest {
         updatedUser.setBirthDate(LocalDate.parse("1999-12-12"));
 
         when(userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
-                updatedUser.getAddress(), updatedUser.getBirthDate(), null)).thenThrow(UnauthorisedException.class);
+                updatedUser.getAddress(), updatedUser.getBirthDate(), null)).thenThrow(UnauthorizedException.class);
 
-        assertThrows(UnauthorisedException.class, () -> userFacade.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
+        assertThrows(UnauthorizedException.class, () -> userFacade.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
                 updatedUser.getAddress(), updatedUser.getBirthDate(), null));
     }
 
