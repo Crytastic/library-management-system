@@ -45,11 +45,11 @@ public class BookServiceTest {
     @Test
     void findById_bookNotFound_throwsResourceNotFoundException() {
         // Arrange
-        when(bookRepository.findById(1L)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found",1L)));
+        when(bookRepository.findById(1L)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found", 1L)));
 
         // Act + Assert
         Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookRepository.findById(1L));
-        assertThat(exception.getMessage()).isEqualTo("Book with id: %d not found",1L);
+        assertThat(exception.getMessage()).isEqualTo("Book with id: %d not found", 1L);
     }
 
     @Test

@@ -26,7 +26,8 @@ Run all microservices at once via containerization: ```podman-compose up -d``` /
 #### Overview
 
 Facilitates operations related to book borrowings. It provides functionalities for creating, updating, retrieving, and
-deleting borrowings. This microservice manages information about book borrowings, including details such as the book title,
+deleting borrowings. This microservice manages information about book borrowings, including details such as the book
+title,
 the person borrowing the book, dates of borrowing and expected return, and any associated fines.
 
 It's accessible at [http://localhost:8080](http://localhost:8080). Also, via GUI

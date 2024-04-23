@@ -15,7 +15,7 @@ import org.openapitools.model.BookStatus;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -106,11 +106,11 @@ class BookFacadeTest {
     void findById_bookDoesNotExist_returnsEmptyOptional() {
         // Arrange
         Long id = 1L;
-        when(bookService.findById(id)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found",id)));
+        when(bookService.findById(id)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found", id)));
 
         // Act + Assert
         Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookFacade.findById(id));
-        assertThat(exception.getMessage()).isEqualTo(String.format("Book with id: %d not found",id));
+        assertThat(exception.getMessage()).isEqualTo(String.format("Book with id: %d not found", id));
         verify(bookService, times(1)).findById(id);
     }
 

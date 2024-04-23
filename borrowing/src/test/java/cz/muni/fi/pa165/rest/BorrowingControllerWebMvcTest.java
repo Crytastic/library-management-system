@@ -1,8 +1,8 @@
 package cz.muni.fi.pa165.rest;
 
 import cz.muni.fi.pa165.facade.BorrowingFacade;
-import cz.muni.fi.pa165.util.ObjectConverter;
 import cz.muni.fi.pa165.util.BorrowingDTOFactory;
+import cz.muni.fi.pa165.util.ObjectConverter;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.BorrowingDTO;
 import org.springframework.beans.factory.annotation.Autowired;

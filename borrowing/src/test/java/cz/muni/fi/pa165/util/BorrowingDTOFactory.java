@@ -7,8 +7,8 @@ import java.time.OffsetDateTime;
 
 public class BorrowingDTOFactory {
     public static BorrowingDTO createBorrowing(Long id, Long bookId, Long borrowerId, OffsetDateTime borrowDate,
-                                         OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate,
-                                         BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
+                                               OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate,
+                                               BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
         BorrowingDTO borrowingDTO = new BorrowingDTO();
         borrowingDTO.setId(id);
         borrowingDTO.setBookId(bookId);

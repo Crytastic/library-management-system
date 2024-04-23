@@ -96,7 +96,7 @@ paths:
         - { name: bookId,
             in: query,
             required: true,
-            schema: { type: integer, format: int64},
+            schema: { type: integer, format: int64 },
             description: "Id of borrowed book" }
         - { name: borrowerId,
             in: query,
