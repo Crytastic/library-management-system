@@ -23,15 +23,20 @@ class BookRepositoryTest {
 
     private Long bookId;
 
+    private static final String TITLE = "The Lord of the Rings";
+    private static final String AUTHOR = "J. R. R. Tolkien";
+    private static final String DESCRIPTION = "The Lord of the Rings is an epic high fantasy novel by the " +
+            "English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel " +
+            "to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
+    private static final BookStatus BOOK_STATUS = BookStatus.AVAILABLE;
+
     @BeforeEach
     void setUp() {
         Book book = new Book(
-                "The Lord of the Rings",
-                "J. R. R. Tolkien",
-                "The Lord of the Rings is an epic high fantasy novel by the English author " +
-                        "and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's " +
-                        "1937 children's book The Hobbit, but eventually developed into a much larger work.",
-                BookStatus.AVAILABLE
+                TITLE,
+                AUTHOR,
+                DESCRIPTION,
+                BOOK_STATUS
         );
 
         Book persistedBook = testEntityManager.persist(book);
@@ -39,7 +44,7 @@ class BookRepositoryTest {
     }
 
     @Test
-    void updateById_idFound_returnsOneMoreMore() {
+    void updateById_idFound_returnsOneOrMore() {
         int updatedCount = bookRepository.updateById(bookId, null, null, null, BookStatus.RESERVED);
         assertThat(updatedCount).isEqualTo(1);
     }
@@ -52,20 +57,18 @@ class BookRepositoryTest {
 
     @Test
     void findByFilter_someBookFound_returnsListWithSizeOne() {
-        List<Book> booksMatchesFilter = bookRepository.findByFilter(null, "J. R. R. Tolkien", null, BookStatus.AVAILABLE);
+        List<Book> booksMatchesFilter = bookRepository.findByFilter(null, AUTHOR, null, BookStatus.AVAILABLE);
         assertThat(booksMatchesFilter).hasSize(1);
         Book book = booksMatchesFilter.getFirst();
-        assertThat(book.getTitle()).isEqualTo("The Lord of the Rings");
-        assertThat(book.getAuthor()).isEqualTo("J. R. R. Tolkien");
-        assertThat(book.getStatus()).isEqualTo(BookStatus.AVAILABLE);
-        assertThat(book.getDescription()).isEqualTo("The Lord of the Rings is an epic high fantasy novel by the English author " +
-                "and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's " +
-                "1937 children's book The Hobbit, but eventually developed into a much larger work.");
+        assertThat(book.getTitle()).isEqualTo(TITLE);
+        assertThat(book.getAuthor()).isEqualTo(AUTHOR);
+        assertThat(book.getStatus()).isEqualTo(BOOK_STATUS);
+        assertThat(book.getDescription()).isEqualTo(DESCRIPTION);
     }
 
     @Test
     void findByFilter_bookNotFound_returnsEmptyList() {
-        List<Book> booksMatchesFilter = bookRepository.findByFilter(null, "J. R. R. Tolkien", null, BookStatus.RESERVED);
+        List<Book> booksMatchesFilter = bookRepository.findByFilter(null, AUTHOR, null, BookStatus.RESERVED);
         assertThat(booksMatchesFilter).hasSize(0);
     }
 
