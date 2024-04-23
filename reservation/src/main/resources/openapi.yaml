@@ -15,8 +15,8 @@ components:
       description: "Reservation object"
       properties:
         id: { type: integer, format: int64, description: "Id of reservation", example: 23 }
-        book: { type: string, description: "Book that is part of the reservation", example: "Java tutorial" }    # will be changed for id or reference in future
-        reservedBy: { type: string, description: "User that created this reservation", example: "Franta Palica" } # will be changed for id or reference in future
+        bookId: { type: integer, format: int64, description: "Id of book that is part of the reservation", example: 11 }
+        reserveeId: { type: integer, format: int64, description: "Id of user that created this reservation", example: 11 }
         reservedFrom: { type: string, format: date-time, description: "Date when reservation was created", example: "2024-04-03T10:15:30Z" }
         reservedTo: { type: string, format: date-time, description: "Date when the reservation was/will be cancelled", example: "2024-04-03T10:15:30Z" }
 
@@ -59,16 +59,16 @@ paths:
       summary: Creates new reservation
       operationId: createReservation
       parameters:
-        - { name: book,
+        - { name: bookId,
             in: query,
             required: true,
-            schema: { type: string },     # will be changed for id or reference in future
-            description: "Title of book" }
-        - { name: reservedBy,
+            schema: { type: integer, format: int64 },
+            description: "Id of reserved book" }
+        - { name: reserveeId,
             in: query,
             required: true,
-            schema: { type: string },     # will be changed for id or reference in future
-            description: "Name of User" }
+            schema: { type: integer, format: int64 },
+            description: "Id of user reserving the book" }
       responses:
         "201":
           description: Created
@@ -110,15 +110,17 @@ paths:
             type: integer
             format: int64
         - in: query
-          name: book
+          name: bookId
           required: false
           schema:
-            type: string     # will be changed for id or reference in future
+            type: integer
+            format: int64
         - in: query
-          name: reservedBy
+          name: reserveeId
           required: false
           schema:
-            type: string     # will be changed for id or reference in future
+            type: integer
+            format: int64
         - in: query
           name: reservedFrom
           required: false

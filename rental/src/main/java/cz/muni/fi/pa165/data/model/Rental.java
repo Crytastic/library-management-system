@@ -19,9 +19,9 @@ public class Rental {
     @Column(name = "rental_id")
     private Long id;
     @Column
-    private String book;
+    private Long bookId;
     @Column
-    private String rentedBy;
+    private Long borrowerId;
     @Column
     private OffsetDateTime borrowDate;
     @Column
@@ -36,9 +36,9 @@ public class Rental {
     @Column
     private boolean fineResolved;
 
-    public Rental(String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, boolean fineResolved) {
-        this.book = book;
-        this.rentedBy = rentedBy;
+    public Rental(Long bookId, Long borrowerId, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, boolean fineResolved) {
+        this.bookId = bookId;
+        this.borrowerId = borrowerId;
         this.borrowDate = borrowDate;
         this.expectedReturnDate = expectedReturnDate;
         this.returned = returned;
@@ -58,20 +58,20 @@ public class Rental {
         this.id = id;
     }
 
-    public String getBook() {
-        return book;
+    public Long getBookId() {
+        return bookId;
     }
 
-    public void setBook(String book) {
-        this.book = book;
+    public void setBook(Long bookId) {
+        this.bookId = bookId;
     }
 
-    public String getRentedBy() {
-        return rentedBy;
+    public Long getBorrowerId() {
+        return borrowerId;
     }
 
-    public void setRentedBy(String rentedBy) {
-        this.rentedBy = rentedBy;
+    public void setRentedBy(Long borrowerId) {
+        this.borrowerId = borrowerId;
     }
 
     public OffsetDateTime getBorrowDate() {
@@ -130,8 +130,8 @@ public class Rental {
         return returned == rental.returned &&
                 fineResolved == rental.fineResolved &&
                 Objects.equals(id, rental.id) &&
-                Objects.equals(book, rental.book) &&
-                Objects.equals(rentedBy, rental.rentedBy) &&
+                Objects.equals(bookId, rental.bookId) &&
+                Objects.equals(borrowerId, rental.borrowerId) &&
                 Objects.equals(borrowDate, rental.borrowDate) &&
                 Objects.equals(expectedReturnDate, rental.expectedReturnDate) &&
                 Objects.equals(returnDate, rental.returnDate) &&
@@ -140,7 +140,7 @@ public class Rental {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
+        return Objects.hash(id, bookId, borrowerId, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
     }
 
     @Override

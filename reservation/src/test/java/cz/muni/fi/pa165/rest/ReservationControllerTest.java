@@ -36,13 +36,13 @@ public class ReservationControllerTest {
     void createReservation_validRequestBody_returnsCreated() {
         // Arrange
         Long id = 1L;
-        String book = "The Lord of the Rings";
-        String reservedBy = "Franta Vopršálek";
-        ReservationDTO reservation = ReservationDTOFactory.createReservation(id, book, reservedBy, TimeProvider.now(), TimeProvider.now().plusDays(3));
-        when(reservationFacade.createReservation(book, reservedBy)).thenReturn(reservation);
+        Long bookId = 2L;
+        Long reserveeId = 2L;
+        ReservationDTO reservation = ReservationDTOFactory.createReservation(id, bookId, reserveeId, TimeProvider.now(), TimeProvider.now().plusDays(3));
+        when(reservationFacade.createReservation(bookId, reserveeId)).thenReturn(reservation);
 
         // Act
-        ResponseEntity<ReservationDTO> response = reservationController.createReservation(book, reservedBy);
+        ResponseEntity<ReservationDTO> response = reservationController.createReservation(bookId, reserveeId);
 
         // Assert
         assertThat(response.getBody()).isNotNull();
@@ -95,9 +95,9 @@ public class ReservationControllerTest {
     void getReservation_existingId_returnsOk() {
         // Arrange
         Long id = 1L;
-        String book = "The Lord of the Rings";
-        String reservedBy = "Franta Vopršálek";
-        ReservationDTO reservation = ReservationDTOFactory.createReservation(id, book, reservedBy, TimeProvider.now(), TimeProvider.now().plusDays(3));
+        Long bookId = 5L;
+        Long reserveeId = 5L;
+        ReservationDTO reservation = ReservationDTOFactory.createReservation(id, bookId, reserveeId, TimeProvider.now(), TimeProvider.now().plusDays(3));
         when(reservationFacade.findById(id)).thenReturn(Optional.of(reservation));
 
         // Act
@@ -139,35 +139,35 @@ public class ReservationControllerTest {
     void updateReservation_validId_returnsOK() {
         // Arrange
         Long id = 1L;
-        String book = "Updated Book";
-        String reservedBy = "Updated User";
+        Long bookId = 3L;
+        Long reserveeId = 3L;
         OffsetDateTime reservedFrom = TimeProvider.now().plusDays(1);
         OffsetDateTime reservedTo = TimeProvider.now().plusDays(4);
-        when(reservationFacade.updateById(id, book, reservedBy, reservedFrom, reservedTo)).thenReturn(1);
+        when(reservationFacade.updateById(id, bookId, reserveeId, reservedFrom, reservedTo)).thenReturn(1);
 
         // Act
-        ResponseEntity<Void> response = reservationController.updateReservation(id, book, reservedBy, reservedFrom, reservedTo);
+        ResponseEntity<Void> response = reservationController.updateReservation(id, bookId, reserveeId, reservedFrom, reservedTo);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(reservationFacade, times(1)).updateById(id, book, reservedBy, reservedFrom, reservedTo);
+        verify(reservationFacade, times(1)).updateById(id, bookId, reserveeId, reservedFrom, reservedTo);
     }
 
     @Test
     void updateReservation_invalidId_returnsNotFound() {
         // Arrange
         Long id = 1L;
-        String book = "Updated Book";
-        String reservedBy = "Updated User";
+        Long bookId = 4L;
+        Long reserveeId = 4L;
         OffsetDateTime reservedFrom = TimeProvider.now().plusDays(1);
         OffsetDateTime reservedTo = TimeProvider.now().plusDays(4);
-        when(reservationFacade.updateById(id, book, reservedBy, reservedFrom, reservedTo)).thenReturn(0);
+        when(reservationFacade.updateById(id, bookId, reserveeId, reservedFrom, reservedTo)).thenReturn(0);
 
         // Act
-        ResponseEntity<Void> response = reservationController.updateReservation(id, book, reservedBy, reservedFrom, reservedTo);
+        ResponseEntity<Void> response = reservationController.updateReservation(id, bookId, reserveeId, reservedFrom, reservedTo);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        verify(reservationFacade, times(1)).updateById(id, book, reservedBy, reservedFrom, reservedTo);
+        verify(reservationFacade, times(1)).updateById(id, bookId, reserveeId, reservedFrom, reservedTo);
     }
 }

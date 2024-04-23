@@ -57,18 +57,18 @@ class RentalControllerTest {
 
     @Test
     void createRental_rentalCreated_returnsNewRentalAndCreatedStatus() {
-        String book = "Rented book";
-        String rentedBy = "User";
+        Long bookId = 7L;
+        Long borrowerId = 8L;
         OffsetDateTime expectedReturnDate = OffsetDateTime
                 .of(2024, 5, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         BigDecimal lateReturnWeeklyFine = new BigDecimal(100);
-        RentalDTO rental = new RentalDTO().book(book).rentedBy(rentedBy).expectedReturnDate(expectedReturnDate)
+        RentalDTO rental = new RentalDTO().bookId(bookId).borrowerId(borrowerId).expectedReturnDate(expectedReturnDate)
                 .lateReturnWeeklyFine(lateReturnWeeklyFine);
 
-        when(rentalFacade.createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine)).thenReturn(rental);
+        when(rentalFacade.createRental(bookId, borrowerId, expectedReturnDate, lateReturnWeeklyFine)).thenReturn(rental);
 
         ResponseEntity<RentalDTO> response = rentalController
-                .createRental(book, rentedBy, expectedReturnDate, lateReturnWeeklyFine);
+                .createRental(bookId, borrowerId, expectedReturnDate, lateReturnWeeklyFine);
 
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody()).isEqualTo(rental);
@@ -102,8 +102,8 @@ class RentalControllerTest {
     void updateRental_rentalFound_returnsOkStatus() {
         RentalDTO rentalDTO = createDTORental();
         when(rentalFacade.updateById(1L,
-                rentalDTO.getBook(),
-                rentalDTO.getRentedBy(),
+                rentalDTO.getBookId(),
+                rentalDTO.getBorrowerId(),
                 rentalDTO.getBorrowDate(),
                 rentalDTO.getExpectedReturnDate(),
                 rentalDTO.getReturned(),
@@ -112,8 +112,8 @@ class RentalControllerTest {
                 rentalDTO.getFineResolved())).thenReturn(1);
 
         ResponseEntity<Void> response = rentalController.updateRental(1L,
-                rentalDTO.getBook(),
-                rentalDTO.getRentedBy(),
+                rentalDTO.getBookId(),
+                rentalDTO.getBorrowerId(),
                 rentalDTO.getBorrowDate(),
                 rentalDTO.getExpectedReturnDate(),
                 rentalDTO.getReturned(),
@@ -128,8 +128,8 @@ class RentalControllerTest {
     void updateRental_rentalNotFound_returnsNotFoundStatus() {
         RentalDTO rentalDTO = createDTORental();
         when(rentalFacade.updateById(1L,
-                rentalDTO.getBook(),
-                rentalDTO.getRentedBy(),
+                rentalDTO.getBookId(),
+                rentalDTO.getBorrowerId(),
                 rentalDTO.getBorrowDate(),
                 rentalDTO.getExpectedReturnDate(),
                 rentalDTO.getReturned(),
@@ -138,8 +138,8 @@ class RentalControllerTest {
                 rentalDTO.getFineResolved())).thenReturn(0);
 
         ResponseEntity<Void> response = rentalController.updateRental(1L,
-                rentalDTO.getBook(),
-                rentalDTO.getRentedBy(),
+                rentalDTO.getBookId(),
+                rentalDTO.getBorrowerId(),
                 rentalDTO.getBorrowDate(),
                 rentalDTO.getExpectedReturnDate(),
                 rentalDTO.getReturned(),
@@ -174,8 +174,8 @@ class RentalControllerTest {
 
     private static RentalDTO createDTORental() {
         return new RentalDTO()
-                .book("Book")
-                .rentedBy("Some user")
+                .bookId(4L)
+                .borrowerId(5L)
                 .borrowDate(TimeProvider.now())
                 .expectedReturnDate(TimeProvider.now().plusMonths(1))
                 .returned(false)

@@ -24,8 +24,8 @@ public class RentalService {
     private final RentalRepository rentalRepository;
 
     @Autowired
-    public RentalService(RentalRepository jpaBookRepository, RentalRepository rentalRepository) {
-        this.rentalRepository = jpaBookRepository;
+    public RentalService(RentalRepository rentalRepository) {
+        this.rentalRepository = rentalRepository;
     }
 
     @Transactional
@@ -33,9 +33,9 @@ public class RentalService {
         return rentalRepository.findAll();
     }
 
-    public Rental createRental(String book, String rentedBy, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
-        Rental rental = new Rental(book,
-                rentedBy,
+    public Rental createRental(Long bookId, Long borrowerId, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
+        Rental rental = new Rental(bookId,
+                borrowerId,
                 TimeProvider.now(),
                 expectedReturnDate == null ? getDefaultExpectedReturnDate() : expectedReturnDate,
                 false,
@@ -56,8 +56,8 @@ public class RentalService {
     }
 
     @Transactional
-    public int updateById(Long id, String book, String rentedBy, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
-        return rentalRepository.updateById(id, book, rentedBy, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
+    public int updateById(Long id, Long bookId, Long borrowerId, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
+        return rentalRepository.updateById(id, bookId, borrowerId, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
     }
 
     @Transactional

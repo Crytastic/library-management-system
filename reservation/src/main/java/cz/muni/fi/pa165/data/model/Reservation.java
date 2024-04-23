@@ -19,9 +19,9 @@ public class Reservation {
     @Column()
     private Long id;
     @Column
-    private String book;
+    private Long bookId;
     @Column
-    private String reservedBy;
+    private Long reserveeId;
     @Column
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime reservedFrom;
@@ -29,9 +29,9 @@ public class Reservation {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime reservedTo;
 
-    public Reservation(String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
-        this.book = book;
-        this.reservedBy = reservedBy;
+    public Reservation(Long bookId, Long reserveeId, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
+        this.bookId = bookId;
+        this.reserveeId = reserveeId;
         this.reservedFrom = reservedFrom;
         this.reservedTo = reservedTo;
     }
@@ -47,20 +47,20 @@ public class Reservation {
         return id;
     }
 
-    public String getBook() {
-        return book;
+    public Long getBookId() {
+        return bookId;
     }
 
-    public void setBook(String book) {
-        this.book = book;
+    public void setBookId(Long bookId) {
+        this.bookId = bookId;
     }
 
-    public String getReservedBy() {
-        return reservedBy;
+    public Long getReserveeId() {
+        return reserveeId;
     }
 
-    public void setReservedBy(String reservedBy) {
-        this.reservedBy = reservedBy;
+    public void setReserveeId(Long reserveeId) {
+        this.reserveeId = reserveeId;
     }
 
     public OffsetDateTime getReservedFrom() {
@@ -85,15 +85,15 @@ public class Reservation {
         if (o == null || getClass() != o.getClass()) return false;
         Reservation that = (Reservation) o;
         return Objects.equals(id, that.id) &&
-                Objects.equals(book, that.book) &&
-                Objects.equals(reservedBy, that.reservedBy) &&
+                Objects.equals(bookId, that.bookId) &&
+                Objects.equals(reserveeId, that.reserveeId) &&
                 Objects.equals(reservedFrom, that.reservedFrom) &&
                 Objects.equals(reservedTo, that.reservedTo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, book, reservedBy, reservedFrom, reservedTo);
+        return Objects.hash(id, bookId, reserveeId, reservedFrom, reservedTo);
     }
 
     @Override

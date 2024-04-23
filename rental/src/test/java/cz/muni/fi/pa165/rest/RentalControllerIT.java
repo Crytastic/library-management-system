@@ -49,8 +49,8 @@ public class RentalControllerIT {
 
 
         assertThat(response.getId()).isEqualTo(id);
-        assertThat(response.getBook()).isEqualTo(rental.getBook());
-        assertThat(response.getRentedBy()).isEqualTo(rental.getRentedBy());
+        assertThat(response.getBookId()).isEqualTo(rental.getBookId());
+        assertThat(response.getBorrowerId()).isEqualTo(rental.getBorrowerId());
         assertThat(response.getBorrowDate()).isEqualTo(rental.getBorrowDate());
         assertThat(response.getExpectedReturnDate()).isEqualTo(rental.getExpectedReturnDate());
         assertThat(response.getReturned()).isEqualTo(rental.isReturned());

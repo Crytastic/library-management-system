@@ -6,13 +6,13 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 public class RentalDTOFactory {
-    public static RentalDTO createRental(Long id, String book, String rentedBy, OffsetDateTime borrowDate,
+    public static RentalDTO createRental(Long id, Long bookId, Long borrowerId, OffsetDateTime borrowDate,
                                          OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate,
                                          BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
         RentalDTO rentalDTO = new RentalDTO();
         rentalDTO.setId(id);
-        rentalDTO.setBook(book);
-        rentalDTO.setRentedBy(rentedBy);
+        rentalDTO.setBookId(bookId);
+        rentalDTO.setBorrowerId(borrowerId);
         rentalDTO.setBorrowDate(borrowDate);
         rentalDTO.setExpectedReturnDate(expectedReturnDate);
         rentalDTO.setReturned(returned);

@@ -33,16 +33,16 @@ public class ReservationFacade {
         return reservationMapper.mapToList(reservationService.findAll());
     }
 
-    public ReservationDTO createReservation(String book, String reservedBy) {
-        return reservationMapper.mapToDto(reservationService.createReservation(book, reservedBy));
+    public ReservationDTO createReservation(Long bookId, Long reserveeId) {
+        return reservationMapper.mapToDto(reservationService.createReservation(bookId, reserveeId));
     }
 
     public Optional<ReservationDTO> findById(Long id) {
         return reservationService.findById(id).map(reservationMapper::mapToDto);
     }
 
-    public int updateById(Long id, String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
-        return reservationService.updateById(id, book, reservedBy, reservedFrom, reservedTo);
+    public int updateById(Long id, Long bookId, Long reserveeId, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
+        return reservationService.updateById(id, bookId, reserveeId, reservedFrom, reservedTo);
     }
 
     public void deleteById(Long id) {

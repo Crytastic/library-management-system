@@ -13,8 +13,8 @@ import java.time.OffsetDateTime;
 public interface RentalRepository extends JpaRepository<Rental, Long> {
     @Modifying
     @Query("UPDATE Rental rental SET " +
-            "rental.book = coalesce(:book, rental.book), " +
-            "rental.rentedBy = coalesce(:rentedBy, rental.rentedBy)," +
+            "rental.bookId = coalesce(:bookId, rental.bookId), " +
+            "rental.borrowerId = coalesce(:borrowerId, rental.borrowerId)," +
             "rental.borrowDate = coalesce(:borrowDate, rental.borrowDate)," +
             "rental.expectedReturnDate = coalesce(:expectedReturnDate, rental.expectedReturnDate)," +
             "rental.returned = coalesce(:returned, rental.returned)," +
@@ -23,8 +23,8 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
             "rental.fineResolved = coalesce(:fineResolved, rental.fineResolved)" +
             " WHERE rental.id = :id")
     int updateById(Long id,
-                   String book,
-                   String rentedBy,
+                   Long bookId,
+                   Long borrowerId,
                    OffsetDateTime borrowDate,
                    OffsetDateTime expectedReturnDate,
                    Boolean returned,
