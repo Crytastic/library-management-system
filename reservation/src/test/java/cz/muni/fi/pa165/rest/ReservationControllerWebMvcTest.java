@@ -34,13 +34,13 @@ public class ReservationControllerWebMvcTest {
     void getReservation_existingId_returnsOk() throws Exception {
         // Arrange
         Long id = 1L;
-        String book = "The Lord of the Rings";
-        String reservedBy = "Franta Vopršálek";
+        Long bookId = 1L;
+        Long reserveeId = 1L;
         String reservedFromString = "2024-04-21T20:29:59.123456Z";
         OffsetDateTime reservedFrom = OffsetDateTime.parse(reservedFromString);
         String reservedToString = "2024-04-24T20:29:59.123456Z";
         OffsetDateTime reservedTo = OffsetDateTime.parse(reservedToString);
-        ReservationDTO reservationDTO = ReservationDTOFactory.createReservation(id, book, reservedBy, reservedFrom, reservedTo);
+        ReservationDTO reservationDTO = ReservationDTOFactory.createReservation(id, bookId, reserveeId, reservedFrom, reservedTo);
         when(reservationFacade.findById(id)).thenReturn(Optional.of(reservationDTO));
 
         // Act
@@ -53,7 +53,7 @@ public class ReservationControllerWebMvcTest {
         ReservationDTO response = ObjectConverter.convertJsonToObject(responseJson, ReservationDTO.class);
 
         // Assert
-        assertThat(responseJson).isEqualTo(String.format("{\"id\":1,\"book\":\"The Lord of the Rings\",\"reservedBy\":\"Franta Vopršálek\",\"reservedFrom\":\"%s\",\"reservedTo\":\"%s\"}", reservedFromString, reservedToString));
+        assertThat(responseJson).isEqualTo(String.format("{\"id\":1,\"bookId\":%d,\"reserveeId\":%d,\"reservedFrom\":\"%s\",\"reservedTo\":\"%s\"}", bookId, reserveeId, reservedFromString, reservedToString));
         assertThat(response).isEqualTo(reservationDTO);
     }
 

@@ -36,11 +36,11 @@ public class ReservationControllerIT {
     void getReservation_existingId_returnsOk() throws Exception {
         // Arrange
         Long id = 1L;
-        String book = "The Lord of the Rings";
-        String reservedBy = "Franta Vopršálek";
+        Long bookId = 2L;
+        Long reserveeId = 2L;
         OffsetDateTime reservedFrom = TimeProvider.now().plusDays(1);
         OffsetDateTime reservedTo = TimeProvider.now().plusDays(4);
-        Reservation reservation = new Reservation(book, reservedBy, reservedFrom, reservedTo);
+        Reservation reservation = new Reservation(bookId, reserveeId, reservedFrom, reservedTo);
         reservation.setId(id);
         reservationRepository.save(reservation);
 
@@ -57,8 +57,8 @@ public class ReservationControllerIT {
 
 
         assertThat(response.getId()).isEqualTo(id);
-        assertThat(response.getBook()).isEqualTo(book);
-        assertThat(response.getReservedBy()).isEqualTo(reservedBy);
+        assertThat(response.getBookId()).isEqualTo(bookId);
+        assertThat(response.getReserveeId()).isEqualTo(reserveeId);
         assertThat(response.getReservedFrom().truncatedTo(ChronoUnit.MILLIS)).isEqualTo(reservedFrom.withOffsetSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS));
         assertThat(response.getReservedTo().truncatedTo(ChronoUnit.MILLIS)).isEqualTo(reservedTo.withOffsetSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS));
     }

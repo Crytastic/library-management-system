@@ -30,8 +30,8 @@ public class ReservationController implements ReservationApi {
     }
 
     @Override
-    public ResponseEntity<ReservationDTO> createReservation(String book, String reservedBy) {
-        ReservationDTO createdReservation = reservationFacade.createReservation(book, reservedBy);
+    public ResponseEntity<ReservationDTO> createReservation(Long bookId, Long reserveeId) {
+        ReservationDTO createdReservation = reservationFacade.createReservation(bookId, reserveeId);
         return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
     }
 
@@ -69,8 +69,8 @@ public class ReservationController implements ReservationApi {
     }
 
     @Override
-    public ResponseEntity<Void> updateReservation(Long id, String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
-        int modifiedCount = reservationFacade.updateById(id, book, reservedBy, reservedFrom, reservedTo);
+    public ResponseEntity<Void> updateReservation(Long id, Long bookId, Long reserveeId, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
+        int modifiedCount = reservationFacade.updateById(id, bookId, reserveeId, reservedFrom, reservedTo);
         return new ResponseEntity<>(modifiedCount > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 }

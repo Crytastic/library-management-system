@@ -33,8 +33,8 @@ public class ReservationService {
     }
 
     @Transactional
-    public Reservation createReservation(String book, String reservedBy) {
-        return reservationRepository.save(new Reservation(book, reservedBy, TimeProvider.now(), getDefaultReservationCancelDate()));
+    public Reservation createReservation(Long bookId, Long reserveeId) {
+        return reservationRepository.save(new Reservation(bookId, reserveeId, TimeProvider.now(), getDefaultReservationCancelDate()));
     }
 
     private OffsetDateTime getDefaultReservationCancelDate() {
@@ -47,8 +47,8 @@ public class ReservationService {
     }
 
     @Transactional
-    public int updateById(Long id, String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
-        return reservationRepository.updateById(id, book, reservedBy, reservedFrom, reservedTo);
+    public int updateById(Long id, Long bookId, Long reserveeId, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
+        return reservationRepository.updateById(id, bookId, reserveeId, reservedFrom, reservedTo);
 
     }
 

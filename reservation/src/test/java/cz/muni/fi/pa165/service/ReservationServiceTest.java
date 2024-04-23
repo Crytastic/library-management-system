@@ -35,10 +35,10 @@ class ReservationServiceTest {
 
     @BeforeEach
     void setUp() {
-        reservation = new Reservation("The Lord of the Rings", "Franta Vopršálek", TimeProvider.now(), TimeProvider.now().plusDays(3));
+        reservation = new Reservation(1L, 1L, TimeProvider.now(), TimeProvider.now().plusDays(3));
         reservationList = Arrays.asList(
-                new Reservation("Active Book 1", "User 1", TimeProvider.now(), TimeProvider.now().plusDays(3)),
-                new Reservation("Active Book 2", "User 2", TimeProvider.now(), TimeProvider.now().plusDays(5))
+                new Reservation(2L, 2L, TimeProvider.now(), TimeProvider.now().plusDays(3)),
+                new Reservation(3L, 3L, TimeProvider.now(), TimeProvider.now().plusDays(5))
         );
     }
 
@@ -75,7 +75,7 @@ class ReservationServiceTest {
         when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
 
         // Act
-        Reservation result = reservationService.createReservation("The Lord of the Rings", "Franta Vopršálek");
+        Reservation result = reservationService.createReservation(4L, 4L);
 
         // Assert
         assertThat(result).isEqualTo(reservation);
@@ -86,32 +86,32 @@ class ReservationServiceTest {
     void updateById_existingId_callsReservationRepositoryUpdateById() {
         // Arrange
         Long id = 1L;
-        String newBook = "Updated Book";
-        String newReservedBy = "Updated User";
+        Long newBookId = 11L;
+        Long newReserveeId = 11L;
         OffsetDateTime newReservedFrom = TimeProvider.now().plusDays(1);
         OffsetDateTime newReservedTo = TimeProvider.now().plusDays(4);
-        when(reservationRepository.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo)).thenReturn(1);
+        when(reservationRepository.updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo)).thenReturn(1);
 
         // Act
-        int result = reservationService.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);
+        int result = reservationService.updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo);
 
         // Assert
         assertThat(result).isEqualTo(1);
-        verify(reservationRepository, times(1)).updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);
+        verify(reservationRepository, times(1)).updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo);
     }
 
     @Test
     void updateById_nonExistingId_returnsEmptyOptional() {
         // Arrange
         Long id = 1L;
-        String newBook = "New Book";
-        String newReservedBy = "New User";
+        Long newBookId = 11L;
+        Long newReserveeId = 11L;
         OffsetDateTime newReservedFrom = TimeProvider.now().plusDays(1);
         OffsetDateTime newReservedTo = TimeProvider.now().plusDays(4);
-        when(reservationRepository.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo)).thenReturn(0);
+        when(reservationRepository.updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo)).thenReturn(0);
 
         // Act
-        int result = reservationService.updateById(id, newBook, newReservedBy, newReservedFrom, newReservedTo);
+        int result = reservationService.updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo);
 
         // Assert
         assertThat(result).isEqualTo(0);
@@ -134,8 +134,8 @@ class ReservationServiceTest {
     void findAllActive_callsReservationRepositoryFindAllActive() {
         // Arrange
         List<Reservation> activeReservations = Arrays.asList(
-                new Reservation("Active Book 1", "User 1", TimeProvider.now(), TimeProvider.now().plusDays(3)),
-                new Reservation("Active Book 2", "User 2", TimeProvider.now(), TimeProvider.now().plusDays(5))
+                new Reservation(5L, 5L, TimeProvider.now(), TimeProvider.now().plusDays(3)),
+                new Reservation(6L, 6L, TimeProvider.now(), TimeProvider.now().plusDays(5))
         );
         when(reservationRepository.findAllActive(any(OffsetDateTime.class))).thenReturn(activeReservations);
 
@@ -151,8 +151,8 @@ class ReservationServiceTest {
     void findAllExpired_callsReservationRepositoryFindAllExpired() {
         // Arrange
         List<Reservation> expiredReservations = Arrays.asList(
-                new Reservation("Expired Book 1", "User 1", TimeProvider.now().minusDays(5), TimeProvider.now().minusDays(2)),
-                new Reservation("Expired Book 2", "User 2", TimeProvider.now().minusDays(3), TimeProvider.now().minusDays(1))
+                new Reservation(7L, 7L, TimeProvider.now().minusDays(5), TimeProvider.now().minusDays(2)),
+                new Reservation(8L, 8L, TimeProvider.now().minusDays(3), TimeProvider.now().minusDays(1))
         );
         when(reservationRepository.findAllExpired(any(OffsetDateTime.class))).thenReturn(expiredReservations);
 

@@ -12,11 +12,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     @Modifying
     @Query("UPDATE Reservation r SET " +
-            "r.book = coalesce(:book, r.book), " +
-            "r.reservedBy = coalesce(:reservedBy, r.reservedBy)," +
+            "r.bookId = coalesce(:bookId, r.bookId), " +
+            "r.reserveeId = coalesce(:reserveeId, r.reserveeId)," +
             "r.reservedFrom = coalesce(:reservedFrom, r.reservedFrom)," +
             "r.reservedTo = coalesce(:reservedTo, r.reservedTo) WHERE r.id = :id")
-    int updateById(Long id, String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo);
+    int updateById(Long id, Long bookId, Long reserveeId, OffsetDateTime reservedFrom, OffsetDateTime reservedTo);
 
 
     @Query("SELECT r FROM Reservation r WHERE r.reservedFrom < :currentDate AND r.reservedTo > :currentDate")
