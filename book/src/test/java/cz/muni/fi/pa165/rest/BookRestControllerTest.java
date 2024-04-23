@@ -117,23 +117,6 @@ public class BookRestControllerTest {
     }
 
     @Test
-    void updateBook_invalidId_returnsNotFound() {
-        // Arrange
-        Long id = 1L;
-        String title = "The Lord of the Rings";
-        String author = "Tolkien";
-        String description = "Fantasy novel";
-        BookStatus status = BookStatus.AVAILABLE;
-        when(bookFacade.updateById(id, title, author, description, status)).thenReturn(0);
-
-        // Act
-        ResponseEntity<Void> response = bookRestController.updateBook(id, title, author, description, status);
-
-        // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    }
-
-    @Test
     void getBooks_validParameters_returnsBooks() {
         // Arrange
         Long id = 1L;

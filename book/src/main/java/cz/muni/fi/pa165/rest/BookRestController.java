@@ -61,7 +61,7 @@ public class BookRestController implements BookApi {
 
     @Override
     public ResponseEntity<Void> updateBook(Long id, String title, String author, String description, BookStatus status) {
-        int modifiedCount = bookFacade.updateById(id, title, author, description, status);
-        return new ResponseEntity<>(modifiedCount > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+        bookFacade.updateById(id, title, author, description, status);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

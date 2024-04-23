@@ -53,7 +53,7 @@ public class BookServiceTest {
     }
 
     @Test
-    void updateById_bookNotFound_returnsZero() {
+    void updateById_bookNotFound_throwsResourceNotFoundException() {
         // Arrange
         Long id = 1L;
         String newTitle = "The Lord of the Rings: The Two Towers";
@@ -62,11 +62,11 @@ public class BookServiceTest {
         BookStatus newStatus = BookStatus.RENTED;
         when(bookRepository.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(0);
 
-        // Act
-        int result = bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus);
+        // Act + Assert
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus));
 
-        // Assert
-        assertThat(result).isEqualTo(0);
+        assertThat(exception.getMessage()).isEqualTo(String.format("Book with id: %d not found", id));
+
     }
 
     @Test
