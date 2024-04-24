@@ -12,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openapitools.model.UserType;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -81,7 +80,7 @@ class UserServiceTest {
         UserType userType = UserType.MEMBER;
         String address = "Botanická 68a";
         LocalDate birthDate = LocalDate.parse("2000-02-02");
-        when(userRepository.save(any(User.class))).thenThrow(DataIntegrityViolationException.class);
+        when(userRepository.findUserByUsername(username)).thenReturn(new User(username, passwordHash, userType, address, birthDate));
 
         assertThrows(ResourceAlreadyExistsException.class,
                 () -> userService.createUser(username, passwordHash, address, birthDate, userType));
