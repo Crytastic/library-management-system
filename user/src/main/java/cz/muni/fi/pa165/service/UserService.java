@@ -8,7 +8,6 @@ import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.UnauthorizedException;
 import org.openapitools.model.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,11 +44,12 @@ public class UserService {
     @Transactional
     public User createUser(String username, String password, String address, LocalDate birthDate, UserType userType) {
         String passwordHashed = createPasswordHash(password);
-        try {
-            return userRepository.save(new User(username, passwordHashed, userType, address, birthDate));
-        } catch (DataIntegrityViolationException e) {
-            throw new ResourceAlreadyExistsException(e.getMessage());
+        User user = userRepository.findUserByUsername(username);
+        if (user != null) {
+            throw new ResourceAlreadyExistsException(String.format("User with username: %s already exists", username));
         }
+
+        return userRepository.save(new User(username, passwordHashed, userType, address, birthDate));
     }
 
     private String createPasswordHash(String password) {
