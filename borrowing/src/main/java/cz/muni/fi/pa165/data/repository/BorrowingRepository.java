@@ -9,6 +9,12 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
+/**
+ * Repository layer for managing book borrowings.
+ * Provides methods for storing, retrieving and updating the entity borrowing.
+ *
+ * @author Maxmilián Šeffer
+ */
 @Repository
 public interface BorrowingRepository extends JpaRepository<Borrowing, Long> {
     @Modifying
