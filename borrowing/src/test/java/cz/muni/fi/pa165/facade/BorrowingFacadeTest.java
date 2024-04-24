@@ -49,7 +49,7 @@ class BorrowingFacadeTest {
     }
 
     @Test
-    void findById_borrowingNotFound_returnsBorrowing() {
+    void findById_borrowingNotFound_throwsResourceNotFoundException() {
         when(borrowingService.findById(11L)).thenThrow(new ResourceNotFoundException(String.format("Borrowing with id: %d not found", 11L)));
 
         Throwable exception = assertThrows(ResourceNotFoundException.class, () -> borrowingFacade.findById(11L));
