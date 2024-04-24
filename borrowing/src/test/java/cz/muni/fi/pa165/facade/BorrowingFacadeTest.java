@@ -18,7 +18,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -177,12 +176,11 @@ class BorrowingFacadeTest {
 
     @Test
     void getFineById_validBorrowing_callsGetFineByIdOnService() {
-        when(borrowingService.getFineById(1L)).thenReturn(Optional.of(BigDecimal.ZERO));
+        when(borrowingService.getFineById(1L)).thenReturn(BigDecimal.ZERO);
 
-        Optional<BigDecimal> fine = borrowingFacade.getFineById(1L);
+        BigDecimal fine = borrowingFacade.getFineById(1L);
 
-        assertThat(fine).isPresent();
-        assertThat(fine.get()).isEqualTo(BigDecimal.ZERO);
+        assertThat(fine).isEqualTo(BigDecimal.ZERO);
         verify(borrowingService, times(1)).getFineById(1L);
     }
 }

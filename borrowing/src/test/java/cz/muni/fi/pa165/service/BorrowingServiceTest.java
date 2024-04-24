@@ -191,10 +191,9 @@ class BorrowingServiceTest {
         Borrowing inActiveBorrowing = TestDataFactory.inActiveBorrowing;
         when(borrowingRepository.findById(inActiveBorrowing.getId())).thenReturn(Optional.of(inActiveBorrowing));
 
-        Optional<BigDecimal> fine = borrowingService.getFineById(inActiveBorrowing.getId());
+        BigDecimal fine = borrowingService.getFineById(inActiveBorrowing.getId());
 
-        assertThat(fine).isPresent();
-        assertThat(fine.get()).isEqualTo(BigDecimal.ZERO);
+        assertThat(fine).isEqualTo(BigDecimal.ZERO);
         verify(borrowingRepository, times(1)).findById(inActiveBorrowing.getId());
     }
 
@@ -203,10 +202,9 @@ class BorrowingServiceTest {
         Borrowing inActiveBorrowing = TestDataFactory.inActiveBorrowingLate;
         when(borrowingRepository.findById(inActiveBorrowing.getId())).thenReturn(Optional.of(inActiveBorrowing));
 
-        Optional<BigDecimal> fine = borrowingService.getFineById(inActiveBorrowing.getId());
+        BigDecimal fine = borrowingService.getFineById(inActiveBorrowing.getId());
 
-        assertThat(fine).isPresent();
-        assertThat(fine.get()).isEqualTo(new BigDecimal(12));
+        assertThat(fine).isEqualTo(new BigDecimal(12));
         verify(borrowingRepository, times(1)).findById(inActiveBorrowing.getId());
     }
 
@@ -215,10 +213,9 @@ class BorrowingServiceTest {
         Borrowing activeBorrowing = TestDataFactory.activeBorrowing;
         when(borrowingRepository.findById(activeBorrowing.getId())).thenReturn(Optional.of(activeBorrowing));
 
-        Optional<BigDecimal> fine = borrowingService.getFineById(activeBorrowing.getId());
+        BigDecimal fine = borrowingService.getFineById(activeBorrowing.getId());
 
-        assertThat(fine).isPresent();
-        assertThat(fine.get()).isEqualTo(BigDecimal.ZERO);
+        assertThat(fine).isEqualTo(BigDecimal.ZERO);
         verify(borrowingRepository, times(1)).findById(activeBorrowing.getId());
     }
 
@@ -230,11 +227,20 @@ class BorrowingServiceTest {
         try (MockedStatic<TimeProvider> timeProviderDummy = mockStatic(TimeProvider.class)) {
             timeProviderDummy.when(TimeProvider::now).thenReturn(activeBorrowing.getExpectedReturnDate().plusWeeks(5));
 
-            Optional<BigDecimal> fine = borrowingService.getFineById(activeBorrowing.getId());
+            BigDecimal fine = borrowingService.getFineById(activeBorrowing.getId());
 
-            assertThat(fine).isPresent();
-            assertThat(fine.get()).isEqualTo(new BigDecimal(5));
+            assertThat(fine).isEqualTo(new BigDecimal(5));
             verify(borrowingRepository, times(1)).findById(activeBorrowing.getId());
         }
     }
+
+    @Test
+    void getFineById_bookNotFound_throwsResourceNotfoundException() {
+        when(borrowingRepository.findById(1000L)).thenReturn(Optional.empty());
+
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> borrowingService.getFineById(1000L));
+        assertThat(exception.getMessage()).isEqualTo(String.format("Borrowing with id: %d not found", 1000L));
+
+    }
+
 }

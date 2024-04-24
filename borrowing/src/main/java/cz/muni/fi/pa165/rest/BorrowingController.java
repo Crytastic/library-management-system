@@ -12,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller layer for managing borrowings.
@@ -64,8 +63,6 @@ public class BorrowingController implements BorrowingApi {
 
     @Override
     public ResponseEntity<BigDecimal> getFineById(Long id) {
-        Optional<BigDecimal> fine = borrowingFacade.getFineById(id);
-        return fine.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return new ResponseEntity<>(borrowingFacade.getFineById(id), HttpStatus.OK);
     }
 }

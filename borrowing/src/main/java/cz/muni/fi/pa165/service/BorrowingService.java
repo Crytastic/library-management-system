@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Service layer for managing borrowing of books.
@@ -63,7 +62,7 @@ public class BorrowingService {
     }
 
     @Transactional
-    public Optional<BigDecimal> getFineById(Long id) {
+    public BigDecimal getFineById(Long id) {
         // Throws ResourceNotFoundException when borrowing is not found
         Borrowing borrowing = findById(id);
 
@@ -72,18 +71,16 @@ public class BorrowingService {
         // Book returned but fine not paid
         if (borrowing.isReturned()) {
             if (borrowing.isFineResolved()) {
-                return Optional.of(BigDecimal.ZERO);
+                return BigDecimal.ZERO;
             }
 
             OffsetDateTime returnDate = borrowing.getReturnDate();
-            BigDecimal fine = calculateFine(expectedReturnDate, returnDate, borrowing);
-            return Optional.of(fine);
+            return calculateFine(expectedReturnDate, returnDate, borrowing);
         }
 
         // Book not yet returned
         OffsetDateTime currentDate = TimeProvider.now();
-        BigDecimal fine = calculateFine(expectedReturnDate, currentDate, borrowing);
-        return Optional.of(fine);
+        return calculateFine(expectedReturnDate, currentDate, borrowing);
     }
 
     private BigDecimal calculateFine(OffsetDateTime expectedReturnDate, OffsetDateTime returnDate, Borrowing borrowing) {
