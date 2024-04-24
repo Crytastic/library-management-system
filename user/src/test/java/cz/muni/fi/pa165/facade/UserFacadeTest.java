@@ -265,5 +265,4 @@ class UserFacadeTest {
                 .containsExactlyInAnyOrder(TestDataFactory.firstMemberDTO, TestDataFactory.secondMemberDTO);
         verify(userService, times(1)).findAllAdults();
     }
-
 }

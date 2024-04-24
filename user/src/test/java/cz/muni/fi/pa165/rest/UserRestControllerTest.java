@@ -24,7 +24,6 @@ import static org.mockito.Mockito.*;
  */
 @ExtendWith(MockitoExtension.class)
 class UserRestControllerTest {
-
     @Mock
     UserFacade userFacade;
 
@@ -133,5 +132,4 @@ class UserRestControllerTest {
         assertThat(response.getBody()).isEqualTo(users);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
-
 }

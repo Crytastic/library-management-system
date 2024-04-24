@@ -18,7 +18,6 @@ import java.util.List;
  */
 @Service
 public class UserFacade {
-
     private final UserService userService;
 
     private final UserMapper userMapper;
@@ -51,5 +50,4 @@ public class UserFacade {
     public UserDTO updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) {
         return userMapper.mapToDto(userService.updateUser(id, username, password, address, birthdate, userType));
     }
-
 }

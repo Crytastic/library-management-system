@@ -61,7 +61,7 @@ public class BookRestControllerWebMvcTest {
     void getBook_invalidId_returnsNotFound() throws Exception {
         // Arrange
         Long id = 10L;
-        Mockito.when(bookFacade.findById(id)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found",id)));
+        Mockito.when(bookFacade.findById(id)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found", id)));
         // Act and Assert
         String responseJson = mockMvc.perform(get("/api/books/{id}", id)
                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -70,8 +70,8 @@ public class BookRestControllerWebMvcTest {
                 .getResponse()
                 .getContentAsString(StandardCharsets.UTF_8);
 
-       ApiError error = ObjectConverter.convertJsonToObject(responseJson, ApiError.class);
-       assertThat(error.getMessage()).isEqualTo(String.format("Book with id: %d not found",id));
+        ApiError error = ObjectConverter.convertJsonToObject(responseJson, ApiError.class);
+        assertThat(error.getMessage()).isEqualTo(String.format("Book with id: %d not found", id));
 
     }
 

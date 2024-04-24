@@ -1,8 +1,8 @@
 version: '3.8'
 services:
-  rental:
+  borrowing:
     build:
-      context: ./rental
+      context: ./borrowing
       dockerfile: Dockerfile
     ports:
       - "8080:8080"

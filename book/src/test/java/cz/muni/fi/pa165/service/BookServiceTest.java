@@ -3,7 +3,7 @@ package cz.muni.fi.pa165.service;
 import cz.muni.fi.pa165.data.model.Book;
 import cz.muni.fi.pa165.data.repository.BookRepository;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
-import cz.muni.fi.pa165.stubs.RentalServiceStub;
+import cz.muni.fi.pa165.stubs.BorrowingServiceStub;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +24,7 @@ public class BookServiceTest {
     @Mock
     private BookRepository bookRepository;
     @Mock
-    RentalServiceStub rentalServiceStub;
+    BorrowingServiceStub borrowingServiceStub;
 
     @InjectMocks
     private BookService bookService;
@@ -45,11 +45,11 @@ public class BookServiceTest {
     @Test
     void findById_bookNotFound_throwsResourceNotFoundException() {
         // Arrange
-        when(bookRepository.findById(1L)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found",1L)));
+        when(bookRepository.findById(1L)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found", 1L)));
 
         // Act + Assert
         Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookRepository.findById(1L));
-        assertThat(exception.getMessage()).isEqualTo("Book with id: %d not found",1L);
+        assertThat(exception.getMessage()).isEqualTo("Book with id: %d not found", 1L);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class BookServiceTest {
         String newTitle = "The Lord of the Rings: The Two Towers";
         String newAuthor = "J. R. R. Tolkien";
         String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
-        BookStatus newStatus = BookStatus.RENTED;
+        BookStatus newStatus = BookStatus.BORROWED;
         when(bookRepository.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(0);
 
         // Act + Assert
@@ -76,7 +76,7 @@ public class BookServiceTest {
         String newTitle = "The Lord of the Rings: The Two Towers";
         String newAuthor = "J. R. R. Tolkien";
         String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
-        BookStatus newStatus = BookStatus.RENTED;
+        BookStatus newStatus = BookStatus.BORROWED;
         when(bookRepository.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(1);
 
         // Act
@@ -87,28 +87,28 @@ public class BookServiceTest {
     }
 
     @Test
-    void findBookRentals_bookFound_returnsRentals() {
+    void findBookBorrowings_bookFound_returnsBorrowings() {
         // Arrange
         Long id = 1L;
-        List<String> rentals = List.of("Rental 1", "Rental 2");
-        when(rentalServiceStub.apiCallToRentalServiceToFindBookRentals(id)).thenReturn(rentals);
+        List<String> borrowings = List.of("Borrowing 1", "Borrowing 2");
+        when(borrowingServiceStub.apiCallToBorrowingServiceToFindBookBorrowings(id)).thenReturn(borrowings);
         when(bookRepository.findById(id)).thenReturn(Optional.of(new Book("", "", "", BookStatus.AVAILABLE)));
 
         // Act
-        List<String> result = bookService.findBookRentals(id);
+        List<String> result = bookService.findBookBorrowings(id);
 
         // Assert
-        assertThat(result).isEqualTo(rentals);
+        assertThat(result).isEqualTo(borrowings);
     }
 
     @Test
-    void findBookRentals_bookNotFound_returnsEmpty() {
+    void findBookBorrowings_bookNotFound_returnsEmpty() {
         // Arrange
         Long id = 1L;
         when(bookRepository.findById(id)).thenReturn(Optional.empty());
 
         // Act + Assert
-        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookService.findBookRentals(id));
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookService.findBookBorrowings(id));
         assertThat(exception.getMessage()).isEqualTo(String.format("Book with id: %d not found", id));
 
 

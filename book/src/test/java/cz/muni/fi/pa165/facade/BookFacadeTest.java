@@ -15,7 +15,7 @@ import org.openapitools.model.BookStatus;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -106,11 +106,11 @@ class BookFacadeTest {
     void findById_bookDoesNotExist_returnsEmptyOptional() {
         // Arrange
         Long id = 1L;
-        when(bookService.findById(id)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found",id)));
+        when(bookService.findById(id)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found", id)));
 
         // Act + Assert
         Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookFacade.findById(id));
-        assertThat(exception.getMessage()).isEqualTo(String.format("Book with id: %d not found",id));
+        assertThat(exception.getMessage()).isEqualTo(String.format("Book with id: %d not found", id));
         verify(bookService, times(1)).findById(id);
     }
 
@@ -133,7 +133,7 @@ class BookFacadeTest {
         String title = "The Lord of the Rings";
         String author = "J.R.R. Tolkien";
         String description = "Fantasy";
-        BookStatus status = BookStatus.RENTED;
+        BookStatus status = BookStatus.BORROWED;
         when(bookService.updateById(id, title, author, description, status)).thenReturn(1);
 
         // Act
@@ -151,7 +151,7 @@ class BookFacadeTest {
         String title = "The Lord of the Rings";
         String author = "J.R.R. Tolkien";
         String description = "Fantasy";
-        BookStatus status = BookStatus.RENTED;
+        BookStatus status = BookStatus.BORROWED;
         when(bookService.updateById(id, title, author, description, status)).thenReturn(0);
 
         // Act
@@ -163,33 +163,33 @@ class BookFacadeTest {
     }
 
     @Test
-    void findBookRentals_validId_returnsListOfRentals() {
+    void findBookBorrowings_validId_returnsListOfBorrowings() {
         // Arrange
         Long id = 1L;
-        List<String> rentals = new ArrayList<>();
-        rentals.add("Pepa z Depa");
-        rentals.add("Miloš Vokuřil");
-        when(bookService.findBookRentals(id)).thenReturn(rentals);
+        List<String> borrowings = new ArrayList<>();
+        borrowings.add("Pepa z Depa");
+        borrowings.add("Miloš Vokuřil");
+        when(bookService.findBookBorrowings(id)).thenReturn(borrowings);
 
         // Act
-        List<String> result = bookFacade.findBookRentals(id);
+        List<String> result = bookFacade.findBookBorrowings(id);
 
         // Assert
 
         assertThat(result).hasSize(2);
-        verify(bookService, times(1)).findBookRentals(id);
+        verify(bookService, times(1)).findBookBorrowings(id);
     }
 
     @Test
-    void findBookRentals_invalidId_returnsEmptyOptional() {
+    void findBookBorrowings_invalidId_returnsEmptyOptional() {
         // Arrange
         Long id = 1L;
-        when(bookService.findBookRentals(id)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found", id)));
+        when(bookService.findBookBorrowings(id)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found", id)));
 
         // Act + Assert
-        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookFacade.findBookRentals(id));
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookFacade.findBookBorrowings(id));
         assertThat(exception.getMessage()).isEqualTo(String.format("Book with id: %d not found", id));
 
-        verify(bookService, times(1)).findBookRentals(id);
+        verify(bookService, times(1)).findBookBorrowings(id);
     }
 }
