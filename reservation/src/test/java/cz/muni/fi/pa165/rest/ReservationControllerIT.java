@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.rest;
 
 import cz.muni.fi.pa165.data.model.Reservation;
 import cz.muni.fi.pa165.data.repository.ReservationRepository;
+import cz.muni.fi.pa165.exceptionhandling.ApiError;
 import cz.muni.fi.pa165.util.ObjectConverter;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,6 @@ import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -68,9 +68,15 @@ public class ReservationControllerIT {
         Long id = 10L;
 
         // Act and Assert
-        mockMvc.perform(get("/api/reservations/{id}", id)
+        String responseJson = mockMvc.perform(get("/api/reservations/{id}", id)
+                        // Assert
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string(""));
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+        ApiError error = ObjectConverter.convertJsonToObject(responseJson, ApiError.class);
+
+        assertThat(error.getMessage()).isEqualTo(String.format("Reservation with id: %d not found", id));
     }
 }

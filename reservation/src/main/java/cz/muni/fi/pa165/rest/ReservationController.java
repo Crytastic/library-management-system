@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller layer for managing reservations.
@@ -30,8 +29,7 @@ public class ReservationController implements ReservationApi {
 
     @Override
     public ResponseEntity<ReservationDTO> createReservation(Long bookId, Long reserveeId) {
-        ReservationDTO createdReservation = reservationFacade.createReservation(bookId, reserveeId);
-        return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
+        return new ResponseEntity<>(reservationFacade.createReservation(bookId, reserveeId), HttpStatus.CREATED);
     }
 
     @Override
@@ -52,9 +50,7 @@ public class ReservationController implements ReservationApi {
 
     @Override
     public ResponseEntity<ReservationDTO> getReservation(Long id) {
-        Optional<ReservationDTO> reservation = reservationFacade.findById(id);
-        return reservation.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return new ResponseEntity<>(reservationFacade.findById(id), HttpStatus.OK);
     }
 
     @Override
