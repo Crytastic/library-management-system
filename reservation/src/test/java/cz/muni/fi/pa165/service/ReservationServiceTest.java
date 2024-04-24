@@ -115,7 +115,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void updateById_nonExistingId_returnsEmptyOptional() {
+    void updateById_nonExistingId_throwsResourceNotFoundException() {
         // Arrange
         Long id = 1L;
         Long newBookId = 11L;
@@ -125,10 +125,10 @@ class ReservationServiceTest {
         when(reservationRepository.updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo)).thenReturn(0);
 
         // Act
-        int result = reservationService.updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo);
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> reservationService.updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo));
 
         // Assert
-        assertThat(result).isEqualTo(0);
+        assertThat(exception.getMessage()).isEqualTo(String.format("Reservation with id: %d not found", id));
     }
 
     @Test

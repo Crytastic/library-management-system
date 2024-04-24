@@ -134,18 +134,17 @@ class ReservationFacadeTest {
     }
 
     @Test
-    void updateById_invalidId_returnsZero() {
+    void updateById_invalidId_throwsResourceNotFoundException() {
         // Arrange
         Long id = 1L;
         OffsetDateTime reservedFrom = TimeProvider.now();
         OffsetDateTime reservedTo = TimeProvider.now().plusDays(1);
-        when(reservationService.updateById(id, reservation.getBookId(), reservation.getReserveeId(), reservedFrom, reservedTo)).thenReturn(0);
+        when(reservationService.updateById(id, reservation.getBookId(), reservation.getReserveeId(), reservedFrom, reservedTo)).thenThrow(new ResourceNotFoundException(String.format("Reservation with id: %d not found", id)));
 
-        // Act
-        int result = reservationFacade.updateById(id, reservation.getBookId(), reservation.getReserveeId(), reservedFrom, reservedTo);
+        // Act + Assert
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> reservationFacade.updateById(id, reservation.getBookId(), reservation.getReserveeId(), reservedFrom, reservedTo));
 
-        // Assert
-        assertThat(result).isEqualTo(0);
+        assertThat(exception.getMessage()).isEqualTo(String.format("Reservation with id: %d not found", id));
         verify(reservationService, times(1)).updateById(id, reservation.getBookId(), reservation.getReserveeId(), reservedFrom, reservedTo);
     }
 
