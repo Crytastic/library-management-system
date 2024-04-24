@@ -34,11 +34,11 @@ rectangle "Library Management System" {
   usecase "Update book details"
   usecase "Remove book"
 
-  usecase "List rentals"
-  usecase "Rent book"
-  usecase "Show rental details"
-  usecase "Update rental details"
-  usecase "Remove rental"
+  usecase "List borrowings"
+  usecase "Borrow book"
+  usecase "Show borrowing details"
+  usecase "Update borrowing details"
+  usecase "Remove borrowing"
 
   usecase "Configure fine"
 
@@ -59,8 +59,8 @@ Librarian --> "Create book"
 Librarian --> "Remove book"
 Librarian --> "Update book details"
 Librarian --> "Configure fine"
-Librarian --> "Update rental details"
-Librarian --> "Remove rental"
+Librarian --> "Update borrowing details"
+Librarian --> "Remove borrowing"
 
 "Registered user" --> "List reservations"
 "Registered user" --> "Reserve book"
@@ -68,9 +68,8 @@ Librarian --> "Remove rental"
 "Registered user" --> "Show account details"
 "Registered user" --> "Update account details"
 "Registered user" --> "Delete account"
-"Registered user" --> "List rentals"
-"Registered user" --> "Rent book"
-"Registered user" --> "Show rental details"
-
+"Registered user" --> "List borrowings"
+"Registered user" --> "Borrow book"
+"Registered user" --> "Show borrowing details"
 
 @enduml

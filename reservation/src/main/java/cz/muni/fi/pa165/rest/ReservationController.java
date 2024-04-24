@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller layer for managing reservations.
@@ -21,7 +20,6 @@ import java.util.Optional;
  */
 @RestController
 public class ReservationController implements ReservationApi {
-
     ReservationFacade reservationFacade;
 
     @Autowired
@@ -30,9 +28,8 @@ public class ReservationController implements ReservationApi {
     }
 
     @Override
-    public ResponseEntity<ReservationDTO> createReservation(String book, String reservedBy) {
-        ReservationDTO createdReservation = reservationFacade.createReservation(book, reservedBy);
-        return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
+    public ResponseEntity<ReservationDTO> createReservation(Long bookId, Long reserveeId) {
+        return new ResponseEntity<>(reservationFacade.createReservation(bookId, reserveeId), HttpStatus.CREATED);
     }
 
     @Override
@@ -53,9 +50,7 @@ public class ReservationController implements ReservationApi {
 
     @Override
     public ResponseEntity<ReservationDTO> getReservation(Long id) {
-        Optional<ReservationDTO> reservation = reservationFacade.findById(id);
-        return reservation.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return new ResponseEntity<>(reservationFacade.findById(id), HttpStatus.OK);
     }
 
     @Override
@@ -69,9 +64,8 @@ public class ReservationController implements ReservationApi {
     }
 
     @Override
-    public ResponseEntity<ReservationDTO> updateReservation(Long id, String book, String reservedBy, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
-        Optional<ReservationDTO> reservation = reservationFacade.updateById(id, book, reservedBy, reservedFrom, reservedTo);
-        return reservation.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<Void> updateReservation(Long id, Long bookId, Long reserveeId, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
+        reservationFacade.updateById(id, bookId, reserveeId, reservedFrom, reservedTo);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

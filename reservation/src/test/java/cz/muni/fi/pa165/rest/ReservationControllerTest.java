@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.rest;
 
 import cz.muni.fi.pa165.facade.ReservationFacade;
 import cz.muni.fi.pa165.util.ReservationDTOFactory;
+import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -24,7 +24,6 @@ import static org.mockito.Mockito.*;
  */
 @ExtendWith(MockitoExtension.class)
 public class ReservationControllerTest {
-
     @Mock
     private ReservationFacade reservationFacade;
 
@@ -34,13 +33,14 @@ public class ReservationControllerTest {
     @Test
     void createReservation_validRequestBody_returnsCreated() {
         // Arrange
-        String book = "The Lord of the Rings";
-        String reservedBy = "Franta Vopršálek";
-        ReservationDTO reservation = ReservationDTOFactory.createReservation(book, reservedBy, OffsetDateTime.now(), OffsetDateTime.now().plusDays(3));
-        when(reservationFacade.createReservation(book, reservedBy)).thenReturn(reservation);
+        Long id = 1L;
+        Long bookId = 2L;
+        Long reserveeId = 2L;
+        ReservationDTO reservation = ReservationDTOFactory.createReservation(id, bookId, reserveeId, TimeProvider.now(), TimeProvider.now().plusDays(3));
+        when(reservationFacade.createReservation(bookId, reserveeId)).thenReturn(reservation);
 
         // Act
-        ResponseEntity<ReservationDTO> response = reservationController.createReservation(book, reservedBy);
+        ResponseEntity<ReservationDTO> response = reservationController.createReservation(bookId, reserveeId);
 
         // Assert
         assertThat(response.getBody()).isNotNull();
@@ -93,10 +93,10 @@ public class ReservationControllerTest {
     void getReservation_existingId_returnsOk() {
         // Arrange
         Long id = 1L;
-        String book = "The Lord of the Rings";
-        String reservedBy = "Franta Vopršálek";
-        ReservationDTO reservation = ReservationDTOFactory.createReservation(book, reservedBy, OffsetDateTime.now(), OffsetDateTime.now().plusDays(3));
-        when(reservationFacade.findById(id)).thenReturn(Optional.of(reservation));
+        Long bookId = 5L;
+        Long reserveeId = 5L;
+        ReservationDTO reservation = ReservationDTOFactory.createReservation(id, bookId, reserveeId, TimeProvider.now(), TimeProvider.now().plusDays(3));
+        when(reservationFacade.findById(id)).thenReturn(reservation);
 
         // Act
         ResponseEntity<ReservationDTO> response = reservationController.getReservation(id);
@@ -104,19 +104,6 @@ public class ReservationControllerTest {
         // Assert
         assertThat(response.getBody()).isEqualTo(reservation);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    void getReservation_nonExistingId_returnsNotFound() {
-        // Arrange
-        Long id = 1L;
-        when(reservationFacade.findById(id)).thenReturn(Optional.empty());
-
-        // Act
-        ResponseEntity<ReservationDTO> response = reservationController.getReservation(id);
-
-        // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
@@ -137,37 +124,17 @@ public class ReservationControllerTest {
     void updateReservation_validId_returnsOK() {
         // Arrange
         Long id = 1L;
-        String book = "Updated Book";
-        String reservedBy = "Updated User";
-        OffsetDateTime reservedFrom = OffsetDateTime.now().plusDays(1);
-        OffsetDateTime reservedTo = OffsetDateTime.now().plusDays(4);
-        ReservationDTO updatedReservation = ReservationDTOFactory.createReservation(book, reservedBy, reservedFrom, reservedTo);
-        when(reservationFacade.updateById(id, book, reservedBy, reservedFrom, reservedTo)).thenReturn(Optional.of(updatedReservation));
+        Long bookId = 3L;
+        Long reserveeId = 3L;
+        OffsetDateTime reservedFrom = TimeProvider.now().plusDays(1);
+        OffsetDateTime reservedTo = TimeProvider.now().plusDays(4);
+        when(reservationFacade.updateById(id, bookId, reserveeId, reservedFrom, reservedTo)).thenReturn(1);
 
         // Act
-        ResponseEntity<ReservationDTO> response = reservationController.updateReservation(id, book, reservedBy, reservedFrom, reservedTo);
+        ResponseEntity<Void> response = reservationController.updateReservation(id, bookId, reserveeId, reservedFrom, reservedTo);
 
         // Assert
-        assertThat(response.getBody()).isEqualTo(updatedReservation);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(reservationFacade, times(1)).updateById(id, book, reservedBy, reservedFrom, reservedTo);
-    }
-
-    @Test
-    void updateReservation_invalidId_returnsNotFound() {
-        // Arrange
-        Long id = 1L;
-        String book = "Updated Book";
-        String reservedBy = "Updated User";
-        OffsetDateTime reservedFrom = OffsetDateTime.now().plusDays(1);
-        OffsetDateTime reservedTo = OffsetDateTime.now().plusDays(4);
-        when(reservationFacade.updateById(id, book, reservedBy, reservedFrom, reservedTo)).thenReturn(Optional.empty());
-
-        // Act
-        ResponseEntity<ReservationDTO> response = reservationController.updateReservation(id, book, reservedBy, reservedFrom, reservedTo);
-
-        // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        verify(reservationFacade, times(1)).updateById(id, book, reservedBy, reservedFrom, reservedTo);
+        verify(reservationFacade, times(1)).updateById(id, bookId, reserveeId, reservedFrom, reservedTo);
     }
 }

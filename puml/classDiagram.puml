@@ -1,6 +1,5 @@
 @startuml
 
-
 class User {
 Long id
 String username
@@ -17,10 +16,10 @@ OffsetDateTime reservedFrom;
 OffsetDateTime reservedTo;
 }
 
-class Rental {
+class Borrowing {
 Long id;
 String book;
-String rentedBy;
+String borrowedBy;
 OffsetDateTime borrowDate;
 OffsetDateTime expectedReturnDate;
 boolean returned;
@@ -44,7 +43,7 @@ MEMBER
 
 enum BookStatus {
 RESERVED
-RENTED
+BORROWED
 AVAILABLE
 }
 

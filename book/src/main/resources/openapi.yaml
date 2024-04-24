@@ -15,7 +15,7 @@ components:
       enum:
         - AVAILABLE
         - RESERVED
-        - RENTED
+        - BORROWED
     BookDTO:
       title: "A book"
       description: "Book object"
@@ -178,19 +178,15 @@ paths:
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BookDTO'
         '404':
           description: Not found
 
-  /api/books/{id}/rentals:
+  /api/books/{id}/borrowings:
     get:
       tags:
         - Book
-      summary: Get all rentals of specific book
-      operationId: getBookRentals
+      summary: Get all borrowings of specific book
+      operationId: getBookBorrowings
       parameters:
         - in: path
           name: id
@@ -204,7 +200,7 @@ paths:
           content:
             application/json:
               schema: #  schema:
-                type: array           #    $ref: '#/path/to/rental/schema'
+                type: array           #    $ref: '#/path/to/borrowing/schema'
                 items:
                   type: string
         '404':
