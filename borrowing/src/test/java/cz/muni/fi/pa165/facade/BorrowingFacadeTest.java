@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.facade;
 
 import cz.muni.fi.pa165.data.model.Borrowing;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.mappers.BorrowingMapper;
 import cz.muni.fi.pa165.service.BorrowingService;
 import cz.muni.fi.pa165.util.TestDataFactory;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 /**
@@ -38,22 +40,20 @@ class BorrowingFacadeTest {
 
     @Test
     void findById_borrowingFound_returnsBorrowing() {
-        when(borrowingService.findById(2L)).thenReturn(Optional.ofNullable(TestDataFactory.activeBorrowing));
+        when(borrowingService.findById(2L)).thenReturn(TestDataFactory.activeBorrowing);
         when(borrowingMapper.mapToDto(TestDataFactory.activeBorrowing)).thenReturn(TestDataFactory.activeBorrowingDTO);
 
-        Optional<BorrowingDTO> borrowingDTO = borrowingFacade.findById(2L);
+        BorrowingDTO borrowingDTO = borrowingFacade.findById(2L);
 
-        assertThat(borrowingDTO).isPresent();
-        assertThat(borrowingDTO.get()).isEqualTo(TestDataFactory.activeBorrowingDTO);
+        assertThat(borrowingDTO).isEqualTo(TestDataFactory.activeBorrowingDTO);
     }
 
     @Test
     void findById_borrowingNotFound_returnsBorrowing() {
-        when(borrowingService.findById(11L)).thenReturn(Optional.empty());
+        when(borrowingService.findById(11L)).thenThrow(new ResourceNotFoundException(String.format("Borrowing with id: %d not found", 11L)));
 
-        Optional<BorrowingDTO> borrowingDTO = borrowingFacade.findById(11L);
-
-        assertThat(borrowingDTO).isEmpty();
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> borrowingFacade.findById(11L));
+        assertThat(exception.getMessage()).isEqualTo(String.format("Borrowing with id: %d not found", 11L));
     }
 
     @Test

@@ -37,8 +37,8 @@ public class BorrowingFacade {
         return borrowingMapper.mapToDto(borrowingService.createBorrowing(bookId, borrowerId, expectedReturnDate, lateReturnWeeklyFine));
     }
 
-    public Optional<BorrowingDTO> findById(Long id) {
-        return borrowingService.findById(id).map(borrowingMapper::mapToDto);
+    public BorrowingDTO findById(Long id) {
+        return borrowingMapper.mapToDto(borrowingService.findById(id));
     }
 
     public void deleteById(Long id) {

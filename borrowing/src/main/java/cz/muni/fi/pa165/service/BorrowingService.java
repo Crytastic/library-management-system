@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Borrowing;
 import cz.muni.fi.pa165.data.repository.BorrowingRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,8 +47,9 @@ public class BorrowingService {
     }
 
     @Transactional
-    public Optional<Borrowing> findById(Long id) {
-        return borrowingRepository.findById(id);
+    public Borrowing findById(Long id) {
+        return borrowingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Borrowing with id: %d not found", id)));
     }
 
     @Transactional
@@ -62,14 +64,9 @@ public class BorrowingService {
 
     @Transactional
     public Optional<BigDecimal> getFineById(Long id) {
-        Optional<Borrowing> optionalBorrowing = findById(id);
+        // Throws ResourceNotFoundException when borrowing is not found
+        Borrowing borrowing = findById(id);
 
-        // Borrowing not found
-        if (optionalBorrowing.isEmpty()) {
-            return Optional.empty();
-        }
-
-        Borrowing borrowing = optionalBorrowing.get();
         OffsetDateTime expectedReturnDate = borrowing.getExpectedReturnDate();
 
         // Book returned but fine not paid

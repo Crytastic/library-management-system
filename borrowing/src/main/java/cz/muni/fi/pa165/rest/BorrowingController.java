@@ -42,15 +42,12 @@ public class BorrowingController implements BorrowingApi {
 
     @Override
     public ResponseEntity<BorrowingDTO> createBorrowing(Long bookId, Long borrowerId, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
-        BorrowingDTO createdBorrowing = borrowingFacade.createBorrowing(bookId, borrowerId, expectedReturnDate, lateReturnWeeklyFine);
-        return new ResponseEntity<>(createdBorrowing, HttpStatus.CREATED);
+        return new ResponseEntity<>(borrowingFacade.createBorrowing(bookId, borrowerId, expectedReturnDate, lateReturnWeeklyFine), HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<BorrowingDTO> getBorrowing(Long id) {
-        Optional<BorrowingDTO> borrowing = borrowingFacade.findById(id);
-        return borrowing.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return new ResponseEntity<>(borrowingFacade.findById(id), HttpStatus.OK);
     }
 
     @Override

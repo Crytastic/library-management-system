@@ -1,5 +1,7 @@
 package cz.muni.fi.pa165.rest;
 
+import cz.muni.fi.pa165.exceptionhandling.ApiError;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.facade.BorrowingFacade;
 import cz.muni.fi.pa165.util.BorrowingDTOFactory;
 import cz.muni.fi.pa165.util.ObjectConverter;
@@ -14,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -48,7 +49,7 @@ public class BorrowingControllerWebMvcTest {
                 null,
                 lateReturnWeeklyFine,
                 false);
-        when(borrowingFacade.findById(id)).thenReturn(Optional.of(borrowingDTO));
+        when(borrowingFacade.findById(id)).thenReturn(borrowingDTO);
 
         // Act
         String responseJson = mockMvc.perform(get("/api/borrowings/{id}", id)
@@ -69,16 +70,18 @@ public class BorrowingControllerWebMvcTest {
     void updateBorrowing_invalidId_returnsNotFound() throws Exception {
         // Arrange
         Long id = 10L;
-        when(borrowingFacade.findById(id)).thenReturn(Optional.empty());
+        when(borrowingFacade.findById(id)).thenThrow(new ResourceNotFoundException(String.format("Borrowing with id: %d not found", id)));
 
         // Act and Assert
         String responseJson = mockMvc.perform(get("/api/borrowings/{id}", id)
+                        // Assert
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(StandardCharsets.UTF_8);
+        ApiError error = ObjectConverter.convertJsonToObject(responseJson, ApiError.class);
 
-        assertThat(responseJson).isEqualTo("");
+        assertThat(error.getMessage()).isEqualTo(String.format("Borrowing with id: %d not found", id));
     }
 }

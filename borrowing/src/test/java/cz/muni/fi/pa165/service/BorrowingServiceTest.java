@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Borrowing;
 import cz.muni.fi.pa165.data.repository.BorrowingRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.util.TestDataFactory;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 /**
@@ -36,19 +38,17 @@ class BorrowingServiceTest {
     void findById_borrowingFound_returnsBorrowing() {
         when(borrowingRepository.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.activeBorrowing));
 
-        Optional<Borrowing> found = borrowingService.findById(1L);
+        Borrowing found = borrowingService.findById(1L);
 
-        assertThat(found).isPresent();
-        assertThat(found.get()).isEqualTo(TestDataFactory.activeBorrowing);
+        assertThat(found).isEqualTo(TestDataFactory.activeBorrowing);
     }
 
     @Test
-    void findById_borrowingNotFound_returnsEmptyOptional() {
-        when(borrowingRepository.findById(11L)).thenReturn(Optional.empty());
+    void findById_borrowingNotFound_throwsResourceNotFoundException() {
+        when(borrowingRepository.findById(11L)).thenThrow(new ResourceNotFoundException(String.format("Borrowing with id: %d not found", 11L)));
 
-        Optional<Borrowing> found = borrowingService.findById(11L);
-
-        assertThat(found).isEmpty();
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> borrowingService.findById(11L));
+        assertThat(exception.getMessage()).isEqualTo(String.format("Borrowing with id: %d not found", 11L));
     }
 
     @Test
@@ -180,9 +180,9 @@ class BorrowingServiceTest {
         Long nonExistingId = 11L;
         when(borrowingRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
-        Optional<BigDecimal> fine = borrowingService.getFineById(nonExistingId);
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> borrowingService.getFineById(nonExistingId));
 
-        assertThat(fine).isEmpty();
+        assertThat(exception.getMessage()).isEqualTo(String.format("Borrowing with id: %d not found", nonExistingId));
         verify(borrowingRepository, times(1)).findById(nonExistingId);
     }
 

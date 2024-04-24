@@ -36,23 +36,13 @@ class BorrowingControllerTest {
     void findById_borrowingFound_returnsBorrowingAndOkStatus() {
         BorrowingDTO borrowing = createDTOBorrowing();
 
-        when(borrowingFacade.findById(1L)).thenReturn(Optional.of(borrowing));
+        when(borrowingFacade.findById(1L)).thenReturn(borrowing);
 
         ResponseEntity<BorrowingDTO> response = borrowingController.getBorrowing(1L);
 
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody()).isEqualTo(borrowing);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    void findById_borrowingNotFound_returnsNotFoundStatus() {
-        when(borrowingFacade.findById(1L)).thenReturn(Optional.empty());
-
-        ResponseEntity<BorrowingDTO> response = borrowingController.getBorrowing(1L);
-
-        assertThat(response.getBody()).isNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
