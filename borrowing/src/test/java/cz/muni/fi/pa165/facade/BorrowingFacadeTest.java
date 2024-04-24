@@ -175,6 +175,46 @@ class BorrowingFacadeTest {
     }
 
     @Test
+    void updateById_borrowingNotFound_throwsResourceNotFoundException() {
+        Borrowing updatedBorrowing = new Borrowing(
+                17L,
+                18L,
+                TimeProvider.now(),
+                TimeProvider.now(),
+                true,
+                TimeProvider.now(),
+                new BigDecimal(3),
+                true);
+        updatedBorrowing.setId(3L);
+
+        when(borrowingService.updateById(
+                updatedBorrowing.getId(),
+                updatedBorrowing.getBookId(),
+                updatedBorrowing.getBorrowerId(),
+                updatedBorrowing.getBorrowDate(),
+                updatedBorrowing.getExpectedReturnDate(),
+                updatedBorrowing.isReturned(),
+                updatedBorrowing.getReturnDate(),
+                updatedBorrowing.getLateReturnWeeklyFine(),
+                updatedBorrowing.isFineResolved()))
+                .thenThrow(new ResourceNotFoundException(String.format("Borrowing with id: %d not found", 17L)));
+
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> borrowingFacade.updateById(
+                updatedBorrowing.getId(),
+                updatedBorrowing.getBookId(),
+                updatedBorrowing.getBorrowerId(),
+                updatedBorrowing.getBorrowDate(),
+                updatedBorrowing.getExpectedReturnDate(),
+                updatedBorrowing.isReturned(),
+                updatedBorrowing.getReturnDate(),
+                updatedBorrowing.getLateReturnWeeklyFine(),
+                updatedBorrowing.isFineResolved()));
+
+
+        assertThat(exception.getMessage()).isEqualTo(String.format("Borrowing with id: %d not found", 17L));
+    }
+
+    @Test
     void getFineById_validBorrowing_callsGetFineByIdOnService() {
         when(borrowingService.getFineById(1L)).thenReturn(BigDecimal.ZERO);
 

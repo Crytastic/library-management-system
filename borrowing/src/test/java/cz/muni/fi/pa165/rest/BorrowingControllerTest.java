@@ -114,32 +114,6 @@ class BorrowingControllerTest {
     }
 
     @Test
-    void updateBorrowing_borrowingNotFound_returnsNotFoundStatus() {
-        BorrowingDTO borrowingDTO = createDTOBorrowing();
-        when(borrowingFacade.updateById(1L,
-                borrowingDTO.getBookId(),
-                borrowingDTO.getBorrowerId(),
-                borrowingDTO.getBorrowDate(),
-                borrowingDTO.getExpectedReturnDate(),
-                borrowingDTO.getReturned(),
-                borrowingDTO.getReturnDate(),
-                borrowingDTO.getLateReturnWeeklyFine(),
-                borrowingDTO.getFineResolved())).thenReturn(0);
-
-        ResponseEntity<Void> response = borrowingController.updateBorrowing(1L,
-                borrowingDTO.getBookId(),
-                borrowingDTO.getBorrowerId(),
-                borrowingDTO.getBorrowDate(),
-                borrowingDTO.getExpectedReturnDate(),
-                borrowingDTO.getReturned(),
-                borrowingDTO.getReturnDate(),
-                borrowingDTO.getLateReturnWeeklyFine(),
-                borrowingDTO.getFineResolved());
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    }
-
-    @Test
     void getFineById_borrowingFound_returnsFineAndOkStatus() {
         when(borrowingFacade.getFineById(1L)).thenReturn(BigDecimal.TWO);
 

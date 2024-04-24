@@ -51,8 +51,8 @@ public class BorrowingController implements BorrowingApi {
 
     @Override
     public ResponseEntity<Void> updateBorrowing(Long id, Long bookId, Long borrowerId, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
-        int numberOfUpdatedBorrowings = borrowingFacade.updateById(id, bookId, borrowerId, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
-        return new ResponseEntity<>(numberOfUpdatedBorrowings == 1 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+        borrowingFacade.updateById(id, bookId, borrowerId, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override

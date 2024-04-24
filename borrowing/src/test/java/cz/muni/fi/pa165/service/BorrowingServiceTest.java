@@ -163,15 +163,16 @@ class BorrowingServiceTest {
     }
 
     @Test
-    void updateById_borrowingNotFound_returnsZero() {
+    void updateById_borrowingNotFound_throwsResourceNotFoundException() {
         Long nonExistingId = 11L;
         Long changedBook = 3L;
         when(borrowingRepository.updateById(nonExistingId, changedBook, null, null, null, null, null, null, null)).thenReturn(0);
 
-        int numberOfUpdatedBorrowings = borrowingService.updateById(nonExistingId, changedBook, null, null,
-                null, null, null, null, null);
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> borrowingService.updateById(nonExistingId, changedBook, null, null,
+                null, null, null, null, null));
 
-        assertThat(numberOfUpdatedBorrowings).isEqualTo(0);
+        assertThat(exception.getMessage()).isEqualTo(String.format("Borrowing with id: %d not found", nonExistingId));
+
         verify(borrowingRepository, times(1)).updateById(nonExistingId, changedBook, null, null, null, null, null, null, null);
     }
 
