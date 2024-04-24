@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.rest;
 
 import cz.muni.fi.pa165.data.model.Borrowing;
 import cz.muni.fi.pa165.data.repository.BorrowingRepository;
+import cz.muni.fi.pa165.exceptionhandling.ApiError;
 import cz.muni.fi.pa165.util.ObjectConverter;
 import cz.muni.fi.pa165.util.TestDataFactory;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -63,9 +63,15 @@ public class BorrowingControllerIT {
         Long id = 10L;
 
         // Act and Assert
-        mockMvc.perform(get("/api/borrowings/{id}", id)
+        String responseJson = mockMvc.perform(get("/api/borrowings/{id}", id)
+                        // Assert
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string(""));
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+        ApiError error = ObjectConverter.convertJsonToObject(responseJson, ApiError.class);
+
+        assertThat(error.getMessage()).isEqualTo(String.format("Borrowing with id: %d not found", id));
     }
 }

@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.facade;
 
 import cz.muni.fi.pa165.data.model.Borrowing;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.mappers.BorrowingMapper;
 import cz.muni.fi.pa165.service.BorrowingService;
 import cz.muni.fi.pa165.util.TestDataFactory;
@@ -17,9 +18,9 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 /**
@@ -38,22 +39,20 @@ class BorrowingFacadeTest {
 
     @Test
     void findById_borrowingFound_returnsBorrowing() {
-        when(borrowingService.findById(2L)).thenReturn(Optional.ofNullable(TestDataFactory.activeBorrowing));
+        when(borrowingService.findById(2L)).thenReturn(TestDataFactory.activeBorrowing);
         when(borrowingMapper.mapToDto(TestDataFactory.activeBorrowing)).thenReturn(TestDataFactory.activeBorrowingDTO);
 
-        Optional<BorrowingDTO> borrowingDTO = borrowingFacade.findById(2L);
+        BorrowingDTO borrowingDTO = borrowingFacade.findById(2L);
 
-        assertThat(borrowingDTO).isPresent();
-        assertThat(borrowingDTO.get()).isEqualTo(TestDataFactory.activeBorrowingDTO);
+        assertThat(borrowingDTO).isEqualTo(TestDataFactory.activeBorrowingDTO);
     }
 
     @Test
-    void findById_borrowingNotFound_returnsBorrowing() {
-        when(borrowingService.findById(11L)).thenReturn(Optional.empty());
+    void findById_borrowingNotFound_throwsResourceNotFoundException() {
+        when(borrowingService.findById(11L)).thenThrow(new ResourceNotFoundException(String.format("Borrowing with id: %d not found", 11L)));
 
-        Optional<BorrowingDTO> borrowingDTO = borrowingFacade.findById(11L);
-
-        assertThat(borrowingDTO).isEmpty();
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> borrowingFacade.findById(11L));
+        assertThat(exception.getMessage()).isEqualTo(String.format("Borrowing with id: %d not found", 11L));
     }
 
     @Test
@@ -176,13 +175,52 @@ class BorrowingFacadeTest {
     }
 
     @Test
+    void updateById_borrowingNotFound_throwsResourceNotFoundException() {
+        Borrowing updatedBorrowing = new Borrowing(
+                17L,
+                18L,
+                TimeProvider.now(),
+                TimeProvider.now(),
+                true,
+                TimeProvider.now(),
+                new BigDecimal(3),
+                true);
+        updatedBorrowing.setId(3L);
+
+        when(borrowingService.updateById(
+                updatedBorrowing.getId(),
+                updatedBorrowing.getBookId(),
+                updatedBorrowing.getBorrowerId(),
+                updatedBorrowing.getBorrowDate(),
+                updatedBorrowing.getExpectedReturnDate(),
+                updatedBorrowing.isReturned(),
+                updatedBorrowing.getReturnDate(),
+                updatedBorrowing.getLateReturnWeeklyFine(),
+                updatedBorrowing.isFineResolved()))
+                .thenThrow(new ResourceNotFoundException(String.format("Borrowing with id: %d not found", 17L)));
+
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> borrowingFacade.updateById(
+                updatedBorrowing.getId(),
+                updatedBorrowing.getBookId(),
+                updatedBorrowing.getBorrowerId(),
+                updatedBorrowing.getBorrowDate(),
+                updatedBorrowing.getExpectedReturnDate(),
+                updatedBorrowing.isReturned(),
+                updatedBorrowing.getReturnDate(),
+                updatedBorrowing.getLateReturnWeeklyFine(),
+                updatedBorrowing.isFineResolved()));
+
+
+        assertThat(exception.getMessage()).isEqualTo(String.format("Borrowing with id: %d not found", 17L));
+    }
+
+    @Test
     void getFineById_validBorrowing_callsGetFineByIdOnService() {
-        when(borrowingService.getFineById(1L)).thenReturn(Optional.of(BigDecimal.ZERO));
+        when(borrowingService.getFineById(1L)).thenReturn(BigDecimal.ZERO);
 
-        Optional<BigDecimal> fine = borrowingFacade.getFineById(1L);
+        BigDecimal fine = borrowingFacade.getFineById(1L);
 
-        assertThat(fine).isPresent();
-        assertThat(fine.get()).isEqualTo(BigDecimal.ZERO);
+        assertThat(fine).isEqualTo(BigDecimal.ZERO);
         verify(borrowingService, times(1)).getFineById(1L);
     }
 }

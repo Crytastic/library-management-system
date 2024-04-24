@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Facade layer for managing borrowing.
@@ -37,8 +36,8 @@ public class BorrowingFacade {
         return borrowingMapper.mapToDto(borrowingService.createBorrowing(bookId, borrowerId, expectedReturnDate, lateReturnWeeklyFine));
     }
 
-    public Optional<BorrowingDTO> findById(Long id) {
-        return borrowingService.findById(id).map(borrowingMapper::mapToDto);
+    public BorrowingDTO findById(Long id) {
+        return borrowingMapper.mapToDto(borrowingService.findById(id));
     }
 
     public void deleteById(Long id) {
@@ -49,7 +48,7 @@ public class BorrowingFacade {
         return borrowingService.updateById(id, bookId, borrowerId, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
     }
 
-    public Optional<BigDecimal> getFineById(Long id) {
+    public BigDecimal getFineById(Long id) {
         return borrowingService.getFineById(id);
     }
 }

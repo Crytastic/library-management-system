@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Reservation;
 import cz.muni.fi.pa165.data.repository.ReservationRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 /**
@@ -42,16 +44,29 @@ class ReservationServiceTest {
     }
 
     @Test
-    void findById_existingId_callsReservationRepositoryFindById() {
+    void findById_existingId_callsReservationRepositoryFindByIdAndReturnsReservation() {
         // Arrange
         Long id = 1L;
         when(reservationRepository.findById(id)).thenReturn(Optional.of(reservation));
 
         // Act
-        Optional<Reservation> result = reservationService.findById(id);
+        Reservation result = reservationService.findById(id);
 
         // Assert
-        assertThat(result).isPresent().contains(reservation);
+        assertThat(result).isEqualTo(reservation);
+        verify(reservationRepository, times(1)).findById(id);
+    }
+
+    @Test
+    void findById_nonExistingId_callsReservationRepositoryFindByIdAndThrowsResourceNotFoundException() {
+        // Arrange
+        Long id = 1L;
+        when(reservationRepository.findById(id)).thenReturn(Optional.empty());
+
+        // Act + Assert
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> reservationService.findById(id));
+
+        assertThat(exception.getMessage()).isEqualTo(String.format("Reservation with id: %d not found", id));
         verify(reservationRepository, times(1)).findById(id);
     }
 
@@ -100,7 +115,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void updateById_nonExistingId_returnsEmptyOptional() {
+    void updateById_nonExistingId_throwsResourceNotFoundException() {
         // Arrange
         Long id = 1L;
         Long newBookId = 11L;
@@ -110,10 +125,10 @@ class ReservationServiceTest {
         when(reservationRepository.updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo)).thenReturn(0);
 
         // Act
-        int result = reservationService.updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo);
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> reservationService.updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo));
 
         // Assert
-        assertThat(result).isEqualTo(0);
+        assertThat(exception.getMessage()).isEqualTo(String.format("Reservation with id: %d not found", id));
     }
 
     @Test

@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.facade;
 
 import cz.muni.fi.pa165.data.model.Reservation;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.mappers.ReservationMapper;
 import cz.muni.fi.pa165.service.ReservationService;
 import cz.muni.fi.pa165.util.TimeProvider;
@@ -15,9 +16,9 @@ import org.openapitools.model.ReservationDTO;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 /**
@@ -91,28 +92,27 @@ class ReservationFacadeTest {
     void findById_reservationExists_returnsUpdatedReservationDTO() {
         // Arrange
         Long id = 1L;
-        when(reservationService.findById(id)).thenReturn(Optional.of(reservation));
+        when(reservationService.findById(id)).thenReturn(reservation);
         when(reservationMapper.mapToDto(reservation)).thenReturn(reservationDTO);
 
         // Act
-        Optional<ReservationDTO> result = reservationFacade.findById(id);
+        ReservationDTO result = reservationFacade.findById(id);
 
         // Assert
-        assertThat(result).isPresent();
+        assertThat(result).isEqualTo(reservationDTO);
         verify(reservationService, times(1)).findById(id);
     }
 
     @Test
-    void findById_reservationDoesNotExist_returnsEmptyOptional() {
+    void findById_reservationDoesNotExist_throwsResourceNotFoundException() {
         // Arrange
         Long id = 1L;
-        when(reservationService.findById(id)).thenReturn(Optional.empty());
+        when(reservationService.findById(id)).thenThrow(new ResourceNotFoundException(String.format("Reservation with id: %d not found", id)));
 
-        // Act
-        Optional<ReservationDTO> result = reservationFacade.findById(id);
+        // Act + Assert
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> reservationFacade.findById(id));
 
-        // Assert
-        assertThat(result).isEmpty();
+        assertThat(exception.getMessage()).isEqualTo(String.format("Reservation with id: %d not found", id));
         verify(reservationService, times(1)).findById(id);
     }
 
@@ -134,18 +134,17 @@ class ReservationFacadeTest {
     }
 
     @Test
-    void updateById_invalidId_returnsZero() {
+    void updateById_invalidId_throwsResourceNotFoundException() {
         // Arrange
         Long id = 1L;
         OffsetDateTime reservedFrom = TimeProvider.now();
         OffsetDateTime reservedTo = TimeProvider.now().plusDays(1);
-        when(reservationService.updateById(id, reservation.getBookId(), reservation.getReserveeId(), reservedFrom, reservedTo)).thenReturn(0);
+        when(reservationService.updateById(id, reservation.getBookId(), reservation.getReserveeId(), reservedFrom, reservedTo)).thenThrow(new ResourceNotFoundException(String.format("Reservation with id: %d not found", id)));
 
-        // Act
-        int result = reservationFacade.updateById(id, reservation.getBookId(), reservation.getReserveeId(), reservedFrom, reservedTo);
+        // Act + Assert
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> reservationFacade.updateById(id, reservation.getBookId(), reservation.getReserveeId(), reservedFrom, reservedTo));
 
-        // Assert
-        assertThat(result).isEqualTo(0);
+        assertThat(exception.getMessage()).isEqualTo(String.format("Reservation with id: %d not found", id));
         verify(reservationService, times(1)).updateById(id, reservation.getBookId(), reservation.getReserveeId(), reservedFrom, reservedTo);
     }
 

@@ -1,5 +1,7 @@
 package cz.muni.fi.pa165.rest;
 
+import cz.muni.fi.pa165.exceptionhandling.ApiError;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.facade.ReservationFacade;
 import cz.muni.fi.pa165.util.ObjectConverter;
 import cz.muni.fi.pa165.util.ReservationDTOFactory;
@@ -14,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -40,7 +41,7 @@ public class ReservationControllerWebMvcTest {
         String reservedToString = "2024-04-24T20:29:59.123456Z";
         OffsetDateTime reservedTo = OffsetDateTime.parse(reservedToString);
         ReservationDTO reservationDTO = ReservationDTOFactory.createReservation(id, bookId, reserveeId, reservedFrom, reservedTo);
-        when(reservationFacade.findById(id)).thenReturn(Optional.of(reservationDTO));
+        when(reservationFacade.findById(id)).thenReturn(reservationDTO);
 
         // Act
         String responseJson = mockMvc.perform(get("/api/reservations/{id}", id)
@@ -60,7 +61,7 @@ public class ReservationControllerWebMvcTest {
     void updateReservation_invalidId_returnsNotFound() throws Exception {
         // Arrange
         Long id = 10L;
-        Mockito.when(reservationFacade.findById(id)).thenReturn(Optional.empty());
+        Mockito.when(reservationFacade.findById(id)).thenThrow(new ResourceNotFoundException(String.format("Reservation with id: %d not found", id)));
 
         // Act and Assert
         String responseJson = mockMvc.perform(get("/api/reservations/{id}", id)
@@ -69,7 +70,8 @@ public class ReservationControllerWebMvcTest {
                 .andReturn()
                 .getResponse()
                 .getContentAsString(StandardCharsets.UTF_8);
+        ApiError error = ObjectConverter.convertJsonToObject(responseJson, ApiError.class);
 
-        assertThat(responseJson).isEqualTo("");
+        assertThat(error.getMessage()).isEqualTo(String.format("Reservation with id: %d not found", id));
     }
 }

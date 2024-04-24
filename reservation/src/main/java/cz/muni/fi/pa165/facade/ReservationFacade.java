@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Facade layer for managing book reservations.
@@ -36,8 +35,8 @@ public class ReservationFacade {
         return reservationMapper.mapToDto(reservationService.createReservation(bookId, reserveeId));
     }
 
-    public Optional<ReservationDTO> findById(Long id) {
-        return reservationService.findById(id).map(reservationMapper::mapToDto);
+    public ReservationDTO findById(Long id) {
+        return reservationMapper.mapToDto(reservationService.findById(id));
     }
 
     public int updateById(Long id, Long bookId, Long reserveeId, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {

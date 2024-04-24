@@ -16,7 +16,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -36,23 +35,13 @@ class BorrowingControllerTest {
     void findById_borrowingFound_returnsBorrowingAndOkStatus() {
         BorrowingDTO borrowing = createDTOBorrowing();
 
-        when(borrowingFacade.findById(1L)).thenReturn(Optional.of(borrowing));
+        when(borrowingFacade.findById(1L)).thenReturn(borrowing);
 
         ResponseEntity<BorrowingDTO> response = borrowingController.getBorrowing(1L);
 
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody()).isEqualTo(borrowing);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    void findById_borrowingNotFound_returnsNotFoundStatus() {
-        when(borrowingFacade.findById(1L)).thenReturn(Optional.empty());
-
-        ResponseEntity<BorrowingDTO> response = borrowingController.getBorrowing(1L);
-
-        assertThat(response.getBody()).isNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
@@ -125,34 +114,8 @@ class BorrowingControllerTest {
     }
 
     @Test
-    void updateBorrowing_borrowingNotFound_returnsNotFoundStatus() {
-        BorrowingDTO borrowingDTO = createDTOBorrowing();
-        when(borrowingFacade.updateById(1L,
-                borrowingDTO.getBookId(),
-                borrowingDTO.getBorrowerId(),
-                borrowingDTO.getBorrowDate(),
-                borrowingDTO.getExpectedReturnDate(),
-                borrowingDTO.getReturned(),
-                borrowingDTO.getReturnDate(),
-                borrowingDTO.getLateReturnWeeklyFine(),
-                borrowingDTO.getFineResolved())).thenReturn(0);
-
-        ResponseEntity<Void> response = borrowingController.updateBorrowing(1L,
-                borrowingDTO.getBookId(),
-                borrowingDTO.getBorrowerId(),
-                borrowingDTO.getBorrowDate(),
-                borrowingDTO.getExpectedReturnDate(),
-                borrowingDTO.getReturned(),
-                borrowingDTO.getReturnDate(),
-                borrowingDTO.getLateReturnWeeklyFine(),
-                borrowingDTO.getFineResolved());
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    }
-
-    @Test
     void getFineById_borrowingFound_returnsFineAndOkStatus() {
-        when(borrowingFacade.getFineById(1L)).thenReturn(Optional.ofNullable(BigDecimal.TWO));
+        when(borrowingFacade.getFineById(1L)).thenReturn(BigDecimal.TWO);
 
         ResponseEntity<BigDecimal> response = borrowingController.getFineById(1L);
 
@@ -160,17 +123,6 @@ class BorrowingControllerTest {
         assertThat(response.getBody()).isEqualTo(BigDecimal.TWO);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
-
-    @Test
-    void getFineById_borrowingNotFound_returnsNotFoundStatus() {
-        when(borrowingFacade.getFineById(1L)).thenReturn(Optional.empty());
-
-        ResponseEntity<BigDecimal> response = borrowingController.getFineById(1L);
-
-        assertThat(response.getBody()).isNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    }
-
 
     private static BorrowingDTO createDTOBorrowing() {
         return new BorrowingDTO()

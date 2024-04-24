@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Borrowing;
 import cz.muni.fi.pa165.data.repository.BorrowingRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.util.TestDataFactory;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 /**
@@ -36,19 +38,17 @@ class BorrowingServiceTest {
     void findById_borrowingFound_returnsBorrowing() {
         when(borrowingRepository.findById(1L)).thenReturn(Optional.ofNullable(TestDataFactory.activeBorrowing));
 
-        Optional<Borrowing> found = borrowingService.findById(1L);
+        Borrowing found = borrowingService.findById(1L);
 
-        assertThat(found).isPresent();
-        assertThat(found.get()).isEqualTo(TestDataFactory.activeBorrowing);
+        assertThat(found).isEqualTo(TestDataFactory.activeBorrowing);
     }
 
     @Test
-    void findById_borrowingNotFound_returnsEmptyOptional() {
-        when(borrowingRepository.findById(11L)).thenReturn(Optional.empty());
+    void findById_borrowingNotFound_throwsResourceNotFoundException() {
+        when(borrowingRepository.findById(11L)).thenThrow(new ResourceNotFoundException(String.format("Borrowing with id: %d not found", 11L)));
 
-        Optional<Borrowing> found = borrowingService.findById(11L);
-
-        assertThat(found).isEmpty();
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> borrowingService.findById(11L));
+        assertThat(exception.getMessage()).isEqualTo(String.format("Borrowing with id: %d not found", 11L));
     }
 
     @Test
@@ -163,15 +163,16 @@ class BorrowingServiceTest {
     }
 
     @Test
-    void updateById_borrowingNotFound_returnsZero() {
+    void updateById_borrowingNotFound_throwsResourceNotFoundException() {
         Long nonExistingId = 11L;
         Long changedBook = 3L;
         when(borrowingRepository.updateById(nonExistingId, changedBook, null, null, null, null, null, null, null)).thenReturn(0);
 
-        int numberOfUpdatedBorrowings = borrowingService.updateById(nonExistingId, changedBook, null, null,
-                null, null, null, null, null);
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> borrowingService.updateById(nonExistingId, changedBook, null, null,
+                null, null, null, null, null));
 
-        assertThat(numberOfUpdatedBorrowings).isEqualTo(0);
+        assertThat(exception.getMessage()).isEqualTo(String.format("Borrowing with id: %d not found", nonExistingId));
+
         verify(borrowingRepository, times(1)).updateById(nonExistingId, changedBook, null, null, null, null, null, null, null);
     }
 
@@ -180,9 +181,9 @@ class BorrowingServiceTest {
         Long nonExistingId = 11L;
         when(borrowingRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
-        Optional<BigDecimal> fine = borrowingService.getFineById(nonExistingId);
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> borrowingService.getFineById(nonExistingId));
 
-        assertThat(fine).isEmpty();
+        assertThat(exception.getMessage()).isEqualTo(String.format("Borrowing with id: %d not found", nonExistingId));
         verify(borrowingRepository, times(1)).findById(nonExistingId);
     }
 
@@ -191,10 +192,9 @@ class BorrowingServiceTest {
         Borrowing inActiveBorrowing = TestDataFactory.inActiveBorrowing;
         when(borrowingRepository.findById(inActiveBorrowing.getId())).thenReturn(Optional.of(inActiveBorrowing));
 
-        Optional<BigDecimal> fine = borrowingService.getFineById(inActiveBorrowing.getId());
+        BigDecimal fine = borrowingService.getFineById(inActiveBorrowing.getId());
 
-        assertThat(fine).isPresent();
-        assertThat(fine.get()).isEqualTo(BigDecimal.ZERO);
+        assertThat(fine).isEqualTo(BigDecimal.ZERO);
         verify(borrowingRepository, times(1)).findById(inActiveBorrowing.getId());
     }
 
@@ -203,10 +203,9 @@ class BorrowingServiceTest {
         Borrowing inActiveBorrowing = TestDataFactory.inActiveBorrowingLate;
         when(borrowingRepository.findById(inActiveBorrowing.getId())).thenReturn(Optional.of(inActiveBorrowing));
 
-        Optional<BigDecimal> fine = borrowingService.getFineById(inActiveBorrowing.getId());
+        BigDecimal fine = borrowingService.getFineById(inActiveBorrowing.getId());
 
-        assertThat(fine).isPresent();
-        assertThat(fine.get()).isEqualTo(new BigDecimal(12));
+        assertThat(fine).isEqualTo(new BigDecimal(12));
         verify(borrowingRepository, times(1)).findById(inActiveBorrowing.getId());
     }
 
@@ -215,10 +214,9 @@ class BorrowingServiceTest {
         Borrowing activeBorrowing = TestDataFactory.activeBorrowing;
         when(borrowingRepository.findById(activeBorrowing.getId())).thenReturn(Optional.of(activeBorrowing));
 
-        Optional<BigDecimal> fine = borrowingService.getFineById(activeBorrowing.getId());
+        BigDecimal fine = borrowingService.getFineById(activeBorrowing.getId());
 
-        assertThat(fine).isPresent();
-        assertThat(fine.get()).isEqualTo(BigDecimal.ZERO);
+        assertThat(fine).isEqualTo(BigDecimal.ZERO);
         verify(borrowingRepository, times(1)).findById(activeBorrowing.getId());
     }
 
@@ -230,11 +228,20 @@ class BorrowingServiceTest {
         try (MockedStatic<TimeProvider> timeProviderDummy = mockStatic(TimeProvider.class)) {
             timeProviderDummy.when(TimeProvider::now).thenReturn(activeBorrowing.getExpectedReturnDate().plusWeeks(5));
 
-            Optional<BigDecimal> fine = borrowingService.getFineById(activeBorrowing.getId());
+            BigDecimal fine = borrowingService.getFineById(activeBorrowing.getId());
 
-            assertThat(fine).isPresent();
-            assertThat(fine.get()).isEqualTo(new BigDecimal(5));
+            assertThat(fine).isEqualTo(new BigDecimal(5));
             verify(borrowingRepository, times(1)).findById(activeBorrowing.getId());
         }
     }
+
+    @Test
+    void getFineById_bookNotFound_throwsResourceNotfoundException() {
+        when(borrowingRepository.findById(1000L)).thenReturn(Optional.empty());
+
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> borrowingService.getFineById(1000L));
+        assertThat(exception.getMessage()).isEqualTo(String.format("Borrowing with id: %d not found", 1000L));
+
+    }
+
 }

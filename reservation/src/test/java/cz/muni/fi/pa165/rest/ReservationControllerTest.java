@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -97,7 +96,7 @@ public class ReservationControllerTest {
         Long bookId = 5L;
         Long reserveeId = 5L;
         ReservationDTO reservation = ReservationDTOFactory.createReservation(id, bookId, reserveeId, TimeProvider.now(), TimeProvider.now().plusDays(3));
-        when(reservationFacade.findById(id)).thenReturn(Optional.of(reservation));
+        when(reservationFacade.findById(id)).thenReturn(reservation);
 
         // Act
         ResponseEntity<ReservationDTO> response = reservationController.getReservation(id);
@@ -105,19 +104,6 @@ public class ReservationControllerTest {
         // Assert
         assertThat(response.getBody()).isEqualTo(reservation);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    void getReservation_nonExistingId_returnsNotFound() {
-        // Arrange
-        Long id = 1L;
-        when(reservationFacade.findById(id)).thenReturn(Optional.empty());
-
-        // Act
-        ResponseEntity<ReservationDTO> response = reservationController.getReservation(id);
-
-        // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
@@ -149,24 +135,6 @@ public class ReservationControllerTest {
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(reservationFacade, times(1)).updateById(id, bookId, reserveeId, reservedFrom, reservedTo);
-    }
-
-    @Test
-    void updateReservation_invalidId_returnsNotFound() {
-        // Arrange
-        Long id = 1L;
-        Long bookId = 4L;
-        Long reserveeId = 4L;
-        OffsetDateTime reservedFrom = TimeProvider.now().plusDays(1);
-        OffsetDateTime reservedTo = TimeProvider.now().plusDays(4);
-        when(reservationFacade.updateById(id, bookId, reserveeId, reservedFrom, reservedTo)).thenReturn(0);
-
-        // Act
-        ResponseEntity<Void> response = reservationController.updateReservation(id, bookId, reserveeId, reservedFrom, reservedTo);
-
-        // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         verify(reservationFacade, times(1)).updateById(id, bookId, reserveeId, reservedFrom, reservedTo);
     }
 }

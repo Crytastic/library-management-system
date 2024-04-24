@@ -12,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller layer for managing borrowings.
@@ -42,21 +41,18 @@ public class BorrowingController implements BorrowingApi {
 
     @Override
     public ResponseEntity<BorrowingDTO> createBorrowing(Long bookId, Long borrowerId, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
-        BorrowingDTO createdBorrowing = borrowingFacade.createBorrowing(bookId, borrowerId, expectedReturnDate, lateReturnWeeklyFine);
-        return new ResponseEntity<>(createdBorrowing, HttpStatus.CREATED);
+        return new ResponseEntity<>(borrowingFacade.createBorrowing(bookId, borrowerId, expectedReturnDate, lateReturnWeeklyFine), HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<BorrowingDTO> getBorrowing(Long id) {
-        Optional<BorrowingDTO> borrowing = borrowingFacade.findById(id);
-        return borrowing.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return new ResponseEntity<>(borrowingFacade.findById(id), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<Void> updateBorrowing(Long id, Long bookId, Long borrowerId, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
-        int numberOfUpdatedBorrowings = borrowingFacade.updateById(id, bookId, borrowerId, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
-        return new ResponseEntity<>(numberOfUpdatedBorrowings == 1 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+        borrowingFacade.updateById(id, bookId, borrowerId, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
@@ -67,8 +63,6 @@ public class BorrowingController implements BorrowingApi {
 
     @Override
     public ResponseEntity<BigDecimal> getFineById(Long id) {
-        Optional<BigDecimal> fine = borrowingFacade.getFineById(id);
-        return fine.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return new ResponseEntity<>(borrowingFacade.getFineById(id), HttpStatus.OK);
     }
 }
