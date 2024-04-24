@@ -9,6 +9,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository layer for managing books.
+ * Provides methods for storing, retrieving and updating book.
+ *
+ * @author Martin Suchánek
+ */
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
     @Modifying
