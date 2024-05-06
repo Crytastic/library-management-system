@@ -214,10 +214,14 @@ class BorrowingServiceTest {
         Borrowing activeBorrowing = TestDataFactory.activeBorrowing;
         when(borrowingRepository.findById(activeBorrowing.getId())).thenReturn(Optional.of(activeBorrowing));
 
-        BigDecimal fine = borrowingService.getFineById(activeBorrowing.getId());
+        try (MockedStatic<TimeProvider> timeProviderDummy = mockStatic(TimeProvider.class)) {
+            timeProviderDummy.when(TimeProvider::now).thenReturn(activeBorrowing.getExpectedReturnDate().minusHours(1));
 
-        assertThat(fine).isEqualTo(BigDecimal.ZERO);
-        verify(borrowingRepository, times(1)).findById(activeBorrowing.getId());
+            BigDecimal fine = borrowingService.getFineById(activeBorrowing.getId());
+
+            assertThat(fine).isEqualTo(BigDecimal.ZERO);
+            verify(borrowingRepository, times(1)).findById(activeBorrowing.getId());
+        }
     }
 
     @Test
@@ -241,7 +245,5 @@ class BorrowingServiceTest {
 
         Throwable exception = assertThrows(ResourceNotFoundException.class, () -> borrowingService.getFineById(1000L));
         assertThat(exception.getMessage()).isEqualTo(String.format("Borrowing with id: %d not found", 1000L));
-
     }
-
 }
