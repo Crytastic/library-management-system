@@ -104,6 +104,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/BookDTO'
 
+    delete:
+      tags:
+        - Book
+      summary: Delete all books
+      operationId: deleteBooks
+      responses:
+        '204':
+          description: No content
+
   /api/books/{id}:
     get:
       tags:

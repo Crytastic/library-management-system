@@ -68,4 +68,8 @@ public class BookService {
             return borrowingServiceStub.apiCallToBorrowingServiceToFindBookBorrowings(id);
         }
     }
+
+    public void deleteAll() {
+        bookRepository.deleteAll();
+    }
 }

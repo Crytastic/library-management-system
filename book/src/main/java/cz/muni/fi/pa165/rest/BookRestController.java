@@ -63,4 +63,10 @@ public class BookRestController implements BookApi {
         bookFacade.updateById(id, title, author, description, status);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<Void> deleteBooks() {
+        bookFacade.deleteAll();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

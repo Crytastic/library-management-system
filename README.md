@@ -106,6 +106,7 @@ on [http://localhost:8083/swagger-ui/index.html#](http://localhost:8083/swagger-
 
 - **GET /api/books:** Retrieves all books that match the provided filter.
 - **POST /api/books:** Creates a new book.
+- **DELETE /api/books:** Delete all books.
 - **GET /api/books/{id}:** Retrieves a book by its ID.
 - **PATCH /api/books/{id}:** Updates an existing book.
 - **DELETE /api/books/{id}:** Deletes a book by its ID.
