@@ -58,4 +58,10 @@ public class UserRestController implements UserApi {
     public ResponseEntity<UserDTO> updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) {
         return new ResponseEntity<>(userFacade.updateUser(id, username, password, address, birthdate, userType), HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<Void> deleteUsers() {
+        userFacade.deleteAll();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

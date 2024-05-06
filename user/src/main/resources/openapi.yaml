@@ -70,6 +70,15 @@ paths:
         "422":
           description: User with your username already exists
 
+    delete:
+      tags:
+        - User
+      summary: Delete all users
+      operationId: deleteUsers
+      responses:
+        '204':
+          description: No content
+
   /api/users/{id}:
     get:
       tags:

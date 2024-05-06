@@ -101,4 +101,8 @@ public class UserService {
     private LocalDate getDateForAdultAge() {
         return LocalDate.now().minusYears(18);
     }
+
+    public void deleteAll() {
+        userRepository.deleteAll();
+    }
 }

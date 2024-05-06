@@ -82,6 +82,7 @@ on [http://localhost:8082/swagger-ui/index.html#](http://localhost:8082/swagger-
 
 - **GET /api/users:** Retrieve all users.
 - **POST /api/users:** Create a new user.
+- **DELETE /api/users:** Delete all users.
 - **GET /api/users/{id}:** Retrieve a user by its ID.
 - **PATCH /api/users/{id}:** Update an existing user.
 - **DELETE /api/users/{id}:** Delete a user by its ID.
