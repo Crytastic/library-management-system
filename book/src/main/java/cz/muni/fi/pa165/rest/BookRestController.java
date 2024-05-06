@@ -4,7 +4,6 @@ import cz.muni.fi.pa165.facade.BookFacade;
 import org.openapitools.api.BookApi;
 import org.openapitools.model.BookDTO;
 import org.openapitools.model.BookStatus;
-import org.openapitools.model.BookTestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

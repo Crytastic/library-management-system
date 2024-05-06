@@ -3,7 +3,6 @@ package cz.muni.fi.pa165.rest;
 import cz.muni.fi.pa165.facade.ReservationFacade;
 import org.openapitools.api.ReservationApi;
 import org.openapitools.model.ReservationDTO;
-import org.openapitools.model.ReservationTestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

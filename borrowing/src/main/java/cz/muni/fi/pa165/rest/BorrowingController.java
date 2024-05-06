@@ -3,7 +3,6 @@ package cz.muni.fi.pa165.rest;
 import cz.muni.fi.pa165.facade.BorrowingFacade;
 import org.openapitools.api.BorrowingApi;
 import org.openapitools.model.BorrowingDTO;
-import org.openapitools.model.BorrowingTestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
