@@ -37,6 +37,7 @@ on [http://localhost:8080/swagger-ui/index.html#](http://localhost:8080/swagger-
 
 - **GET /api/borrowings:** Retrieve all borrowings.
 - **POST /api/borrowings:** Create a new borrowing.
+- **DELETE /api/borrowings:** Delete all borrowings.
 - **GET /api/borrowings/{id}:** Retrieve a borrowing by its ID.
 - **PATCH /api/borrowings/{id}:** Update an existing borrowing.
 - **DELETE /api/borrowings/{id}:** Delete a borrowing by its ID.

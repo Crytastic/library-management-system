@@ -120,6 +120,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BorrowingDTO'
+    delete:
+      tags:
+        - Borrowing
+      summary: Delete all borrowings
+      operationId: deleteBorrowings
+      responses:
+        '204':
+          description: No content
   /api/borrowings/{id}:
     get:
       tags:

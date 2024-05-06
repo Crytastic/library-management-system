@@ -51,4 +51,8 @@ public class BorrowingFacade {
     public BigDecimal getFineById(Long id) {
         return borrowingService.getFineById(id);
     }
+
+    public void deleteAll() {
+        borrowingService.deleteAll();
+    }
 }

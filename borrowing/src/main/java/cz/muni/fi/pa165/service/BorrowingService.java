@@ -106,4 +106,8 @@ public class BorrowingService {
     private BigDecimal getDefaultLateReturnWeeklyFine() {
         return BigDecimal.ONE;
     }
+
+    public void deleteAll() {
+        borrowingRepository.deleteAll();
+    }
 }

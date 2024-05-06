@@ -65,4 +65,10 @@ public class BorrowingController implements BorrowingApi {
     public ResponseEntity<BigDecimal> getFineById(Long id) {
         return new ResponseEntity<>(borrowingFacade.getFineById(id), HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<Void> deleteBorrowings() {
+        borrowingFacade.deleteAll();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
