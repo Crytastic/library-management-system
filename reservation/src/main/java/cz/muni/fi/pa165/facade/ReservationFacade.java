@@ -54,4 +54,8 @@ public class ReservationFacade {
     public List<ReservationDTO> findAllExpired() {
         return reservationMapper.mapToList(reservationService.findAllExpired());
     }
+
+    public void deleteAll() {
+        reservationService.deleteAll();
+    }
 }

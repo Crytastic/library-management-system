@@ -39,7 +39,7 @@ public class TestDataFactory {
 
     private static Borrowing getActiveBorrowingFactory() {
         OffsetDateTime borrowDate = OffsetDateTime.of(2024, 4, 1, 12, 0, 0, 0, ZoneOffset.UTC);
-        OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 5, 1, 12, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDateTime expectedReturnDate = OffsetDateTime.of(2024, 6, 1, 12, 0, 0, 0, ZoneOffset.UTC);
         Borrowing activeBorrowing = new Borrowing(
                 27L,
                 28L,

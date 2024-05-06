@@ -54,23 +54,6 @@ components:
           example: true
 
 paths:
-  /api/test:
-    get:
-      tags:
-        - Borrowing
-      summary: Returns test message response
-      operationId: test
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                title: BorrowingTestResponse
-                properties:
-                  message:
-                    type: string
   /api/borrowings:
     get:
       tags:
@@ -120,6 +103,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BorrowingDTO'
+    delete:
+      tags:
+        - Borrowing
+      summary: Delete all borrowings
+      operationId: deleteBorrowings
+      responses:
+        '204':
+          description: No content
   /api/borrowings/{id}:
     get:
       tags:

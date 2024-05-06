@@ -28,24 +28,6 @@ components:
           $ref: '#/components/schemas/BookStatus'
 
 paths:
-  /api/test:
-    get:
-      tags:
-        - Book
-      summary: Returns test message response
-      operationId: test
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                title: BookTestResponse
-                properties:
-                  message:
-                    type: string
-
   /api/books:
     get:
       tags:
@@ -103,6 +85,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BookDTO'
+
+    delete:
+      tags:
+        - Book
+      summary: Delete all books
+      operationId: deleteBooks
+      responses:
+        '204':
+          description: No content
 
   /api/books/{id}:
     get:

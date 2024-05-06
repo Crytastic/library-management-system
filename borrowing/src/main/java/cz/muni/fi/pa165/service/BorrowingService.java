@@ -88,6 +88,11 @@ public class BorrowingService {
         return calculateFine(expectedReturnDate, currentDate, borrowing);
     }
 
+    @Transactional
+    public void deleteAll() {
+        borrowingRepository.deleteAll();
+    }
+
     private BigDecimal calculateFine(OffsetDateTime expectedReturnDate, OffsetDateTime returnDate, Borrowing borrowing) {
         if (returnDate.isBefore(expectedReturnDate)) {
             return BigDecimal.ZERO;
@@ -106,4 +111,5 @@ public class BorrowingService {
     private BigDecimal getDefaultLateReturnWeeklyFine() {
         return BigDecimal.ONE;
     }
+
 }

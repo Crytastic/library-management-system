@@ -37,6 +37,7 @@ on [http://localhost:8080/swagger-ui/index.html#](http://localhost:8080/swagger-
 
 - **GET /api/borrowings:** Retrieve all borrowings.
 - **POST /api/borrowings:** Create a new borrowing.
+- **DELETE /api/borrowings:** Delete all borrowings.
 - **GET /api/borrowings/{id}:** Retrieve a borrowing by its ID.
 - **PATCH /api/borrowings/{id}:** Update an existing borrowing.
 - **DELETE /api/borrowings/{id}:** Delete a borrowing by its ID.
@@ -59,6 +60,7 @@ on [http://localhost:8081/swagger-ui/index.html#](http://localhost:8081/swagger-
 
 - **GET /api/reservations:** Retrieve all reservations.
 - **POST /api/reservations:** Create a new reservation.
+- **DELETE /api/reservations:** Delete all reservations.
 - **GET /api/reservations/{id}:** Retrieve a reservation by its ID.
 - **PATCH /api/reservations/{id}:** Update an existing reservation.
 - **DELETE /api/reservations/{id}:** Delete a reservation by its ID.
@@ -82,6 +84,7 @@ on [http://localhost:8082/swagger-ui/index.html#](http://localhost:8082/swagger-
 
 - **GET /api/users:** Retrieve all users.
 - **POST /api/users:** Create a new user.
+- **DELETE /api/users:** Delete all users.
 - **GET /api/users/{id}:** Retrieve a user by its ID.
 - **PATCH /api/users/{id}:** Update an existing user.
 - **DELETE /api/users/{id}:** Delete a user by its ID.
@@ -105,6 +108,7 @@ on [http://localhost:8083/swagger-ui/index.html#](http://localhost:8083/swagger-
 
 - **GET /api/books:** Retrieves all books that match the provided filter.
 - **POST /api/books:** Creates a new book.
+- **DELETE /api/books:** Delete all books.
 - **GET /api/books/{id}:** Retrieves a book by its ID.
 - **PATCH /api/books/{id}:** Updates an existing book.
 - **DELETE /api/books/{id}:** Deletes a book by its ID.

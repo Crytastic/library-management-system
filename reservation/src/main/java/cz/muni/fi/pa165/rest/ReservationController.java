@@ -3,7 +3,6 @@ package cz.muni.fi.pa165.rest;
 import cz.muni.fi.pa165.facade.ReservationFacade;
 import org.openapitools.api.ReservationApi;
 import org.openapitools.model.ReservationDTO;
-import org.openapitools.model.ReservationTestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,13 +58,14 @@ public class ReservationController implements ReservationApi {
     }
 
     @Override
-    public ResponseEntity<ReservationTestResponse> test() {
-        return new ResponseEntity<>(new ReservationTestResponse().message("Service running"), HttpStatus.OK);
-    }
-
-    @Override
     public ResponseEntity<Void> updateReservation(Long id, Long bookId, Long reserveeId, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
         reservationFacade.updateById(id, bookId, reserveeId, reservedFrom, reservedTo);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteReservations() {
+        reservationFacade.deleteAll();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
