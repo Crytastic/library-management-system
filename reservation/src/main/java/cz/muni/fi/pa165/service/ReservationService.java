@@ -72,6 +72,7 @@ public class ReservationService {
         return reservationRepository.findAllExpired(TimeProvider.now());
     }
 
+    @Transactional
     public void deleteAll() {
         reservationRepository.deleteAll();
     }

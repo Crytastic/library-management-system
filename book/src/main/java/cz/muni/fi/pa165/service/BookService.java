@@ -69,6 +69,7 @@ public class BookService {
         }
     }
 
+    @Transactional
     public void deleteAll() {
         bookRepository.deleteAll();
     }

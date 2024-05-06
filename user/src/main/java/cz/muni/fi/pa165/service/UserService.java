@@ -98,11 +98,13 @@ public class UserService {
         return userRepository.save(updatedUser);
     }
 
+    @Transactional
+    public void deleteAll() {
+        userRepository.deleteAll();
+    }
+
     private LocalDate getDateForAdultAge() {
         return LocalDate.now().minusYears(18);
     }
 
-    public void deleteAll() {
-        userRepository.deleteAll();
-    }
 }
