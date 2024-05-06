@@ -71,4 +71,8 @@ public class ReservationService {
     public List<Reservation> findAllExpired() {
         return reservationRepository.findAllExpired(TimeProvider.now());
     }
+
+    public void deleteAll() {
+        reservationRepository.deleteAll();
+    }
 }

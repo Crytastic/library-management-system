@@ -68,4 +68,10 @@ public class ReservationController implements ReservationApi {
         reservationFacade.updateById(id, bookId, reserveeId, reservedFrom, reservedTo);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<Void> deleteReservations() {
+        reservationFacade.deleteAll();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

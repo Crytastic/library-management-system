@@ -60,6 +60,7 @@ on [http://localhost:8081/swagger-ui/index.html#](http://localhost:8081/swagger-
 
 - **GET /api/reservations:** Retrieve all reservations.
 - **POST /api/reservations:** Create a new reservation.
+- **DELETE /api/reservations:** Delete all reservations.
 - **GET /api/reservations/{id}:** Retrieve a reservation by its ID.
 - **PATCH /api/reservations/{id}:** Update an existing reservation.
 - **DELETE /api/reservations/{id}:** Delete a reservation by its ID.

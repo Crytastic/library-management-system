@@ -76,6 +76,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReservationDTO'
+    delete:
+      tags:
+        - Reservation
+      summary: Delete all reservations
+      operationId: deleteReservations
+      responses:
+        '204':
+          description: No content
 
   /api/reservations/{id}:
     get:
