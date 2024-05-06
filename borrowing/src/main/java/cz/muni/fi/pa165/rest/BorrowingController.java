@@ -28,12 +28,6 @@ public class BorrowingController implements BorrowingApi {
         this.borrowingFacade = borrowingFacade;
     }
 
-
-    @Override
-    public ResponseEntity<BorrowingTestResponse> test() {
-        return new ResponseEntity<>(new BorrowingTestResponse().message("Service running"), HttpStatus.OK);
-    }
-
     @Override
     public ResponseEntity<List<BorrowingDTO>> getBorrowings() {
         return new ResponseEntity<>(borrowingFacade.findAll(), HttpStatus.OK);

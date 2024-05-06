@@ -21,23 +21,6 @@ components:
         reservedTo: { type: string, format: date-time, description: "Date when the reservation was/will be cancelled", example: "2024-04-03T10:15:30Z" }
 
 paths:
-  /api/test:
-    get:
-      tags:
-        - Reservation
-      summary: Returns test message response
-      operationId: test
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                title: ReservationTestResponse
-                properties:
-                  message:
-                    type: string
   /api/reservations:
     get:
       tags:

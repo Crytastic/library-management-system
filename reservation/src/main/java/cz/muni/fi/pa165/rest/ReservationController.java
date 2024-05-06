@@ -59,11 +59,6 @@ public class ReservationController implements ReservationApi {
     }
 
     @Override
-    public ResponseEntity<ReservationTestResponse> test() {
-        return new ResponseEntity<>(new ReservationTestResponse().message("Service running"), HttpStatus.OK);
-    }
-
-    @Override
     public ResponseEntity<Void> updateReservation(Long id, Long bookId, Long reserveeId, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
         reservationFacade.updateById(id, bookId, reserveeId, reservedFrom, reservedTo);
         return new ResponseEntity<>(HttpStatus.OK);

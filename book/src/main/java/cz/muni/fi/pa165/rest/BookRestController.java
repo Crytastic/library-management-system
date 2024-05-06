@@ -54,11 +54,6 @@ public class BookRestController implements BookApi {
     }
 
     @Override
-    public ResponseEntity<BookTestResponse> test() {
-        return new ResponseEntity<>(new BookTestResponse().message("Book microservice is ready"), HttpStatus.OK);
-    }
-
-    @Override
     public ResponseEntity<Void> updateBook(Long id, String title, String author, String description, BookStatus status) {
         bookFacade.updateById(id, title, author, description, status);
         return new ResponseEntity<>(HttpStatus.OK);
