@@ -5,7 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Script {
@@ -19,6 +21,35 @@ public class Script {
         System.out.println("User wants to find all books from " + wantedAuthor + ".");
         Map<String, String> wantedBooks = findAllBooksByAuthor(wantedAuthor);
         System.out.println("Founded books by " + wantedAuthor + ": " + String.join(", ", wantedBooks.values()));
+
+        System.out.println("Get rid off reserved books.");
+        removeReservedBooks(wantedBooks);
+        System.out.println("Founded books except reserved books: " + String.join(", ", wantedBooks.values()));
+    }
+
+    private static void removeReservedBooks(Map<String, String> wantedBooks) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> reservationResponse = restTemplate.exchange(
+                "http://localhost:8081/api/reservations/active",
+                HttpMethod.GET,
+                null,
+                String.class
+        );
+
+        ObjectMapper om = new ObjectMapper();
+        List<String> reservationBookIds = new ArrayList<>();
+        try {
+            JsonNode reservationInfo = om.readTree(reservationResponse.getBody());
+            for (JsonNode jsonNode : reservationInfo) {
+                reservationBookIds.add(jsonNode.get("bookId").toString().replace('\"', ' ').strip());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        for (String reservationsId : reservationBookIds) {
+            wantedBooks.remove(reservationsId);
+        }
     }
 
     private static Map<String, String> findAllBooksByAuthor(String wantedAuthor) {
@@ -46,7 +77,7 @@ public class Script {
     }
 
     private static JsonNode createMemberUser() {
-        String username = "Danko1";
+        String username = "Danko2";
         String password = "DeniskaMach9";
         String address = "Bohunice 450/6";
         LocalDate birthDate = LocalDate.of(1999, 9, 3);
