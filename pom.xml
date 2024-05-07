@@ -109,6 +109,11 @@
         <version>2.2</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-registry-prometheus</artifactId>
+        <version>1.12.5</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
