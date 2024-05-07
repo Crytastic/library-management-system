@@ -10,16 +10,16 @@ scrape_configs:
   - job_name: 'borrowing-service'
     metrics_path: /actuator/prometheus
     static_configs:
-      - targets: [ 'localhost:8080' ]
+      - targets: [ 'borrowing:8080' ]
   - job_name: 'reservation-service'
     metrics_path: /actuator/prometheus
     static_configs:
-      - targets: [ 'localhost:8081' ]
+      - targets: [ 'reservation:8081' ]
   - job_name: 'user-service'
     metrics_path: /actuator/prometheus
     static_configs:
-      - targets: [ 'localhost:8082' ]
+      - targets: [ 'user:8082' ]
   - job_name: 'book-service'
     metrics_path: /actuator/prometheus
     static_configs:
-      - targets: [ 'localhost:8083' ]
+      - targets: [ 'book:8083' ]

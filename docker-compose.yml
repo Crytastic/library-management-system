@@ -24,4 +24,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8083:8083"
-
+  prometheus:
+    image: prom/prometheus:v2.43.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:Z
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
