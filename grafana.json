@@ -1,4 +1,41 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "9.1.7"
+    },
+    {
+      "type": "panel",
+      "id": "piechart",
+      "name": "Pie chart",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -24,7 +61,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 8,
+  "id": null,
   "links": [
     {
       "icon": "info",
@@ -47,7 +84,7 @@
   "liveNow": false,
   "panels": [
     {
-      "collapsed": true,
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -62,7 +99,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "sfjmxcLIk"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -143,14 +180,16 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "sfjmxcLIk"
+            "uid": "${DS_PROMETHEUS}"
           },
+          "editorMode": "code",
           "expr": "topk(5, max(scrape_duration_seconds) by (job))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "{{job}}",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 20
         }
@@ -161,7 +200,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "sfjmxcLIk"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -242,12 +281,14 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "sfjmxcLIk"
+            "uid": "${DS_PROMETHEUS}"
           },
+          "editorMode": "code",
           "expr": "prometheus_engine_query_duration_seconds{job=\"prometheus\", quantile=\"0.99\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{slice}}_p99",
+          "range": true,
           "refId": "A",
           "step": 20
         }
@@ -256,7 +297,7 @@
       "type": "timeseries"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -271,7 +312,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "sfjmxcLIk"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Comparative view of HTTP requests load on all services",
       "fieldConfig": {
@@ -350,7 +391,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "sfjmxcLIk"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "builder",
           "expr": "rate(hikaricp_connections_acquire_seconds_count[$__rate_interval])",
@@ -378,7 +419,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "sfjmxcLIk"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "HTTP requests to book service by endpoint and type",
       "fieldConfig": {
@@ -427,9 +468,9 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "sfjmxcLIk"
+            "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
+          "editorMode": "builder",
           "expr": "http_server_requests_seconds_count{job=\"book-service\", uri=~\"/api/books/{id}|/api/books|/api/books/{id}/borrowings\"}",
           "legendFormat": "{{method}}{{uri}}",
           "range": true,
@@ -442,7 +483,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "sfjmxcLIk"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "HTTP requests to user service by endpoint and type",
       "fieldConfig": {
@@ -491,7 +532,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "sfjmxcLIk"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "http_server_requests_seconds_count{job=\"user-service\", uri=~\"/api/users/{id}|/api/users|/api/users/adults\"}",
@@ -506,7 +547,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "sfjmxcLIk"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "HTTP requests to borrowing service by endpoint and type",
       "fieldConfig": {
@@ -555,7 +596,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "sfjmxcLIk"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "http_server_requests_seconds_count{job=\"borrowing-service\", uri=~\"/api/borrowings/{id}|/api/borrowings|/api/activeBorrowings|/api/borrowings/{id}/fine\"}",
@@ -570,7 +611,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "sfjmxcLIk"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "HTTP requests to reservation service by endpoint and type",
       "fieldConfig": {
@@ -619,7 +660,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "sfjmxcLIk"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "http_server_requests_seconds_count{job=\"reservation-service\", uri=~\"/api/reservations/{id}|/api/reservations|/api/reservations/expired|/api/reservations/active\"}",
@@ -632,7 +673,7 @@
       "type": "piechart"
     }
   ],
-  "refresh": "1m",
+  "refresh": "5s",
   "revision": "1.0",
   "schemaVersion": 37,
   "style": "dark",
@@ -673,6 +714,6 @@
   "timezone": "browser",
   "title": "Library Management System Dashboard",
   "uid": "iwujs5YIz",
-  "version": 1,
+  "version": 8,
   "weekStart": ""
 }
