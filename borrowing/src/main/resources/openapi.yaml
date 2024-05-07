@@ -230,3 +230,19 @@ paths:
                 type: number
         '404':
           description: Not found
+  /api/activeBorrowings:
+    get:
+      tags:
+        - Borrowing
+      summary: Returns all active borrowings
+      operationId: getActiveBorrowings
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                title: BorrowingsResponse
+                items:
+                  $ref: '#/components/schemas/BorrowingDTO'

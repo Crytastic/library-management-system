@@ -246,4 +246,12 @@ class BorrowingServiceTest {
         Throwable exception = assertThrows(ResourceNotFoundException.class, () -> borrowingService.getFineById(1000L));
         assertThat(exception.getMessage()).isEqualTo(String.format("Borrowing with id: %d not found", 1000L));
     }
+
+    @Test
+    void getAllActive_activeBorrowingPresent_returnsActiveBorrowings() {
+        when(borrowingRepository.findAll()).thenReturn(List.of(TestDataFactory.activeBorrowing, TestDataFactory.inActiveBorrowing));
+
+        List<Borrowing> borrowings = borrowingService.findAllActive();
+        assertThat(borrowings).hasSize(1).first().isEqualTo(TestDataFactory.activeBorrowing);
+    }
 }

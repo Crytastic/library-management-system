@@ -64,4 +64,9 @@ public class BorrowingController implements BorrowingApi {
         borrowingFacade.deleteAll();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @Override
+    public ResponseEntity<List<BorrowingDTO>> getActiveBorrowings() {
+        return new ResponseEntity<>(borrowingFacade.findAllActive(), HttpStatus.OK);
+    }
 }
