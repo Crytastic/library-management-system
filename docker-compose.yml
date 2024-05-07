@@ -8,13 +8,13 @@ services:
       - "8080:8080"
   reservation:
     build:
-      context: ./reservation/
+      context: ./reservation
       dockerfile: Dockerfile
     ports:
       - "8081:8081"
   user:
     build:
-      context: ./user/
+      context: ./user
       dockerfile: Dockerfile
     ports:
       - "8082:8082"
