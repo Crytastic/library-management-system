@@ -55,4 +55,14 @@ public class UserServiceObservabilityTest {
                 .body("_links.self", notNullValue())
                 .body("_links.threaddump", nullValue());
     }
+
+    @Test
+    void prometheusMetricsExported() {
+        given()
+                .when()
+                .get("/actuator/prometheus")
+                .then()
+                .statusCode(200)
+                .body(notNullValue());
+    }
 }
