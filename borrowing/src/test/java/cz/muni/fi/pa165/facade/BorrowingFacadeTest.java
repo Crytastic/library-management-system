@@ -223,4 +223,13 @@ class BorrowingFacadeTest {
         assertThat(fine).isEqualTo(BigDecimal.ZERO);
         verify(borrowingService, times(1)).getFineById(1L);
     }
+
+    @Test
+    void getAllActive_activeBorrowingPresent_returnsActiveBorrowings() {
+        when(borrowingService.findAllActive()).thenReturn(List.of(TestDataFactory.activeBorrowing));
+        when(borrowingMapper.mapToList(List.of(TestDataFactory.activeBorrowing))).thenReturn(List.of(TestDataFactory.activeBorrowingDTO));
+
+        List<BorrowingDTO> borrowings = borrowingFacade.findAllActive();
+        assertThat(borrowings).hasSize(1).first().isEqualTo(TestDataFactory.activeBorrowingDTO);
+    }
 }

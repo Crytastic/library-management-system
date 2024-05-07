@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service layer for managing borrowing of books.
@@ -110,6 +111,11 @@ public class BorrowingService {
 
     private BigDecimal getDefaultLateReturnWeeklyFine() {
         return BigDecimal.ONE;
+    }
+
+    @Transactional
+    public List<Borrowing> findAllActive() {
+        return borrowingRepository.findAll().stream().filter(b -> !b.isReturned()).collect(Collectors.toList());
     }
 
 }

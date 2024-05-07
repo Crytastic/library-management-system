@@ -55,4 +55,8 @@ public class BorrowingFacade {
     public void deleteAll() {
         borrowingService.deleteAll();
     }
+
+    public List<BorrowingDTO> findAllActive() {
+        return borrowingMapper.mapToList(borrowingService.findAllActive());
+    }
 }
