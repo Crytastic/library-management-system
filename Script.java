@@ -25,6 +25,35 @@ public class Script {
         System.out.println("Get rid off reserved books.");
         removeReservedBooks(wantedBooks);
         System.out.println("Founded books except reserved books: " + String.join(", ", wantedBooks.values()));
+
+        System.out.println("Get rid off borrowed books.");
+        removeBorrowedBooks(wantedBooks);
+        System.out.println("Founded books except borrowed books: " + String.join(", ", wantedBooks.values()));
+    }
+
+    private static void removeBorrowedBooks(Map<String, String> wantedBooks) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> borrowingResponse = restTemplate.exchange(
+                "http://localhost:8080/api/activeBorrowings",
+                HttpMethod.GET,
+                null,
+                String.class
+        );
+
+        ObjectMapper om = new ObjectMapper();
+        List<String> borrowedBookIds = new ArrayList<>();
+        try {
+            JsonNode reservationInfo = om.readTree(borrowingResponse.getBody());
+            for (JsonNode jsonNode : reservationInfo) {
+                borrowedBookIds.add(jsonNode.get("bookId").toString().replace('\"', ' ').strip());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        for (String reservationsId : borrowedBookIds) {
+            wantedBooks.remove(reservationsId);
+        }
     }
 
     private static void removeReservedBooks(Map<String, String> wantedBooks) {
@@ -77,7 +106,7 @@ public class Script {
     }
 
     private static JsonNode createMemberUser() {
-        String username = "Danko2";
+        String username = "Danko";
         String password = "DeniskaMach9";
         String address = "Bohunice 450/6";
         LocalDate birthDate = LocalDate.of(1999, 9, 3);
