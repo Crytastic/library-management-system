@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.rest;
 
 import cz.muni.fi.pa165.facade.BorrowingFacade;
+import cz.muni.fi.pa165.util.TestDataFactory;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -122,6 +123,18 @@ class BorrowingControllerTest {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody()).isEqualTo(BigDecimal.TWO);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void getAllActive_activeBorrowingPresent_returnsActiveBorrowings() {
+        when(borrowingFacade.findAllActive()).thenReturn(List.of(TestDataFactory.activeBorrowingDTO));
+
+        ResponseEntity<List<BorrowingDTO>> response = borrowingController.getActiveBorrowings();
+
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).hasSize(1).first().isEqualTo(TestDataFactory.activeBorrowingDTO);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
     }
 
     private static BorrowingDTO createDTOBorrowing() {
