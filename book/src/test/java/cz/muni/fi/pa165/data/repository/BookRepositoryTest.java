@@ -7,6 +7,9 @@ import org.openapitools.model.BookStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
+import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.List;
 
@@ -20,6 +23,12 @@ class BookRepositoryTest {
 
     @Autowired
     private TestEntityManager testEntityManager;
+
+    @MockBean
+    SecurityFilterChain securityFilterChain;
+
+    @MockBean
+    OpaqueTokenIntrospector opaqueTokenIntrospector;
 
     private Long bookId;
 
