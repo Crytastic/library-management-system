@@ -25,8 +25,8 @@ public class App {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(x -> x
-                        .requestMatchers(HttpMethod.GET, "/api/books").hasAuthority("SCOPE_book_read")
-                        .requestMatchers(HttpMethod.POST, "/api/books").hasAuthority("SCOPE_book_write")
+                        .requestMatchers(HttpMethod.GET, "/api/books").hasAuthority("SCOPE_test_read")
+                        .requestMatchers(HttpMethod.POST, "/api/books").hasAuthority("SCOPE_test_write")
                         .anyRequest().permitAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.opaqueToken(Customizer.withDefaults()))
@@ -46,12 +46,8 @@ public class App {
                                                 .authorizationUrl("https://oidc.muni.cz/oidc/authorize")
                                                 .tokenUrl("https://oidc.muni.cz/oidc/token")
                                                 .scopes(new Scopes()
-                                                        .addString("book_read", "reading events")
-                                                        .addString("book_write", "creating events")
-                                                        .addString("test_1", "Nothing")
-                                                        .addString("test_2", "Nothing")
-                                                        .addString("test_read", "Nothing")
-                                                        .addString("test_write", "Nothing")
+                                                        .addString("test_read", "reading events")
+                                                        .addString("test_write", "creating events")
                                                 )
                                         )
                                 )

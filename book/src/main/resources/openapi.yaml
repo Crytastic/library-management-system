@@ -26,18 +26,6 @@ components:
         description: { type: string, description: "Description of the book", example: "It is *** hard" }
         status:
           $ref: '#/components/schemas/BookStatus'
-  securitySchemes:
-    MUNI:
-      type: oauth2
-      description: get access token with OAuth 2 Authorization Code Grant
-      flows:
-        authorizationCode:
-          authorizationUrl: https://oidc.muni.cz/oidc/authorize
-          tokenUrl: https://oidc.muni.cz/oidc/token
-          scopes:
-            book_read: reading events
-            book_write: creating events
-            test_1: Nothing
 
 paths:
   /api/books:
@@ -45,9 +33,6 @@ paths:
       tags:
         - Book
       summary: Returns all books that match provided filter
-      security:
-        - MUNI:
-            - read_book
       operationId: getBooks
       parameters:
         - in: query
@@ -88,9 +73,6 @@ paths:
       tags:
         - Book
       summary: Creates new book
-      security:
-        - MUNI:
-            - write_book
       operationId: createBook
       parameters:
         - { name: title, in: query, required: true, schema: { type: string }, description: "Title of book" }

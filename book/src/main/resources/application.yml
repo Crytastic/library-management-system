@@ -1,0 +1,45 @@
+server:
+  port: 8090
+  error:
+    include-message: always
+
+spring:
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+
+  datasource:
+    url: jdbc:h2:mem:library-management-system;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: book-service-datasource
+    password: $argon2id$v=19$m=16,t=2,p=1$YmF0bWFuYmF0bWFu$MdHYB359HdivAb9J6CaILw
+
+  mvc:
+    log-request-details: true
+  security:
+    oauth2:
+      resourceserver:
+        opaque-token:
+          introspection-uri: https://oidc.muni.cz/oidc/introspect
+          # Martin Kuba's testing resource server
+          client-id: d57b3a8f-156e-46de-9f27-39c4daee05e1
+          client-secret: fa228ebc-4d54-4cda-901e-4d6287f8b1652a9c9c44-73c9-4502-973f-bcdb4a8ec96a
+
+springdoc:
+  #api-docs:
+    #path: ./openapi
+  swagger-ui:
+    #path: /index.html
+    oauth:
+      # Martin Kuba's testing client
+      client-id: 7e02a0a9-446a-412d-ad2b-90add47b0fdd
+      client-secret: 48a2b2e3-4b2b-471e-b7b7-b81a85b6eeef22f347f2-3fc9-4e16-8698-3e2492701a89
+      scopes:
+        - test_read
+        - test_write
+        - test_1
+        - test_2
+        - test_3
+        - test_4
+        - test_5
