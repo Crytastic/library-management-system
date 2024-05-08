@@ -133,7 +133,7 @@ more setup:
 2) Use credentials `admin` and `admin` for a temporary account. You can change your password later.
 3) Click "Add a dataset", choose Prometheus and fill out URL (`http://prometheus:9090`). You can leave everything else
    blank.
-4) Import a dashboard. Use the preconfigured [grafana.json](/grafana.json) and make sure to select the newly created
+4) Import a dashboard. Use the preconfigured [grafana.json](./grafana.json) and make sure to select the newly created
    Prometheus dataset.
 
 ## Diagrams
