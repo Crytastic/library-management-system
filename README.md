@@ -16,10 +16,10 @@ this limit is not kept, there is a fine set during the borrowing process for eac
 To run the microservices, you first need to install dependencies:
 ```mvn clean install```
 
-Then you can either run each microservice as standalone executable module from inside their respective path
+Then you can run the entire system once via: ```podman-compose up -d``` or ```docker-compose up -d```
+
+Alternatively, each microservice can be run as standalone executable module from inside their respective
 directories: ```mvn spring-boot:run```
-or
-Run all microservices at once via containerization: ```podman-compose up -d``` / ```docker-compose up -d```
 
 ### Borrowing Microservice
 
@@ -46,7 +46,7 @@ on [http://localhost:8080/swagger-ui/index.html#](http://localhost:8080/swagger-
 #### Implementation details
 
 BorrowingDTO class is generated via OpenAPI. Refer to [OpenAPI documentation](https://swagger.io/specification/) and
-borrowing's respective [openapi config file](/borrowing/src/main/resources/openapi.yaml).
+borrowing's respective [openapi config file](./borrowing/src/main/resources/openapi.yaml).
 
 ### Reservation Microservice
 
@@ -70,7 +70,7 @@ on [http://localhost:8081/swagger-ui/index.html#](http://localhost:8081/swagger-
 #### Implementation details
 
 ReservationDTO class is generated via OpenAPI. Refer to [OpenAPI documentation](https://swagger.io/specification/) and
-reservation's respective [openapi config file](/reservation/src/main/resources/openapi.yaml).
+reservation's respective [openapi config file](./reservation/src/main/resources/openapi.yaml).
 
 ### User Microservice
 
@@ -93,7 +93,7 @@ on [http://localhost:8082/swagger-ui/index.html#](http://localhost:8082/swagger-
 #### Implementation details
 
 UserDTO class is generated via OpenAPI. Refer to [OpenAPI documentation](https://swagger.io/specification/) and users's
-respective [openapi config file](/user/src/main/resources/openapi.yaml).
+respective [openapi config file](./user/src/main/resources/openapi.yaml).
 
 ### Book Microservice
 
@@ -117,7 +117,24 @@ on [http://localhost:8083/swagger-ui/index.html#](http://localhost:8083/swagger-
 #### Implementation details
 
 BookDTO class is generated via OpenAPI. Refer to [OpenAPI documentation](https://swagger.io/specification/) and
-book's respective [openapi config file](/book/src/main/resources/openapi.yaml).
+book's respective [openapi config file](./book/src/main/resources/openapi.yaml).
+
+## Observability
+
+If you've run the services via docker, two other endpoints will be available to observe the system:
+
+- Prometheus at http://localhost:9090/
+- Grafana at http://localhost:3000/
+
+Prometheus will be working out-of-the box. For a more user-friendly experience use Grafana. This will require a little
+more setup:
+
+1) Open up http://localhost:3000/
+2) Use credentials `admin` and `admin` for a temporary account. You can change your password later.
+3) Click "Add a dataset", choose Prometheus and fill out URL (`http://prometheus:9090`). You can leave everything else
+   blank.
+4) Import a dashboard. Use the preconfigured [grafana.json](./grafana.json) and make sure to select the newly created
+   Prometheus dataset.
 
 ## Diagrams
 

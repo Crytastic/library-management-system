@@ -28,6 +28,7 @@ public class InsertInitialDataService {
         borrowingRepository.save(bookId7BorrowedById3());
         borrowingRepository.save(bookId9BorrowedById4());
     }
+
     private Borrowing bookId2BorrowedById5() {
         Long bookId = 2L;
         Long borrowerId = 5L;
