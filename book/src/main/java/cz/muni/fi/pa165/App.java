@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.context.ServletWebServerInitializedEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -37,6 +38,13 @@ public class App {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(x -> x
+                        .requestMatchers(HttpMethod.GET, "/api/books").hasAuthority("SCOPE_test_read")
+                        .requestMatchers(HttpMethod.POST, "/api/books").hasAuthority("SCOPE_test_write")
+                        .requestMatchers(HttpMethod.DELETE, "/api/books").hasAuthority("SCOPE_test_1")
+                        .requestMatchers(HttpMethod.GET, "/api/books/{id}").hasAuthority("SCOPE_test_read")
+                        .requestMatchers(HttpMethod.DELETE, "/api/books/{id}").hasAuthority("SCOPE_test_1")
+                        .requestMatchers(HttpMethod.PATCH, "/api/books/{id}").hasAuthority("SCOPE_test_write")
+                        .requestMatchers(HttpMethod.GET, "/api/books/{id}/borrowings").hasAuthority("SCOPE_test_read")
                         .anyRequest().permitAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.opaqueToken(Customizer.withDefaults()))
