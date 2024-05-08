@@ -1,4 +1,4 @@
-package cz.muni.fi.pa165.config;
+package cz.muni.fi.pa165.security;
 
 import io.swagger.v3.oas.models.security.OAuthFlow;
 import io.swagger.v3.oas.models.security.OAuthFlows;
