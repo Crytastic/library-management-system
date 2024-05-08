@@ -46,7 +46,7 @@ on [http://localhost:8080/swagger-ui/index.html#](http://localhost:8080/swagger-
 #### Implementation details
 
 BorrowingDTO class is generated via OpenAPI. Refer to [OpenAPI documentation](https://swagger.io/specification/) and
-borrowing's respective [openapi config file](/borrowing/src/main/resources/openapi.yaml).
+borrowing's respective [openapi config file](./borrowing/src/main/resources/openapi.yaml).
 
 ### Reservation Microservice
 
@@ -70,7 +70,7 @@ on [http://localhost:8081/swagger-ui/index.html#](http://localhost:8081/swagger-
 #### Implementation details
 
 ReservationDTO class is generated via OpenAPI. Refer to [OpenAPI documentation](https://swagger.io/specification/) and
-reservation's respective [openapi config file](/reservation/src/main/resources/openapi.yaml).
+reservation's respective [openapi config file](./reservation/src/main/resources/openapi.yaml).
 
 ### User Microservice
 
@@ -93,7 +93,7 @@ on [http://localhost:8082/swagger-ui/index.html#](http://localhost:8082/swagger-
 #### Implementation details
 
 UserDTO class is generated via OpenAPI. Refer to [OpenAPI documentation](https://swagger.io/specification/) and users's
-respective [openapi config file](/user/src/main/resources/openapi.yaml).
+respective [openapi config file](./user/src/main/resources/openapi.yaml).
 
 ### Book Microservice
 
@@ -117,7 +117,7 @@ on [http://localhost:8083/swagger-ui/index.html#](http://localhost:8083/swagger-
 #### Implementation details
 
 BookDTO class is generated via OpenAPI. Refer to [OpenAPI documentation](https://swagger.io/specification/) and
-book's respective [openapi config file](/book/src/main/resources/openapi.yaml).
+book's respective [openapi config file](./book/src/main/resources/openapi.yaml).
 
 ## Observability
 
