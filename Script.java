@@ -4,11 +4,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.lang.String.format;
 
 public class Script {
     public static void main(String[] args) {
@@ -29,6 +33,57 @@ public class Script {
         System.out.println("Get rid off borrowed books.");
         removeBorrowedBooks(wantedBooks);
         System.out.println("Founded books except borrowed books: " + String.join(", ", wantedBooks.values()));
+
+        System.out.println("If exists at least one available book, borrow it.");
+        if (!wantedBooks.isEmpty()) {
+            String userId = user.get("id").toString().replace('\"', ' ').strip();
+            JsonNode borrowing = borrowFirstBook(wantedBooks, userId);
+            String bookId = borrowing.get("bookId").toString().replace('\"', ' ').strip();
+            String title = getTitleOfBorrowedBook(bookId);
+            System.out.println("Book with title " + title + " borrowed.");
+        }
+        System.out.println("Available books after borrowing: " + String.join(", ", wantedBooks.values()));
+    }
+
+    private static String getTitleOfBorrowedBook(String bookId) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> bookResponse = restTemplate.exchange(
+                format("http://localhost:8083/api/books/%s", bookId),
+                HttpMethod.GET,
+                null,
+                String.class
+        );
+
+        ObjectMapper om = new ObjectMapper();
+        String title = null;
+        try {
+            JsonNode book = om.readTree(bookResponse.getBody());
+            title = book.get("title").toString().replace('\"', ' ').strip();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return title;
+    }
+
+    private static JsonNode borrowFirstBook(Map<String, String> wantedBooks, String userId) {
+        String firstBookId = wantedBooks.keySet().iterator().next();
+        wantedBooks.remove(firstBookId);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> borrowingResponse = restTemplate.exchange(
+                format("http://localhost:8080/api/borrowings?bookId=%s&borrowerId=%s", firstBookId, userId),
+                HttpMethod.POST,
+                null,
+                String.class
+        );
+
+        ObjectMapper om = new ObjectMapper();
+        JsonNode borrowing = null;
+        try {
+            borrowing = om.readTree(borrowingResponse.getBody());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return borrowing;
     }
 
     private static void removeBorrowedBooks(Map<String, String> wantedBooks) {
@@ -84,7 +139,7 @@ public class Script {
     private static Map<String, String> findAllBooksByAuthor(String wantedAuthor) {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> booksResponse = restTemplate.exchange(
-                String.format("http://localhost:8083/api/books?author=%s", wantedAuthor),
+                format("http://localhost:8083/api/books?author=%s", wantedAuthor),
                 HttpMethod.GET,
                 null,
                 String.class
@@ -106,7 +161,7 @@ public class Script {
     }
 
     private static JsonNode createMemberUser() {
-        String username = "Danko";
+        String username = "Danko100";
         String password = "DeniskaMach9";
         String address = "Bohunice 450/6";
         LocalDate birthDate = LocalDate.of(1999, 9, 3);
@@ -114,7 +169,7 @@ public class Script {
         RestTemplate restTemplate = new RestTemplate();
 
         ResponseEntity<String> userResponse = restTemplate.exchange(
-                String.format("http://localhost:8082/api/users?username=%s&password=%s&address=%s&birthDate=%s&userType=%s",
+                format("http://localhost:8082/api/users?username=%s&password=%s&address=%s&birthDate=%s&userType=%s",
                         username, password, address, birthDate, userType),
                 HttpMethod.POST,
                 null,
