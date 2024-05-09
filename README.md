@@ -42,6 +42,7 @@ on [http://localhost:8080/swagger-ui/index.html#](http://localhost:8080/swagger-
 - **PATCH /api/borrowings/{id}:** Update an existing borrowing.
 - **DELETE /api/borrowings/{id}:** Delete a borrowing by its ID.
 - **GET /api/borrowings/{id}/fine:** Retrieve the fine associated with a borrowing by its ID.
+- **GET /api/activeBorrowings:** Retrieve all active borrowings.
 
 #### Implementation details
 
@@ -135,6 +136,19 @@ more setup:
    blank.
 4) Import a dashboard. Use the preconfigured [grafana.json](./grafana.json) and make sure to select the newly created
    Prometheus dataset.
+
+## Showcase
+
+User comes to the library. He wants to borrow maybe reserve some book. His goal is find some book from his favourite 
+author. He is new, he already has no account in the library. 
+
+- User creates an account as a new library member (notice that username must be unique).
+- User finds all book from his favourite author.
+- User needs to filter out every reserved and borrowed books from his favourite author.
+- User borrows one book if it is available.
+- User is controlled by a system if he is an adult, otherwise he cannot borrow the book by himself.
+- User checks that he does not pay any fine for his new borrowing.
+- User tries to reserve other book from his favourite author.
 
 ## Diagrams
 
