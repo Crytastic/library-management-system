@@ -14,10 +14,11 @@ import java.util.Map;
 
 import static java.lang.String.format;
 
+//For multiple executing the script do not forget to change name of user, otherwise exception will be thrown.
 public class Script {
     public static void main(String[] args) {
         System.out.println("New user creates an member account.");
-        String name = "NovyUser998";
+        String name = "Denisa Machova";
         String password = "DeniskaMach9";
         JsonNode user = createMemberUser(name, password);
         String username = user.get("username").toString().replace('\"', ' ').strip();
