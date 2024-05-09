@@ -40,7 +40,7 @@ public class Script {
                 System.out.println("The user is adult.");
                 JsonNode borrowing = borrowFirstBook(wantedBooks, userId);
                 String bookId = borrowing.get("bookId").toString().replace('\"', ' ').strip();
-                String title = getTitleOfBorrowedBook(bookId);
+                String title = getTitleOfBook(bookId);
                 System.out.println("Book with title " + title + " borrowed.");
 
                 System.out.println("Show the actual fine for user " + username +
@@ -53,6 +53,36 @@ public class Script {
             }
         }
         System.out.println("Available books after borrowing: " + String.join(", ", wantedBooks.values()));
+
+        System.out.println("Now, if still exists at least one available book, reserve it.");
+        if (!wantedBooks.isEmpty()) {
+            JsonNode reservation = reserveFirstBook(wantedBooks, userId);
+            String bookId = reservation.get("bookId").toString().replace('\"', ' ').strip();
+            String title = getTitleOfBook(bookId);
+            System.out.println("Book with title " + title + " reserved.");
+        }
+    }
+
+
+    private static JsonNode reserveFirstBook(Map<String, String> wantedBooks, String userId) {
+        String firstBookId = wantedBooks.keySet().iterator().next();
+        wantedBooks.remove(firstBookId);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> reservationResponse = restTemplate.exchange(
+                format("http://localhost:8081/api/reservations?bookId=%s&reserveeId=%s", firstBookId, userId),
+                HttpMethod.POST,
+                null,
+                String.class
+        );
+
+        ObjectMapper om = new ObjectMapper();
+        JsonNode reservation = null;
+        try {
+            reservation = om.readTree(reservationResponse.getBody());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return reservation;
     }
 
     private static String getFineForBorrowing(String borrowingId) {
@@ -99,7 +129,7 @@ public class Script {
         return adultUsersIds.contains(userId);
     }
 
-    private static String getTitleOfBorrowedBook(String bookId) {
+    private static String getTitleOfBook(String bookId) {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> bookResponse = restTemplate.exchange(
                 format("http://localhost:8083/api/books/%s", bookId),
@@ -215,7 +245,7 @@ public class Script {
     }
 
     private static JsonNode createMemberUser() {
-        String username = "NovyUser";
+        String username = "NovyUser7";
         String password = "DeniskaMach9";
         String address = "Bohunice 450/6";
         LocalDate birthDate = LocalDate.of(1999, 9, 3);
