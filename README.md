@@ -101,8 +101,8 @@ respective [openapi config file](./user/src/main/resources/openapi.yaml).
 
 The Book microservice allows users to retrieve, create, delete, and update books. It also provides some additional
 functionality, such as enumerating borrowings of a specific book. It's accessible
-at [http://localhost:8090](http://localhost:8090). Also, via GUI
-on [http://localhost:8090/swagger-ui/index.html#](http://localhost:8090/swagger-ui/index.html#).
+at [http://localhost:8083](http://localhost:8083). Also, via GUI
+on [http://localhost:8083/swagger-ui/index.html#](http://localhost:8083/swagger-ui/index.html#).
 
 #### Endpoints
 

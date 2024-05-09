@@ -4,7 +4,7 @@ info:
   description: Book microservice of library management system that provides operations on books
   version: 1.0.0
 servers:
-  - url: 'http://localhost:8090'
+  - url: 'http://localhost:8083'
 tags:
   - name: Book
 
