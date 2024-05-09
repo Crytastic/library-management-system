@@ -4,9 +4,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,14 +33,43 @@ public class Script {
         System.out.println("Founded books except borrowed books: " + String.join(", ", wantedBooks.values()));
 
         System.out.println("If exists at least one available book, borrow it.");
+        String userId = user.get("id").toString().replace('\"', ' ').strip();
         if (!wantedBooks.isEmpty()) {
-            String userId = user.get("id").toString().replace('\"', ' ').strip();
-            JsonNode borrowing = borrowFirstBook(wantedBooks, userId);
-            String bookId = borrowing.get("bookId").toString().replace('\"', ' ').strip();
-            String title = getTitleOfBorrowedBook(bookId);
-            System.out.println("Book with title " + title + " borrowed.");
+            System.out.println("Check if the user is adult and can borrow book by himself.");
+            if (userIsAdult(userId)) {
+                System.out.println("The user is adult.");
+                JsonNode borrowing = borrowFirstBook(wantedBooks, userId);
+                String bookId = borrowing.get("bookId").toString().replace('\"', ' ').strip();
+                String title = getTitleOfBorrowedBook(bookId);
+                System.out.println("Book with title " + title + " borrowed.");
+            } else {
+                System.out.println("The user is not adult so he cannot borrow a book by himself.");
+            }
         }
         System.out.println("Available books after borrowing: " + String.join(", ", wantedBooks.values()));
+    }
+
+    private static boolean userIsAdult(String userId) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> adultUsersResponse = restTemplate.exchange(
+                "http://localhost:8082/api/users/adults",
+                HttpMethod.GET,
+                null,
+                String.class
+        );
+
+        ObjectMapper om = new ObjectMapper();
+        List<String> adultUsersIds = new ArrayList<>();
+        try {
+            JsonNode adultUserInfo = om.readTree(adultUsersResponse.getBody());
+            for (JsonNode jsonNode : adultUserInfo) {
+                adultUsersIds.add(jsonNode.get("id").toString().replace('\"', ' ').strip());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return adultUsersIds.contains(userId);
     }
 
     private static String getTitleOfBorrowedBook(String bookId) {
@@ -161,7 +188,7 @@ public class Script {
     }
 
     private static JsonNode createMemberUser() {
-        String username = "Danko100";
+        String username = "Danko888";
         String password = "DeniskaMach9";
         String address = "Bohunice 450/6";
         LocalDate birthDate = LocalDate.of(1999, 9, 3);
