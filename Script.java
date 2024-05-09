@@ -42,11 +42,38 @@ public class Script {
                 String bookId = borrowing.get("bookId").toString().replace('\"', ' ').strip();
                 String title = getTitleOfBorrowedBook(bookId);
                 System.out.println("Book with title " + title + " borrowed.");
+
+                System.out.println("Show the actual fine for user " + username +
+                        " on book with title " + title + ". (0€ is expected)");
+                String borrowingId = borrowing.get("id").toString().replace('\"', ' ').strip();
+                String fine = getFineForBorrowing(borrowingId);
+                System.out.println("The actual fine for book " + title + " is " + fine + "€.");
             } else {
                 System.out.println("The user is not adult so he cannot borrow a book by himself.");
             }
         }
         System.out.println("Available books after borrowing: " + String.join(", ", wantedBooks.values()));
+    }
+
+    private static String getFineForBorrowing(String borrowingId) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> borrowingResponse = restTemplate.exchange(
+                format("http://localhost:8080/api/borrowings/%s/fine", borrowingId),
+                HttpMethod.GET,
+                null,
+                String.class
+        );
+
+        ObjectMapper om = new ObjectMapper();
+        String fine = null;
+        try {
+            JsonNode fineInfo = om.readTree(borrowingResponse.getBody());
+            fine = fineInfo.toString();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return fine;
     }
 
     private static boolean userIsAdult(String userId) {
@@ -188,7 +215,7 @@ public class Script {
     }
 
     private static JsonNode createMemberUser() {
-        String username = "Danko888";
+        String username = "NovyUser";
         String password = "DeniskaMach9";
         String address = "Bohunice 450/6";
         LocalDate birthDate = LocalDate.of(1999, 9, 3);
