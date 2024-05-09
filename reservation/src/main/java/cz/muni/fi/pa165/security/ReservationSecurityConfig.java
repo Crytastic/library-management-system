@@ -26,13 +26,12 @@ public class ReservationSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/api/reservations/**").hasAuthority("SCOPE_read")
-                        .requestMatchers(HttpMethod.DELETE, "/api/reservations/**").hasAuthority("SCOPE_test1")
-                        .requestMatchers(HttpMethod.PATCH, "/api/reservations/**").hasAuthority("SCOPE_write")
-                        .requestMatchers(HttpMethod.POST, "/api/reservations/**").hasAuthority("SCOPE_write")
+                        .requestMatchers(HttpMethod.GET, "/api/reservations/**").hasAuthority("SCOPE_test_read")
+                        .requestMatchers(HttpMethod.DELETE, "/api/reservations/**").hasAuthority("SCOPE_test_1")
+                        .requestMatchers(HttpMethod.PATCH, "/api/reservations/**").hasAuthority("SCOPE_test_write")
+                        .requestMatchers(HttpMethod.POST, "/api/reservations/**").hasAuthority("SCOPE_test_write")
                         .anyRequest().permitAll())
                 .oauth2ResourceServer(oauth2 -> oauth2.opaqueToken(Customizer.withDefaults()));
-
         return http.build();
     }
 }
