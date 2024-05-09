@@ -25,10 +25,13 @@ public class UserSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("SCOPE_read")
-                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasAuthority("SCOPE_test1")
-                        .requestMatchers(HttpMethod.PATCH, "/api/users/**").hasAuthority("SCOPE_write")
-                        .requestMatchers(HttpMethod.POST, "/api/users/**").hasAuthority("SCOPE_write")
+                        .requestMatchers(HttpMethod.GET, "/api/users").hasAuthority("SCOPE_test_read")
+                        .requestMatchers(HttpMethod.DELETE, "/api/users").hasAuthority("SCOPE_test_1")
+                        .requestMatchers(HttpMethod.POST, "/api/users").hasAuthority("SCOPE_test_write")
+                        .requestMatchers(HttpMethod.GET, "/api/users/{id}").hasAuthority("SCOPE_test_read")
+                        .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").hasAuthority("SCOPE_test_1")
+                        .requestMatchers(HttpMethod.PATCH, "/api/users/{id}").hasAuthority("SCOPE_test_write")
+                        .requestMatchers(HttpMethod.GET, "/api/users/adults").hasAuthority("SCOPE_test_read")
                         .anyRequest().permitAll())
                 .oauth2ResourceServer(oauth2 -> oauth2.opaqueToken(Customizer.withDefaults()));
         return http.build();
