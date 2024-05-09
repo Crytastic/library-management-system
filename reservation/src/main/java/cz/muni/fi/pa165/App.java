@@ -10,7 +10,6 @@ import org.springframework.context.event.EventListener;
 @SpringBootApplication
 public class App {
 
-
     private static final Logger log = LoggerFactory.getLogger(App.class);
     
     @EventListener
