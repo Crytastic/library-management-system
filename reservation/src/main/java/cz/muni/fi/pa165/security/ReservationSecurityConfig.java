@@ -32,7 +32,6 @@ public class ReservationSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/reservations/**").hasAuthority("SCOPE_write")
                         .anyRequest().permitAll())
                 .oauth2ResourceServer(oauth2 -> oauth2.opaqueToken(Customizer.withDefaults()));
-
         return http.build();
     }
 }
