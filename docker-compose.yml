@@ -23,7 +23,7 @@ services:
       context: ./book
       dockerfile: Dockerfile
     ports:
-      - "8083:8083"
+      - "8090:8090"
   prometheus:
     image: prom/prometheus:v2.43.0
     ports:
