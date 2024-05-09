@@ -1,5 +1,7 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -15,7 +17,9 @@ import static java.lang.String.format;
 public class Script {
     public static void main(String[] args) {
         System.out.println("New user creates an member account.");
-        JsonNode user = createMemberUser();
+        String name = "NovyUser998";
+        String password = "DeniskaMach9";
+        JsonNode user = createMemberUser(name, password);
         String username = user.get("username").toString().replace('\"', ' ').strip();
         System.out.println("Account with username " + username + " created.");
 
@@ -71,7 +75,7 @@ public class Script {
         ResponseEntity<String> reservationResponse = restTemplate.exchange(
                 format("http://localhost:8081/api/reservations?bookId=%s&reserveeId=%s", firstBookId, userId),
                 HttpMethod.POST,
-                null,
+                createRequestEntity(),
                 String.class
         );
 
@@ -90,7 +94,7 @@ public class Script {
         ResponseEntity<String> borrowingResponse = restTemplate.exchange(
                 format("http://localhost:8080/api/borrowings/%s/fine", borrowingId),
                 HttpMethod.GET,
-                null,
+                createRequestEntity(),
                 String.class
         );
 
@@ -111,7 +115,7 @@ public class Script {
         ResponseEntity<String> adultUsersResponse = restTemplate.exchange(
                 "http://localhost:8082/api/users/adults",
                 HttpMethod.GET,
-                null,
+                createRequestEntity(),
                 String.class
         );
 
@@ -134,7 +138,7 @@ public class Script {
         ResponseEntity<String> bookResponse = restTemplate.exchange(
                 format("http://localhost:8083/api/books/%s", bookId),
                 HttpMethod.GET,
-                null,
+                createRequestEntity(),
                 String.class
         );
 
@@ -156,7 +160,7 @@ public class Script {
         ResponseEntity<String> borrowingResponse = restTemplate.exchange(
                 format("http://localhost:8080/api/borrowings?bookId=%s&borrowerId=%s", firstBookId, userId),
                 HttpMethod.POST,
-                null,
+                createRequestEntity(),
                 String.class
         );
 
@@ -175,7 +179,7 @@ public class Script {
         ResponseEntity<String> borrowingResponse = restTemplate.exchange(
                 "http://localhost:8080/api/activeBorrowings",
                 HttpMethod.GET,
-                null,
+                createRequestEntity(),
                 String.class
         );
 
@@ -200,7 +204,7 @@ public class Script {
         ResponseEntity<String> reservationResponse = restTemplate.exchange(
                 "http://localhost:8081/api/reservations/active",
                 HttpMethod.GET,
-                null,
+                createRequestEntity(),
                 String.class
         );
 
@@ -225,7 +229,7 @@ public class Script {
         ResponseEntity<String> booksResponse = restTemplate.exchange(
                 format("http://localhost:8083/api/books?author=%s", wantedAuthor),
                 HttpMethod.GET,
-                null,
+                createRequestEntity(),
                 String.class
         );
 
@@ -244,19 +248,17 @@ public class Script {
         return books;
     }
 
-    private static JsonNode createMemberUser() {
-        String username = "NovyUser7";
-        String password = "DeniskaMach9";
+    private static JsonNode createMemberUser(String username, String password) {
         String address = "Bohunice 450/6";
         LocalDate birthDate = LocalDate.of(1999, 9, 3);
         String userType = "MEMBER";
-        RestTemplate restTemplate = new RestTemplate();
 
+        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> userResponse = restTemplate.exchange(
                 format("http://localhost:8082/api/users?username=%s&password=%s&address=%s&birthDate=%s&userType=%s",
                         username, password, address, birthDate, userType),
                 HttpMethod.POST,
-                null,
+                createRequestEntity(),
                 String.class
         );
 
@@ -269,5 +271,11 @@ public class Script {
             System.out.println(e.getMessage());
         }
         return userInfo;
+    }
+
+    private static HttpEntity<String> createRequestEntity() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json");
+        return new HttpEntity<>(headers);
     }
 }
