@@ -22,5 +22,3 @@ paths:
           description: OK - see content for the bearer token
         '401':
           description: Unauthorized - access token not provided or not valid
-        '403':
-          description: Forbidden - access token does not have scope test_read

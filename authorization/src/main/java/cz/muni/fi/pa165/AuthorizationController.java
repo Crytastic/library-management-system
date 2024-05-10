@@ -11,13 +11,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
  * @author Martin Kuba
- *
- * Take from seminar-security
+ * Taken from seminar-security
  */
 @RestController
 @RequestMapping(path = "/api", produces = MediaType.TEXT_PLAIN_VALUE)
@@ -32,7 +34,6 @@ public class AuthorizationController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK - see content for the bearer token"),
                     @ApiResponse(responseCode = "401", description = "Unauthorized - access token not provided or not valid", content = @Content()),
-                    @ApiResponse(responseCode = "403", description = "Forbidden - access token does not have scope test_read", content = @Content()),
             }
     )
     @ResponseStatus(code = HttpStatus.OK)
