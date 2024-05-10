@@ -1,11 +1,13 @@
 package cz.muni.fi.pa165.showcase;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
@@ -17,67 +19,86 @@ import static java.lang.String.format;
 public class Script {
 
     private static String token;
+
     public static void main(String[] args) {
         if (args.length < 1) {
-            System.out.println("Access token was not provided. Try: 'java -jar /path/to/script/jar.jar <token>'" );
+            System.out.println("Access token was not provided. Try: 'java -jar /path/to/script/jar.jar <token>'");
             return;
         }
 
         token = args[0];
 
-        System.out.println("New user creates an member account.");
-        String name = "Denisa Machova_" + generateRandomDigitSequence(5);
-        String password = "DeniskaMach9";
-        JsonNode user = createMemberUser(name, password);
-        String username = user.get("username").toString().replace('\"', ' ').strip();
-        System.out.println("Account with username " + username + " created.");
+        try {
+            System.out.println("New user creates an member account.");
+            String name = "Denisa Machova_" + generateRandomDigitSequence(5);
+            String password = "DeniskaMach9";
+            JsonNode user = createMemberUser(name, password);
+            String username = user.get("username").toString().replace('\"', ' ').strip();
+            System.out.println("Account with username " + username + " created.");
 
-        String wantedAuthor = "Dan Brown";
-        System.out.println("User wants to find all books from " + wantedAuthor + ".");
-        Map<String, String> wantedBooks = findAllBooksByAuthor(wantedAuthor);
-        System.out.println("Founded books by " + wantedAuthor + ": " + String.join(", ", wantedBooks.values()));
+            String wantedAuthor = "Dan Brown";
+            System.out.println("User wants to find all books from " + wantedAuthor + ".");
+            Map<String, String> wantedBooks = findAllBooksByAuthor(wantedAuthor);
+            System.out.println("Founded books by " + wantedAuthor + ": " + String.join(", ", wantedBooks.values()));
 
-        System.out.println("Get rid off reserved books.");
-        removeReservedBooks(wantedBooks);
-        System.out.println("Founded books except reserved books: " + String.join(", ", wantedBooks.values()));
+            System.out.println("Get rid off reserved books.");
+            removeReservedBooks(wantedBooks);
+            System.out.println("Founded books except reserved books: " + String.join(", ", wantedBooks.values()));
 
-        System.out.println("Get rid off borrowed books.");
-        removeBorrowedBooks(wantedBooks);
-        System.out.println("Founded books except borrowed books: " + String.join(", ", wantedBooks.values()));
+            System.out.println("Get rid off borrowed books.");
+            removeBorrowedBooks(wantedBooks);
+            System.out.println("Founded books except borrowed books: " + String.join(", ", wantedBooks.values()));
 
-        System.out.println("If exists at least one available book, borrow it.");
-        String userId = user.get("id").toString().replace('\"', ' ').strip();
-        if (!wantedBooks.isEmpty()) {
-            System.out.println("Check if the user is adult and can borrow book by himself.");
-            if (userIsAdult(userId)) {
-                System.out.println("The user is adult.");
-                JsonNode borrowing = borrowFirstBook(wantedBooks, userId);
-                String bookId = borrowing.get("bookId").toString().replace('\"', ' ').strip();
-                String title = getTitleOfBook(bookId);
-                System.out.println("Book with title " + title + " borrowed.");
+            System.out.println("If exists at least one available book, borrow it.");
+            String userId = user.get("id").toString().replace('\"', ' ').strip();
+            if (!wantedBooks.isEmpty()) {
+                System.out.println("Check if the user is adult and can borrow book by himself.");
+                if (userIsAdult(userId)) {
+                    System.out.println("The user is adult.");
+                    JsonNode borrowing = borrowFirstBook(wantedBooks, userId);
+                    String bookId = borrowing.get("bookId").toString().replace('\"', ' ').strip();
+                    String title = getTitleOfBook(bookId);
+                    System.out.println("Book with title " + title + " borrowed.");
 
-                System.out.println("Show the actual fine for user " + username +
-                        " on book with title " + title + ". (0€ is expected)");
-                String borrowingId = borrowing.get("id").toString().replace('\"', ' ').strip();
-                String fine = getFineForBorrowing(borrowingId);
-                System.out.println("The actual fine for book " + title + " is " + fine + "€.");
-            } else {
-                System.out.println("The user is not adult so he cannot borrow a book by himself.");
+                    System.out.println("Show the actual fine for user " + username +
+                            " on book with title " + title + ". (0€ is expected)");
+                    String borrowingId = borrowing.get("id").toString().replace('\"', ' ').strip();
+                    String fine = getFineForBorrowing(borrowingId);
+                    System.out.println("The actual fine for book " + title + " is " + fine + "€.");
+                } else {
+                    System.out.println("The user is not adult so he cannot borrow a book by himself.");
+                }
             }
-        }
-        System.out.println("Available books after borrowing: " + String.join(", ", wantedBooks.values()));
+            System.out.println("Available books after borrowing: " + String.join(", ", wantedBooks.values()));
 
-        System.out.println("Now, if still exists at least one available book, reserve it.");
-        if (!wantedBooks.isEmpty()) {
-            JsonNode reservation = reserveFirstBook(wantedBooks, userId);
-            String bookId = reservation.get("bookId").toString().replace('\"', ' ').strip();
-            String title = getTitleOfBook(bookId);
-            System.out.println("Book with title " + title + " reserved.");
+            System.out.println("Now, if still exists at least one available book, reserve it.");
+            if (!wantedBooks.isEmpty()) {
+                JsonNode reservation = reserveFirstBook(wantedBooks, userId);
+                String bookId = reservation.get("bookId").toString().replace('\"', ' ').strip();
+                String title = getTitleOfBook(bookId);
+                System.out.println("Book with title " + title + " reserved.");
+            }
+
+        } catch (HttpClientErrorException.Unauthorized e) {
+            System.out.println("Unauthorized. Token is not valid");
+            System.exit(1);
+
+        } catch (HttpClientErrorException.Forbidden e) {
+            System.out.println("Forbidden. Provided access token does not have enough access rights");
+            System.exit(2);
+
+        } catch (JsonProcessingException e) {
+            System.out.println("Unable to process output");
+            System.exit(3);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.exit(4);
         }
     }
 
 
-    private static JsonNode reserveFirstBook(Map<String, String> wantedBooks, String userId) {
+    private static JsonNode reserveFirstBook(Map<String, String> wantedBooks, String userId) throws JsonProcessingException {
         String firstBookId = wantedBooks.keySet().iterator().next();
         wantedBooks.remove(firstBookId);
         RestTemplate restTemplate = new RestTemplate();
@@ -89,16 +110,11 @@ public class Script {
         );
 
         ObjectMapper om = new ObjectMapper();
-        JsonNode reservation = null;
-        try {
-            reservation = om.readTree(reservationResponse.getBody());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return reservation;
+
+        return om.readTree(reservationResponse.getBody());
     }
 
-    private static String getFineForBorrowing(String borrowingId) {
+    private static String getFineForBorrowing(String borrowingId) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> borrowingResponse = restTemplate.exchange(
                 format("http://localhost:8080/api/borrowings/%s/fine", borrowingId),
@@ -108,18 +124,13 @@ public class Script {
         );
 
         ObjectMapper om = new ObjectMapper();
-        String fine = null;
-        try {
-            JsonNode fineInfo = om.readTree(borrowingResponse.getBody());
-            fine = fineInfo.toString();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
 
-        return fine;
+        JsonNode fineInfo = om.readTree(borrowingResponse.getBody());
+
+        return fineInfo.toString();
     }
 
-    private static boolean userIsAdult(String userId) {
+    private static boolean userIsAdult(String userId) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> adultUsersResponse = restTemplate.exchange(
                 "http://localhost:8082/api/users/adults",
@@ -130,19 +141,16 @@ public class Script {
 
         ObjectMapper om = new ObjectMapper();
         List<String> adultUsersIds = new ArrayList<>();
-        try {
-            JsonNode adultUserInfo = om.readTree(adultUsersResponse.getBody());
-            for (JsonNode jsonNode : adultUserInfo) {
-                adultUsersIds.add(jsonNode.get("id").toString().replace('\"', ' ').strip());
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+
+        JsonNode adultUserInfo = om.readTree(adultUsersResponse.getBody());
+        for (JsonNode jsonNode : adultUserInfo) {
+            adultUsersIds.add(jsonNode.get("id").toString().replace('\"', ' ').strip());
         }
 
         return adultUsersIds.contains(userId);
     }
 
-    private static String getTitleOfBook(String bookId) {
+    private static String getTitleOfBook(String bookId) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> bookResponse = restTemplate.exchange(
                 format("http://localhost:8083/api/books/%s", bookId),
@@ -152,17 +160,13 @@ public class Script {
         );
 
         ObjectMapper om = new ObjectMapper();
-        String title = null;
-        try {
-            JsonNode book = om.readTree(bookResponse.getBody());
-            title = book.get("title").toString().replace('\"', ' ').strip();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return title;
+
+        JsonNode book = om.readTree(bookResponse.getBody());
+
+        return book.get("title").toString().replace('\"', ' ').strip();
     }
 
-    private static JsonNode borrowFirstBook(Map<String, String> wantedBooks, String userId) {
+    private static JsonNode borrowFirstBook(Map<String, String> wantedBooks, String userId) throws JsonProcessingException {
         String firstBookId = wantedBooks.keySet().iterator().next();
         wantedBooks.remove(firstBookId);
         RestTemplate restTemplate = new RestTemplate();
@@ -174,16 +178,11 @@ public class Script {
         );
 
         ObjectMapper om = new ObjectMapper();
-        JsonNode borrowing = null;
-        try {
-            borrowing = om.readTree(borrowingResponse.getBody());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return borrowing;
+
+        return om.readTree(borrowingResponse.getBody());
     }
 
-    private static void removeBorrowedBooks(Map<String, String> wantedBooks) {
+    private static void removeBorrowedBooks(Map<String, String> wantedBooks) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> borrowingResponse = restTemplate.exchange(
                 "http://localhost:8080/api/activeBorrowings",
@@ -194,13 +193,10 @@ public class Script {
 
         ObjectMapper om = new ObjectMapper();
         List<String> borrowedBookIds = new ArrayList<>();
-        try {
-            JsonNode reservationInfo = om.readTree(borrowingResponse.getBody());
-            for (JsonNode jsonNode : reservationInfo) {
-                borrowedBookIds.add(jsonNode.get("bookId").toString().replace('\"', ' ').strip());
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+
+        JsonNode reservationInfo = om.readTree(borrowingResponse.getBody());
+        for (JsonNode jsonNode : reservationInfo) {
+            borrowedBookIds.add(jsonNode.get("bookId").toString().replace('\"', ' ').strip());
         }
 
         for (String reservationsId : borrowedBookIds) {
@@ -208,7 +204,7 @@ public class Script {
         }
     }
 
-    private static void removeReservedBooks(Map<String, String> wantedBooks) {
+    private static void removeReservedBooks(Map<String, String> wantedBooks) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> reservationResponse = restTemplate.exchange(
                 "http://localhost:8081/api/reservations/active",
@@ -219,13 +215,10 @@ public class Script {
 
         ObjectMapper om = new ObjectMapper();
         List<String> reservationBookIds = new ArrayList<>();
-        try {
-            JsonNode reservationInfo = om.readTree(reservationResponse.getBody());
-            for (JsonNode jsonNode : reservationInfo) {
-                reservationBookIds.add(jsonNode.get("bookId").toString().replace('\"', ' ').strip());
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+
+        JsonNode reservationInfo = om.readTree(reservationResponse.getBody());
+        for (JsonNode jsonNode : reservationInfo) {
+            reservationBookIds.add(jsonNode.get("bookId").toString().replace('\"', ' ').strip());
         }
 
         for (String reservationsId : reservationBookIds) {
@@ -233,7 +226,7 @@ public class Script {
         }
     }
 
-    private static Map<String, String> findAllBooksByAuthor(String wantedAuthor) {
+    private static Map<String, String> findAllBooksByAuthor(String wantedAuthor) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> booksResponse = restTemplate.exchange(
                 format("http://localhost:8083/api/books?author=%s", wantedAuthor),
@@ -244,20 +237,17 @@ public class Script {
 
         ObjectMapper om = new ObjectMapper();
         Map<String, String> books = new HashMap<>();
-        try {
-            JsonNode booksInfo = om.readTree(booksResponse.getBody());
-            for (JsonNode jsonNode : booksInfo) {
-                String titleOfBook = jsonNode.get("title").toString().replace('\"', ' ').strip();
-                String idOfBook = jsonNode.get("id").toString().replace('\"', ' ').strip();
-                books.put(idOfBook, titleOfBook);
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        JsonNode booksInfo = om.readTree(booksResponse.getBody());
+        for (JsonNode jsonNode : booksInfo) {
+            String titleOfBook = jsonNode.get("title").toString().replace('\"', ' ').strip();
+            String idOfBook = jsonNode.get("id").toString().replace('\"', ' ').strip();
+            books.put(idOfBook, titleOfBook);
         }
+
         return books;
     }
 
-    private static JsonNode createMemberUser(String username, String password) {
+    private static JsonNode createMemberUser(String username, String password) throws JsonProcessingException {
         String address = "Bohunice 450/6";
         LocalDate birthDate = LocalDate.of(1999, 9, 3);
         String userType = "MEMBER";
@@ -272,14 +262,8 @@ public class Script {
         );
 
         ObjectMapper om = new ObjectMapper();
-        JsonNode userInfo = null;
-        try {
-            userInfo = om.readTree(userResponse.getBody());
 
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return userInfo;
+        return om.readTree(userResponse.getBody());
     }
 
     private static HttpEntity<String> createRequestEntity() {
