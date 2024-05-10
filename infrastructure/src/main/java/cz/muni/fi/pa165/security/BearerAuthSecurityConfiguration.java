@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.security;
 
+
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
@@ -15,5 +16,5 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
         bearerFormat = "JWT",
         scheme = "bearer"
 )
-public class ReservationSecurityConfig extends SecurityConfig {
+public @interface BearerAuthSecurityConfiguration {
 }

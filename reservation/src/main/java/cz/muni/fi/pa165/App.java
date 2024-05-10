@@ -11,7 +11,7 @@ import org.springframework.context.event.EventListener;
 public class App {
 
     private static final Logger log = LoggerFactory.getLogger(App.class);
-    
+
     @EventListener
     public void onApplicationEvent(ServletWebServerInitializedEvent event) {
         log.info("**************************");

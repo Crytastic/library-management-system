@@ -15,5 +15,5 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
         bearerFormat = "JWT",
         scheme = "bearer"
 )
-public class ReservationSecurityConfig extends SecurityConfig {
+public class BookSecurityConfig extends SecurityConfig {
 }

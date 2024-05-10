@@ -20,6 +20,7 @@ public class App {
         log.info("visit http://localhost:{}/openapi.yaml for OpenAPI document", port);
         log.info("**************************");
     }
+
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
     }

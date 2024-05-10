@@ -3,13 +3,8 @@ package cz.muni.fi.pa165.security;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
@@ -20,17 +15,5 @@ import org.springframework.security.web.SecurityFilterChain;
         bearerFormat = "JWT",
         scheme = "bearer"
 )
-public class BorrowingSecurityConfig {
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/api/borrowings/**").hasAuthority("SCOPE_test_read")
-                        .requestMatchers(HttpMethod.DELETE, "/api/borrowings/**").hasAuthority("SCOPE_test_1")
-                        .requestMatchers(HttpMethod.PATCH, "/api/borrowings/**").hasAuthority("SCOPE_test_write")
-                        .requestMatchers(HttpMethod.POST, "/api/borrowings/**").hasAuthority("SCOPE_test_write")
-                        .anyRequest().permitAll())
-                .oauth2ResourceServer(oauth2 -> oauth2.opaqueToken(Customizer.withDefaults()));
-        return http.build();
-    }
+public class BorrowingSecurityConfig extends SecurityConfig {
 }
