@@ -1,3 +1,5 @@
+package cz.muni.fi.pa165.showcase;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpEntity;
