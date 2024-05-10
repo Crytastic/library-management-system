@@ -167,6 +167,7 @@
     <module>borrowing</module>
     <module>user</module>
     <module>infrastructure</module>
+    <module>showcase</module>
   </modules>
 
 </project>
