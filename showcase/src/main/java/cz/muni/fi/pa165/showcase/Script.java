@@ -20,6 +20,15 @@ public class Script {
 
     private static String token;
 
+    private static String banner = """
+            ███████╗██╗  ██╗ ██████╗ ██╗    ██╗ ██████╗ █████╗ ███████╗███████╗
+            ██╔════╝██║  ██║██╔═══██╗██║    ██║██╔════╝██╔══██╗██╔════╝██╔════╝
+            ███████╗███████║██║   ██║██║ █╗ ██║██║     ███████║███████╗█████╗ \s
+            ╚════██║██╔══██║██║   ██║██║███╗██║██║     ██╔══██║╚════██║██╔══╝ \s
+            ███████║██║  ██║╚██████╔╝╚███╔███╔╝╚██████╗██║  ██║███████║███████╗
+            ╚══════╝╚═╝  ╚═╝ ╚═════╝  ╚══╝╚══╝  ╚═════╝╚═╝  ╚═╝╚══════╝╚══════╝
+            """;
+
     public static void main(String[] args) {
         if (args.length < 1) {
             System.out.println("Access token was not provided. Try: 'java -jar /path/to/script/jar.jar <token>'");
@@ -29,6 +38,8 @@ public class Script {
         token = args[0];
 
         try {
+            System.out.println("\n");
+            System.out.println(banner);
             System.out.println("New user creates an member account.");
             String name = "Denisa Machova_" + generateRandomDigitSequence(5);
             String password = "DeniskaMach9";
