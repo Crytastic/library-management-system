@@ -50,4 +50,8 @@ public class BookFacade {
     public List<String> findBookBorrowings(Long id) {
         return bookService.findBookBorrowings(id);
     }
+
+    public void deleteAll() {
+        bookService.deleteAll();
+    }
 }

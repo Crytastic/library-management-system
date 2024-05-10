@@ -1,9 +1,10 @@
 package cz.muni.fi.pa165.rest;
 
 import cz.muni.fi.pa165.facade.ReservationFacade;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.openapitools.api.ReservationApi;
 import org.openapitools.model.ReservationDTO;
-import org.openapitools.model.ReservationTestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,44 +29,54 @@ public class ReservationController implements ReservationApi {
     }
 
     @Override
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ReservationDTO> createReservation(Long bookId, Long reserveeId) {
         return new ResponseEntity<>(reservationFacade.createReservation(bookId, reserveeId), HttpStatus.CREATED);
     }
 
     @Override
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Void> deleteReservation(Long id) {
         reservationFacade.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<ReservationDTO>> getActiveReservations() {
         return new ResponseEntity<>(reservationFacade.findAllActive(), HttpStatus.OK);
     }
 
     @Override
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
+
     public ResponseEntity<List<ReservationDTO>> getExpiredReservations() {
         return new ResponseEntity<>(reservationFacade.findAllExpired(), HttpStatus.OK);
     }
 
     @Override
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ReservationDTO> getReservation(Long id) {
         return new ResponseEntity<>(reservationFacade.findById(id), HttpStatus.OK);
     }
 
     @Override
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<ReservationDTO>> getReservations() {
         return new ResponseEntity<>(reservationFacade.findAll(), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<ReservationTestResponse> test() {
-        return new ResponseEntity<>(new ReservationTestResponse().message("Service running"), HttpStatus.OK);
-    }
-
-    @Override
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Void> updateReservation(Long id, Long bookId, Long reserveeId, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
         reservationFacade.updateById(id, bookId, reserveeId, reservedFrom, reservedTo);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Void> deleteReservations() {
+        reservationFacade.deleteAll();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
