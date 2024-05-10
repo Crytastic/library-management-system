@@ -152,7 +152,7 @@ User comes to the library. He wants to find and borrow book from his favorite au
 #### How to run showcase:
  - Install dependencies: ```mvn clean install``` or ```mvn clean install -DskipTests```
  - Run all microservices: ```podman-compose up -d``` / ```docker-compose up -d```
- - Run Showcase script: ```java -jar .\showcase\target\showcase-0.0.1-SNAPSHOT.jar <token>``` where <token> is valid access token that can be retrieved from the seminar (https://gitlab.fi.muni.cz/pa165/seminar-security).
+ - Run Showcase script: ```java -jar ./showcase/target/showcase-0.0.1-SNAPSHOT.jar <token>``` where <token> is valid access token that can be retrieved from the seminar (https://gitlab.fi.muni.cz/pa165/seminar-security).
 
 ## Diagrams
 
