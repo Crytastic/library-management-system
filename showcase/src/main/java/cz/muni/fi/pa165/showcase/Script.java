@@ -18,9 +18,18 @@ import static java.lang.String.format;
 
 //For multiple executing the script do not forget to change name of user, otherwise exception will be thrown.
 public class Script {
+
+    private static String token;
     public static void main(String[] args) {
+        if (args.length < 1) {
+            System.out.println("Access token was not provided. Try: 'java -jar /path/to/script/jar.jar <token>'" );
+            return;
+        }
+
+        token = args[0];
+
         System.out.println("New user creates an member account.");
-        String name = "Denisa Machova";
+        String name = "Denisa Machova60";
         String password = "DeniskaMach9";
         JsonNode user = createMemberUser(name, password);
         String username = user.get("username").toString().replace('\"', ' ').strip();
@@ -279,6 +288,7 @@ public class Script {
     private static HttpEntity<String> createRequestEntity() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
+        headers.set("Authorization", "Bearer " + token);
         return new HttpEntity<>(headers);
     }
 }
