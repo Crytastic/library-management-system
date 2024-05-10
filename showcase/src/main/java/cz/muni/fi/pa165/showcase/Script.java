@@ -20,7 +20,7 @@ public class Script {
 
     private static String token;
 
-    private static String banner = """
+    private static final String banner = """
             ███████╗██╗  ██╗ ██████╗ ██╗    ██╗ ██████╗ █████╗ ███████╗███████╗
             ██╔════╝██║  ██║██╔═══██╗██║    ██║██╔════╝██╔══██╗██╔════╝██╔════╝
             ███████╗███████║██║   ██║██║ █╗ ██║██║     ███████║███████╗█████╗ \s
@@ -40,55 +40,93 @@ public class Script {
         try {
             System.out.println("\n");
             System.out.println(banner);
-            System.out.println("New user creates an member account.");
+            System.out.println("Not registered user creates an member account:");
             String name = "Denisa Machova_" + generateRandomDigitSequence(5);
             String password = "DeniskaMach9";
             JsonNode user = createMemberUser(name, password);
             String username = user.get("username").toString().replace('\"', ' ').strip();
-            System.out.println("Account with username " + username + " created.");
+            printLoadingDots(2);
+            System.out.println("Account with username '" + username + "' created.");
+            printJsonNodeRecursively(user, "   ");
 
+            System.out.println("\n");
             String wantedAuthor = "Dan Brown";
-            System.out.println("User wants to find all books from " + wantedAuthor + ".");
+            System.out.println("User wants to find all books from author '" + wantedAuthor + "':");
+            printLoadingDots(2);
             Map<String, String> wantedBooks = findAllBooksByAuthor(wantedAuthor);
-            System.out.println("Founded books by " + wantedAuthor + ": " + String.join(", ", wantedBooks.values()));
+            System.out.println("Number of founded books by '" + wantedAuthor + "' is " + wantedBooks.size() + "  :  " + String.join(", ", wantedBooks.values()));
 
-            System.out.println("Get rid off reserved books.");
+            System.out.println("\n");
+            System.out.println("Get rid off reserved books:");
+            printLoadingDots(2);
             removeReservedBooks(wantedBooks);
-            System.out.println("Founded books except reserved books: " + String.join(", ", wantedBooks.values()));
+            System.out.println("Number of founded books by '" + wantedAuthor + "' which are not reserved is " + wantedBooks.size() + "  :  " + String.join(", ", wantedBooks.values()));
 
+            System.out.println("\n");
             System.out.println("Get rid off borrowed books.");
+            printLoadingDots(2);
             removeBorrowedBooks(wantedBooks);
-            System.out.println("Founded books except borrowed books: " + String.join(", ", wantedBooks.values()));
+            System.out.println("Number of founded books by '" + wantedAuthor + "' which are not reserved and not borrowed is " + wantedBooks.size() + "  :  " + String.join(", ", wantedBooks.values()));
 
-            System.out.println("If exists at least one available book, borrow it.");
+            System.out.println("\n");
+            System.out.println("If exists at least one available book, borrow it:");
+            printLoadingDots(2);
             String userId = user.get("id").toString().replace('\"', ' ').strip();
             if (!wantedBooks.isEmpty()) {
-                System.out.println("Check if the user is adult and can borrow book by himself.");
+                System.out.println("Yes");
+                System.out.println("Check if the user is adult and can borrow book by himself:");
+                printLoadingDots(2);
                 if (userIsAdult(userId)) {
                     System.out.println("The user is adult.");
+                    System.out.print("\n\n");
+                    System.out.println("Borrowing book:");
+                    printLoadingDots(3);
                     JsonNode borrowing = borrowFirstBook(wantedBooks, userId);
                     String bookId = borrowing.get("bookId").toString().replace('\"', ' ').strip();
                     String title = getTitleOfBook(bookId);
                     System.out.println("Book with title " + title + " borrowed.");
+                    printJsonNodeRecursively(borrowing, "   ");
 
+                    System.out.println("\n");
                     System.out.println("Show the actual fine for user " + username +
-                            " on book with title " + title + ". (0€ is expected)");
+                            " on book with title " + title + ". (0 eur is expected)");
+                    printLoadingDots(1);
                     String borrowingId = borrowing.get("id").toString().replace('\"', ' ').strip();
                     String fine = getFineForBorrowing(borrowingId);
-                    System.out.println("The actual fine for book " + title + " is " + fine + "€.");
+                    System.out.println("The actual fine for book " + title + " is " + fine + " eur");
                 } else {
                     System.out.println("The user is not adult so he cannot borrow a book by himself.");
+                    System.exit(0);
                 }
+            } else {
+                System.out.println("All books from author" + wantedAuthor + " are reserved or borrowed.");
+                System.out.println("Sorry :(");
+                System.exit(0);
             }
-            System.out.println("Available books after borrowing: " + String.join(", ", wantedBooks.values()));
 
+            System.out.println("\n");
             System.out.println("Now, if still exists at least one available book, reserve it.");
+            printLoadingDots(2);
+            System.out.println("Number of available books after borrowing is " + wantedBooks.size() + "  :  " + String.join(", ", wantedBooks.values()));
+
             if (!wantedBooks.isEmpty()) {
+
+                System.out.println("\n");
+                System.out.println("Reserving book:");
+                printLoadingDots(2);
                 JsonNode reservation = reserveFirstBook(wantedBooks, userId);
                 String bookId = reservation.get("bookId").toString().replace('\"', ' ').strip();
                 String title = getTitleOfBook(bookId);
                 System.out.println("Book with title " + title + " reserved.");
+                printJsonNodeRecursively(reservation, "   ");
+            } else {
+                System.out.println("All books from author" + wantedAuthor + " are reserved or borrowed.");
+                System.out.println("Sorry :(");
+                System.exit(0);
             }
+
+            System.out.println();
+            System.out.println("Feel free to check created user, borrowing and reservation via swagger :)");
 
         } catch (HttpClientErrorException.Unauthorized e) {
             System.out.println("Unauthorized. Token is not valid");
@@ -121,7 +159,6 @@ public class Script {
         );
 
         ObjectMapper om = new ObjectMapper();
-
         return om.readTree(reservationResponse.getBody());
     }
 
@@ -135,9 +172,7 @@ public class Script {
         );
 
         ObjectMapper om = new ObjectMapper();
-
         JsonNode fineInfo = om.readTree(borrowingResponse.getBody());
-
         return fineInfo.toString();
     }
 
@@ -157,7 +192,6 @@ public class Script {
         for (JsonNode jsonNode : adultUserInfo) {
             adultUsersIds.add(jsonNode.get("id").toString().replace('\"', ' ').strip());
         }
-
         return adultUsersIds.contains(userId);
     }
 
@@ -171,9 +205,7 @@ public class Script {
         );
 
         ObjectMapper om = new ObjectMapper();
-
         JsonNode book = om.readTree(bookResponse.getBody());
-
         return book.get("title").toString().replace('\"', ' ').strip();
     }
 
@@ -189,7 +221,6 @@ public class Script {
         );
 
         ObjectMapper om = new ObjectMapper();
-
         return om.readTree(borrowingResponse.getBody());
     }
 
@@ -254,7 +285,6 @@ public class Script {
             String idOfBook = jsonNode.get("id").toString().replace('\"', ' ').strip();
             books.put(idOfBook, titleOfBook);
         }
-
         return books;
     }
 
@@ -273,7 +303,6 @@ public class Script {
         );
 
         ObjectMapper om = new ObjectMapper();
-
         return om.readTree(userResponse.getBody());
     }
 
@@ -287,11 +316,37 @@ public class Script {
     public static String generateRandomDigitSequence(int length) {
         Random random = new Random();
         StringBuilder sb = new StringBuilder(length);
-
         for (int i = 0; i < length; i++) {
             sb.append(random.nextInt(10)); // Append random digit (0-9)
         }
 
         return sb.toString();
+    }
+
+    private static void printJsonNodeRecursively(JsonNode jsonNode, String indent) {
+        jsonNode.fields().forEachRemaining(entry -> {
+            System.out.println(indent + entry.getKey() + ": " + entry.getValue());
+            if (entry.getValue().isObject()) {
+                printJsonNodeRecursively(entry.getValue(), indent + "  ");
+            }
+        });
+    }
+
+    public static void printLoadingDots(int numOfCycles) {
+        System.out.print("Loading ");
+
+        for (int i = 0; i < numOfCycles; i++) {
+            for (int y = 0; y < 3; y++) {
+                System.out.print('.');
+                try {
+                    Thread.sleep(500); // Adjust the delay time as needed
+                } catch (InterruptedException ignored) {
+
+                }
+            }
+
+            System.out.print("\b\b\b   \b\b\b");
+        }
+        System.out.print("\b\b\b\b\b\b\b\b         \b\b\b\b\b\b\b\b");
     }
 }
