@@ -9,10 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.String.format;
 
@@ -29,7 +26,7 @@ public class Script {
         token = args[0];
 
         System.out.println("New user creates an member account.");
-        String name = "Denisa Machova60";
+        String name = "Denisa Machova_" + generateRandomDigitSequence(5);
         String password = "DeniskaMach9";
         JsonNode user = createMemberUser(name, password);
         String username = user.get("username").toString().replace('\"', ' ').strip();
@@ -290,5 +287,16 @@ public class Script {
         headers.set("Content-Type", "application/json");
         headers.set("Authorization", "Bearer " + token);
         return new HttpEntity<>(headers);
+    }
+
+    public static String generateRandomDigitSequence(int length) {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            sb.append(random.nextInt(10)); // Append random digit (0-9)
+        }
+
+        return sb.toString();
     }
 }
