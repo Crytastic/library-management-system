@@ -4,11 +4,23 @@ info:
   description: Book microservice of library management system that provides operations on books
   version: 1.0.0
 servers:
-  - url: "http://localhost:8083"
+  - url: 'http://localhost:8083'
 tags:
   - name: Book
 
 components:
+  securitySchemes:
+    MUNI:
+      type: oauth2
+      description: get access token with OAuth 2 Authorization Code Grant
+      flows:
+        authorizationCode:
+          authorizationUrl: https://oidc.muni.cz/oidc/authorize
+          tokenUrl: https://oidc.muni.cz/oidc/token
+          scopes:
+            test_read: Used fo reading data
+            test_write: Used for modifying data
+            test_1: Used for deleting data
   schemas:
     BookStatus:
       type: string
@@ -17,13 +29,13 @@ components:
         - RESERVED
         - BORROWED
     BookDTO:
-      title: "A book"
-      description: "Book object"
+      title: 'A book'
+      description: 'Book object'
       properties:
-        id: { type: integer, format: int64, description: "Id of book", example: 23 }
-        title: { type: string, description: "Book title / name", example: "Java tutorial" }
-        author: { type: string, description: "Author name", example: "Bruno Rossi" }
-        description: { type: string, description: "Description of the book", example: "It is *** hard" }
+        id: { type: integer, format: int64, description: 'Id of book', example: 23 }
+        title: { type: string, description: 'Book title / name', example: 'Java tutorial' }
+        author: { type: string, description: 'Author name', example: 'Bruno Rossi' }
+        description: { type: string, description: 'Description of the book', example: 'It is *** hard' }
         status:
           $ref: '#/components/schemas/BookStatus'
 
@@ -38,29 +50,29 @@ paths:
         - in: query
           name: title
           required: false
-          description: "Equals match"
+          description: 'Equals match'
           schema:
             type: string
         - in: query
           name: author
           required: false
-          description: "Equals match"
+          description: 'Equals match'
           schema:
             type: string
         - in: query
           name: description
           required: false
-          description: "Contains match"
+          description: 'Contains match'
           schema:
             type: string
         - in: query
           name: status
           required: false
-          description: "Equals match"
+          description: 'Equals match'
           schema:
             $ref: '#/components/schemas/BookStatus'
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -69,22 +81,34 @@ paths:
                 title: BooksResponse
                 items:
                   $ref: '#/components/schemas/BookDTO'
+        '401':
+          description: Unauthorized - access token not provided or not valid
+        '403':
+          description: Forbidden - access token does not have scope test_read
+      security:
+        - MUNI: [ test_read ]
     post:
       tags:
         - Book
       summary: Creates new book
       operationId: createBook
       parameters:
-        - { name: title, in: query, required: true, schema: { type: string }, description: "Title of book" }
-        - { name: author, in: query, required: true, schema: { type: string }, description: "Author of book" }
-        - { name: description, in: query, required: true, schema: { type: string }, description: "Description of book" }
+        - { name: title, in: query, required: true, schema: { type: string }, description: 'Title of book' }
+        - { name: author, in: query, required: true, schema: { type: string }, description: 'Author of book' }
+        - { name: description, in: query, required: true, schema: { type: string }, description: 'Description of book' }
       responses:
-        "201":
+        '201':
           description: Created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BookDTO'
+        '401':
+          description: Unauthorized - access token not provided or not valid
+        '403':
+          description: Forbidden - access token does not have scope test_write
+      security:
+        - MUNI: [ test_write ]
 
     delete:
       tags:
@@ -94,6 +118,12 @@ paths:
       responses:
         '204':
           description: No content
+        '401':
+          description: Unauthorized - access token not provided or not valid
+        '403':
+          description: Forbidden - access token does not have scope test_1
+      security:
+        - MUNI: [ test_1 ]
 
   /api/books/{id}:
     get:
@@ -117,6 +147,12 @@ paths:
                 $ref: '#/components/schemas/BookDTO'
         '404':
           description: Not found
+        '401':
+          description: Unauthorized - access token not provided or not valid
+        '403':
+          description: Forbidden - access token does not have scope test_read
+      security:
+        - MUNI: [ test_read ]
 
     delete:
       tags:
@@ -133,6 +169,12 @@ paths:
       responses:
         '204':
           description: No content
+        '401':
+          description: Unauthorized - access token not provided or not valid
+        '403':
+          description: Forbidden - access token does not have scope test_1
+      security:
+        - MUNI: [ test_1 ]
 
     patch:
       tags:
@@ -171,6 +213,12 @@ paths:
           description: OK
         '404':
           description: Not found
+        '401':
+          description: Unauthorized - access token not provided or not valid
+        '403':
+          description: Forbidden - access token does not have scope test_write
+      security:
+        - MUNI: [ test_write ]
 
   /api/books/{id}/borrowings:
     get:
@@ -196,3 +244,9 @@ paths:
                   type: string
         '404':
           description: Book not found
+        '401':
+          description: Unauthorized - access token not provided or not valid
+        '403':
+          description: Forbidden - access token does not have scope test_read
+      security:
+        - MUNI: [ test_read ]

@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -29,6 +31,12 @@ public class BorrowingControllerWebMvcTest {
 
     @MockBean
     private BorrowingFacade borrowingFacade;
+
+    @MockBean
+    SecurityFilterChain securityFilterChain;
+
+    @MockBean
+    OpaqueTokenIntrospector opaqueTokenIntrospector;
 
     @Test
     void getBorrowing_existingId_returnsOk() throws Exception {

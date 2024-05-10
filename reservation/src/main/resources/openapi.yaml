@@ -9,6 +9,19 @@ tags:
   - name: Reservation
 
 components:
+  securitySchemes:
+    MUNI:
+      type: oauth2
+      description: get access token with OAuth 2 Authorization Code Grant
+      flows:
+        authorizationCode:
+          authorizationUrl: https://oidc.muni.cz/oidc/authorize
+          tokenUrl: https://oidc.muni.cz/oidc/token
+          scopes:
+            test_read: Used for reading data
+            test_write: Used for modifying data
+            test_1: Used for deleting data
+
   schemas:
     ReservationDTO:
       title: "A reservation"
@@ -36,6 +49,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ReservationDTO'
+      security:
+        - MUNI: [ test_read ]
+
     post:
       tags:
         - Reservation
@@ -59,6 +75,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReservationDTO'
+      security:
+        - MUNI: [ test_write ]
+
     delete:
       tags:
         - Reservation
@@ -67,6 +86,8 @@ paths:
       responses:
         '204':
           description: No content
+      security:
+        - MUNI: [ test_1 ]
 
   /api/reservations/{id}:
     get:
@@ -88,6 +109,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReservationDTO'
+      security:
+        - MUNI: [ test_read ]
+
     patch:
       tags:
         - Reservation
@@ -129,6 +153,9 @@ paths:
           description: OK
         '404':
           description: Not found
+      security:
+        - MUNI: [ test_write ]
+
     delete:
       tags:
         - Reservation
@@ -144,6 +171,8 @@ paths:
       responses:
         '204':
           description: No content
+      security:
+        - MUNI: [ test_1 ]
 
   /api/reservations/active:
     get:
@@ -160,6 +189,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ReservationDTO'
+      security:
+        - MUNI: [ test_read ]
 
   /api/reservations/expired:
     get:
@@ -176,3 +207,5 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ReservationDTO'
+      security:
+        - MUNI: [ test_read ]

@@ -1,6 +1,8 @@
 package cz.muni.fi.pa165.rest;
 
 import cz.muni.fi.pa165.facade.BookFacade;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.openapitools.api.BookApi;
 import org.openapitools.model.BookDTO;
 import org.openapitools.model.BookStatus;
@@ -27,38 +29,45 @@ public class BookRestController implements BookApi {
     }
 
     @Override
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<BookDTO> createBook(String title, String description, String author) {
         return new ResponseEntity<>(bookFacade.createBook(title, description, author), HttpStatus.CREATED);
     }
 
     @Override
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Void> deleteBook(Long id) {
         bookFacade.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<BookDTO> getBook(Long id) {
         return new ResponseEntity<>(bookFacade.findById(id), HttpStatus.OK);
     }
 
     @Override
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<String>> getBookBorrowings(Long id) {
         return new ResponseEntity<>(bookFacade.findBookBorrowings(id), HttpStatus.OK);
     }
 
     @Override
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<BookDTO>> getBooks(String title, String author, String description, BookStatus status) {
         return new ResponseEntity<>(bookFacade.findByFilter(title, author, description, status), HttpStatus.OK);
     }
 
     @Override
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Void> updateBook(Long id, String title, String author, String description, BookStatus status) {
         bookFacade.updateById(id, title, author, description, status);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Void> deleteBooks() {
         bookFacade.deleteAll();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

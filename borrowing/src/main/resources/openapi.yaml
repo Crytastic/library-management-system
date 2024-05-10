@@ -9,6 +9,18 @@ tags:
   - name: Borrowing
 
 components:
+  securitySchemes:
+    MUNI:
+      type: oauth2
+      description: get access token with OAuth 2 Authorization Code Grant
+      flows:
+        authorizationCode:
+          authorizationUrl: https://oidc.muni.cz/oidc/authorize
+          tokenUrl: https://oidc.muni.cz/oidc/token
+          scopes:
+            test_read: Used fo reading data
+            test_write: Used for modifying data
+            test_1: Used for deleting data
   schemas:
     BorrowingDTO:
       title: "A borrowing"
@@ -70,6 +82,12 @@ paths:
                 title: BorrowingsResponse
                 items:
                   $ref: '#/components/schemas/BorrowingDTO'
+        '401':
+          description: Unauthorized - access token not provided or not valid
+        '403':
+          description: Forbidden - access token does not have scope test_read
+      security:
+        - MUNI: [ test_read ]
     post:
       tags:
         - Borrowing
@@ -103,6 +121,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BorrowingDTO'
+        '401':
+          description: Unauthorized - access token not provided or not valid
+        '403':
+          description: Forbidden - access token does not have scope test_write
+      security:
+        - MUNI: [ test_write ]
     delete:
       tags:
         - Borrowing
@@ -111,6 +135,12 @@ paths:
       responses:
         '204':
           description: No content
+        '401':
+          description: Unauthorized - access token not provided or not valid
+        '403':
+          description: Forbidden - access token does not have scope test_1
+      security:
+        - MUNI: [ test_1 ]
   /api/borrowings/{id}:
     get:
       tags:
@@ -131,6 +161,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BorrowingDTO'
+        '401':
+          description: Unauthorized - access token not provided or not valid
+        '403':
+          description: Forbidden - access token does not have scope test_read
+      security:
+        - MUNI: [ test_read ]
     patch:
       tags:
         - Borrowing
@@ -193,6 +229,12 @@ paths:
           description: OK
         '404':
           description: Not found
+        '401':
+          description: Unauthorized - access token not provided or not valid
+        '403':
+          description: Forbidden - access token does not have scope test_write
+      security:
+        - MUNI: [ test_write ]
     delete:
       tags:
         - Borrowing
@@ -208,6 +250,12 @@ paths:
       responses:
         '204':
           description: No content
+        '401':
+          description: Unauthorized - access token not provided or not valid
+        '403':
+          description: Forbidden - access token does not have scope test_1
+      security:
+        - MUNI: [ test_1 ]
   /api/borrowings/{id}/fine:
     get:
       tags:
@@ -230,6 +278,12 @@ paths:
                 type: number
         '404':
           description: Not found
+        '401':
+          description: Unauthorized - access token not provided or not valid
+        '403':
+          description: Forbidden - access token does not have scope test_read
+      security:
+        - MUNI: [ test_read ]
   /api/activeBorrowings:
     get:
       tags:
@@ -246,3 +300,9 @@ paths:
                 title: BorrowingsResponse
                 items:
                   $ref: '#/components/schemas/BorrowingDTO'
+        '401':
+          description: Unauthorized - access token not provided or not valid
+        '403':
+          description: Forbidden - access token does not have scope test_read
+      security:
+        - MUNI: [ test_read ]

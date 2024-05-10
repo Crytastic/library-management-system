@@ -8,6 +8,18 @@ servers:
 tags:
   - name: User
 components:
+  securitySchemes:
+    MUNI:
+      type: oauth2
+      description: get access token with OAuth 2 Authorization Code Grant
+      flows:
+        authorizationCode:
+          authorizationUrl: https://oidc.muni.cz/oidc/authorize
+          tokenUrl: https://oidc.muni.cz/oidc/token
+          scopes:
+            test_read: Used for reading data
+            test_write: Used for modifying data
+            test_1: Used for deleting data
   schemas:
     UserType:
       type: string
@@ -38,7 +50,6 @@ paths:
           description: "Equals match"
           schema:
             $ref: '#/components/schemas/UserType'
-
       responses:
         "200":
           description: OK
@@ -49,6 +60,9 @@ paths:
                 title: UsersResponse
                 items:
                   $ref: '#/components/schemas/UserDTO'
+      security:
+        - MUNI: [ ]
+
     post:
       tags:
         - User
@@ -69,6 +83,8 @@ paths:
                 $ref: '#/components/schemas/UserDTO'
         "422":
           description: User with your username already exists
+      security:
+        - MUNI: [ test_write ]
 
     delete:
       tags:
@@ -78,6 +94,8 @@ paths:
       responses:
         '204':
           description: No content
+      security:
+        - MUNI: [ test_1 ]
 
   /api/users/{id}:
     get:
@@ -101,6 +119,8 @@ paths:
                 $ref: '#/components/schemas/UserDTO'
         '404':
           description: Not found
+      security:
+        - MUNI: [ test_read ]
 
     delete:
       tags:
@@ -117,6 +137,8 @@ paths:
       responses:
         '204':
           description: No content
+      security:
+        - MUNI: [ test_1 ]
 
     patch:
       tags:
@@ -168,12 +190,14 @@ paths:
           description: Unauthorized
         '404':
           description: Not found
+      security:
+        - MUNI: [ test_write ]
 
   /api/users/adults:
     get:
       tags:
         - User
-      summary: Returns all adults users
+      summary: Returns all adult users
       operationId: getAdultUsers
       responses:
         "200":
@@ -185,3 +209,5 @@ paths:
                 title: UsersResponse
                 items:
                   $ref: '#/components/schemas/UserDTO'
+      security:
+        - MUNI: [ test_read ]
