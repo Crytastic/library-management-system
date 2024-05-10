@@ -21,6 +21,26 @@ Then you can run the entire system once via: ```podman-compose up -d``` or ```do
 Alternatively, each microservice can be run as standalone executable module from inside their respective
 directories: ```mvn spring-boot:run```
 
+All endpoints are secured using OAuth2 and you will need a valid Bearer token to access them. You may use
+the authorization service to receive a valid token at (http://localhost:8090/).
+This can be done conveniently via Swagger:
+
+1) Go here and click the 'Authorize'
+   button: (http://localhost:8090/swagger-ui/index.html#)
+2) Choose wanted scopes and generate token. It will be valid for 1 hour.
+
+- For reading, test_read scope is required.
+- For modifying, test_write scope is required.
+- For deleting, test_1 scope is required.
+
+3) Call the http://localhost:8090/api/bearer endpoint to see the generated token either via `curl` or Swagger.
+
+- http://localhost:8090/swagger-ui/index.html#/AuthorizationService/getBearerToken
+- `curl -X 'GET' \
+  'http://localhost:8090/api/bearer' \
+  -H 'accept: text/plain' \
+  -H 'Authorization: Bearer <token>`
+
 ### Borrowing Microservice
 
 #### Overview
@@ -139,7 +159,8 @@ more setup:
 
 ## Showcase
 
-User comes to the library. He wants to find and borrow book from his favorite author. He wants to also reserve some book for future. He is new, so he does not have account yet. 
+User comes to the library. He wants to find and borrow book from his favorite author. He wants to also reserve some book
+for future. He is new, so he does not have account yet.
 
 - User creates an account as a new library member.
 - User finds all book from his favourite author.
@@ -150,9 +171,12 @@ User comes to the library. He wants to find and borrow book from his favorite au
 - User tries to reserve other book (if it is available) from his favourite author.
 
 #### How to run showcase:
- - Install dependencies: ```mvn clean install``` or ```mvn clean install -DskipTests```
- - Run all microservices: ```podman-compose up -d``` / ```docker-compose up -d```
- - Run Showcase script: ```java -jar ./showcase/target/showcase-0.0.1-SNAPSHOT.jar <token>``` where <token> is valid access token that can be retrieved from the seminar (https://gitlab.fi.muni.cz/pa165/seminar-security).
+
+- Install dependencies: ```mvn clean install``` or ```mvn clean install -DskipTests```
+- Run all microservices: ```podman-compose up -d``` / ```docker-compose up -d```
+- Run Showcase script: ```java -jar ./showcase/target/showcase-0.0.1-SNAPSHOT.jar <token>``` where <token> is valid
+  access token that can be retrieved via the authorization service, for example
+  through (http://localhost:8090/swagger-ui/index.html#/AuthorizationService/getBearerToken).
 
 ## Diagrams
 
