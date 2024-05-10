@@ -168,6 +168,7 @@
     <module>user</module>
     <module>infrastructure</module>
     <module>showcase</module>
+    <module>authorization</module>
   </modules>
 
 </project>

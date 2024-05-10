@@ -1,0 +1,26 @@
+openapi: 3.0.1
+info:
+  title: Authorization API
+  description: API secured by OAuth 2
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8090'
+    description: resource server
+tags:
+  - name: Book
+
+paths:
+  /api/bearer:
+    get:
+      summary: Get bearer token
+      tags:
+        - Authorization
+      security:
+        - test_read: [ ]
+      responses:
+        '200':
+          description: OK - see content for the bearer token
+        '401':
+          description: Unauthorized - access token not provided or not valid
+        '403':
+          description: Forbidden - access token does not have scope test_read
