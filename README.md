@@ -139,16 +139,20 @@ more setup:
 
 ## Showcase
 
-User comes to the library. He wants to borrow maybe reserve some book. His goal is find some book from his favourite 
-author. He is new, he already has no account in the library. 
+User comes to the library. He wants to find and borrow book from his favorite author. He wants to also reserve some book for future. He is new, so he does not have account yet. 
 
-- User creates an account as a new library member (notice that username must be unique).
+- User creates an account as a new library member.
 - User finds all book from his favourite author.
 - User needs to filter out every reserved and borrowed books from his favourite author.
 - User borrows one book if it is available.
 - User is controlled by a system if he is an adult, otherwise he cannot borrow the book by himself.
 - User checks that he does not pay any fine for his new borrowing.
-- User tries to reserve other book from his favourite author.
+- User tries to reserve other book (if it is available) from his favourite author.
+
+#### How to run showcase:
+ - Install dependencies: ```mvn clean install``` or ```mvn clean install -DskipTests```
+ - Run all microservices: ```podman-compose up -d``` / ```docker-compose up -d```
+ - Run Showcase script: ```java -jar .\showcase\target\showcase-0.0.1-SNAPSHOT.jar <token>``` where <token> is valid access token that can be retrieved from the seminar (https://gitlab.fi.muni.cz/pa165/seminar-security).
 
 ## Diagrams
 
