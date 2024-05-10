@@ -11,7 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @OpenAPIDefinition
 @SecurityScheme(
-        name = "Bearer Token Authentication",
+        name = "bearerAuth",
         type = SecuritySchemeType.HTTP,
         bearerFormat = "JWT",
         scheme = "bearer",
