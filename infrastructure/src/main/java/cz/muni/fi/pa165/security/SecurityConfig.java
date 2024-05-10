@@ -11,10 +11,14 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @OpenAPIDefinition
 @SecurityScheme(
-        name = "bearerAuth",
+        name = "Bearer Token Authentication",
         type = SecuritySchemeType.HTTP,
         bearerFormat = "JWT",
-        scheme = "bearer"
+        scheme = "bearer",
+        description = "Provide a valid pre-generated Bearer token. " +
+                "For reading, test_read scope is required. " +
+                "For modifying, test_write scope is required. " +
+                "For deleting, test_1 scope is required."
 )
 public abstract class SecurityConfig {
     @Bean
