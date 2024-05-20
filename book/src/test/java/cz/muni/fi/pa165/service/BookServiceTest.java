@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Book;
 import cz.muni.fi.pa165.data.repository.BookRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ConstraintViolationException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.stubs.BorrowingServiceStub;
 import org.junit.jupiter.api.Test;
@@ -223,6 +224,7 @@ public class BookServiceTest {
         String author = "J.R.R. Tolkien";
         Book createdBook = new Book(title, author, description, BookStatus.AVAILABLE);
         when(bookRepository.save(createdBook)).thenReturn(createdBook);
+        when(bookRepository.findByFilter(title, author, null, null)).thenReturn(List.of());
 
         // Act
         Book result = bookService.createBook(title, author, description);
@@ -233,5 +235,19 @@ public class BookServiceTest {
         assertThat(result.getAuthor()).isEqualTo(author);
         assertThat(result.getDescription()).isEqualTo(description);
         verify(bookRepository, times(1)).save(createdBook);
+    }
+
+    @Test
+    void createBook_bookAlreadyExists_throwConstraintViolationException() {
+        // Arrange
+        String title = "The Lord of the Rings";
+        String description = "Fantasy novel";
+        String author = "J.R.R. Tolkien";
+        Book createdBook = new Book(title, author, description, BookStatus.AVAILABLE);
+        when(bookRepository.findByFilter(title, author, null, null)).thenReturn(List.of(createdBook));
+
+        // Act + Assert
+        Throwable exception = assertThrows(ConstraintViolationException.class, () -> bookService.createBook(title, author, description));
+        assertThat(exception.getMessage()).isEqualTo(String.format("Book with title %s and author %s already exists.", title, author));
     }
 }
