@@ -51,10 +51,10 @@ public class BookService {
     }
 
     @Transactional
-    public int updateById(Long id, String title, String author, String description, BookStatus status) {
+    public Book updateById(Long id, String title, String author, String description, BookStatus status) {
         int updatedCount = bookRepository.updateById(id, title, author, description, status);
         if (updatedCount > 0) {
-            return updatedCount;
+            return findById(id);
         } else {
             throw new ResourceNotFoundException(String.format("Book with id: %d not found", id));
         }
