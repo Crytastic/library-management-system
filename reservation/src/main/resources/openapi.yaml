@@ -151,6 +151,10 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationDTO'
         '404':
           description: Not found
       security:

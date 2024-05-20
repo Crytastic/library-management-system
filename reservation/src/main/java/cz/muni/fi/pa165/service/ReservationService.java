@@ -47,10 +47,10 @@ public class ReservationService {
     }
 
     @Transactional
-    public int updateById(Long id, Long bookId, Long reserveeId, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
+    public Reservation updateById(Long id, Long bookId, Long reserveeId, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
         int updatedCount = reservationRepository.updateById(id, bookId, reserveeId, reservedFrom, reservedTo);
         if (updatedCount > 0) {
-            return updatedCount;
+            return findById(id);
         } else {
             throw new ResourceNotFoundException(String.format("Reservation with id: %d not found", id));
         }
