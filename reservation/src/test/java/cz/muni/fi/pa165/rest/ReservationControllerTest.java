@@ -62,6 +62,16 @@ public class ReservationControllerTest {
     }
 
     @Test
+    void deleteReservations_allReservationsDelete_returnsNoContent() {
+        // Act
+        ResponseEntity<Void> response = reservationController.deleteReservations();
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        verify(reservationFacade, times(1)).deleteAll();
+    }
+
+    @Test
     void getActiveReservations_validReservations_returnsOK() {
         // Arrange
         List<ReservationDTO> activeReservations = new ArrayList<>();
