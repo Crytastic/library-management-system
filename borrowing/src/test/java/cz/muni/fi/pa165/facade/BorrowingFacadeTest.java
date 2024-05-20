@@ -137,6 +137,15 @@ class BorrowingFacadeTest {
                 new BigDecimal(3),
                 true);
         updatedBorrowing.setId(3L);
+        BorrowingDTO updatedBorrowingDTO = new BorrowingDTO()
+                .bookId(17L)
+                .borrowerId(18L)
+                .borrowDate(TimeProvider.now())
+                .expectedReturnDate(TimeProvider.now())
+                .returned(true)
+                .returnDate(TimeProvider.now())
+                .lateReturnWeeklyFine(new BigDecimal(3))
+                .fineResolved(true);
 
         when(borrowingService.updateById(
                 updatedBorrowing.getId(),
@@ -148,9 +157,10 @@ class BorrowingFacadeTest {
                 updatedBorrowing.getReturnDate(),
                 updatedBorrowing.getLateReturnWeeklyFine(),
                 updatedBorrowing.isFineResolved()))
-                .thenReturn(1);
+                .thenReturn(updatedBorrowing);
+        when(borrowingMapper.mapToDto(updatedBorrowing)).thenReturn(updatedBorrowingDTO);
 
-        int numberOfUpdatedBorrowings = borrowingFacade.updateById(
+        BorrowingDTO result = borrowingFacade.updateById(
                 updatedBorrowing.getId(),
                 updatedBorrowing.getBookId(),
                 updatedBorrowing.getBorrowerId(),
@@ -161,7 +171,7 @@ class BorrowingFacadeTest {
                 updatedBorrowing.getLateReturnWeeklyFine(),
                 updatedBorrowing.isFineResolved());
 
-        assertThat(numberOfUpdatedBorrowings).isEqualTo(1);
+        assertThat(result).isEqualTo(updatedBorrowingDTO);
         verify(borrowingService, times(1)).updateById(
                 updatedBorrowing.getId(),
                 updatedBorrowing.getBookId(),

@@ -58,10 +58,10 @@ public class BorrowingService {
     }
 
     @Transactional
-    public int updateById(Long id, Long bookId, Long borrowerId, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
+    public Borrowing updateById(Long id, Long bookId, Long borrowerId, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
         int updatedCount = borrowingRepository.updateById(id, bookId, borrowerId, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
         if (updatedCount > 0) {
-            return updatedCount;
+            return findById(id);
         } else {
             throw new ResourceNotFoundException(String.format("Borrowing with id: %d not found", id));
         }

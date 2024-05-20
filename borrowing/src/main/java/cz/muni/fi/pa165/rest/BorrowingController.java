@@ -49,9 +49,8 @@ public class BorrowingController implements BorrowingApi {
 
     @Override
     @Operation(security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Void> updateBorrowing(Long id, Long bookId, Long borrowerId, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
-        borrowingFacade.updateById(id, bookId, borrowerId, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<BorrowingDTO> updateBorrowing(Long id, Long bookId, Long borrowerId, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
+        return new ResponseEntity<>(borrowingFacade.updateById(id, bookId, borrowerId, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved), HttpStatus.OK);
     }
 
     @Override

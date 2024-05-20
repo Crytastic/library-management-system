@@ -105,17 +105,18 @@ class BorrowingServiceTest {
     }
 
     @Test
-    void updateById_oneItemChanged_returnsOne() {
+    void updateById_oneItemChanged_returnsUpdatedBorrowing() {
         Long changedBook = 2L;
         Borrowing updatedBorrowing = TestDataFactory.activeBorrowing;
         when(borrowingRepository.updateById(updatedBorrowing.getId(), changedBook, null, null,
                 null, null, null, null, null))
                 .thenReturn(1);
+        when(borrowingRepository.findById(TestDataFactory.activeBorrowing.getId())).thenReturn(Optional.of(updatedBorrowing));
 
-        int numberOfUpdatedBorrowings = borrowingService.updateById(updatedBorrowing.getId(), changedBook, null, null,
+        Borrowing result = borrowingService.updateById(updatedBorrowing.getId(), changedBook, null, null,
                 null, null, null, null, null);
 
-        assertThat(numberOfUpdatedBorrowings).isEqualTo(1);
+        assertThat(result).isEqualTo(TestDataFactory.activeBorrowing);
         verify(borrowingRepository, times(1)).updateById(updatedBorrowing.getId(), changedBook, null, null,
                 null, null, null, null, null);
     }
@@ -141,7 +142,7 @@ class BorrowingServiceTest {
     }
 
     @Test
-    void updateById_allItemChanged_returnsOne() {
+    void updateById_allItemChanged_returnsUpdatedborrowing() {
         Long changedBook = 4L;
         Long borrowerId = 5L;
         Boolean returned = true;
@@ -153,11 +154,12 @@ class BorrowingServiceTest {
         Borrowing updatedBorrowing = TestDataFactory.activeBorrowing;
         when(borrowingRepository.updateById(updatedBorrowing.getId(), changedBook, borrowerId,
                 borrowDate, expectedReturnDate, returned, returnedDate, lateReturnWeeklyFine, fineResolved)).thenReturn(1);
+        when(borrowingRepository.findById(updatedBorrowing.getId())).thenReturn(Optional.of(TestDataFactory.activeBorrowing));
 
-        int numberOfUpdatedBorrowings = borrowingService.updateById(updatedBorrowing.getId(), changedBook, borrowerId,
+        Borrowing result = borrowingService.updateById(updatedBorrowing.getId(), changedBook, borrowerId,
                 borrowDate, expectedReturnDate, returned, returnedDate, lateReturnWeeklyFine, fineResolved);
 
-        assertThat(numberOfUpdatedBorrowings).isEqualTo(1);
+        assertThat(result).isEqualTo(TestDataFactory.activeBorrowing);
         verify(borrowingRepository, times(1)).updateById(updatedBorrowing.getId(), changedBook, borrowerId,
                 borrowDate, expectedReturnDate, returned, returnedDate, lateReturnWeeklyFine, fineResolved);
     }
