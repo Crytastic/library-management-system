@@ -83,7 +83,7 @@ public class UserService {
         }
         if (userByUsername.getUserType().equals(UserType.MEMBER)) {
             if (!Objects.equals(userByUsername.getId(), id) || userType != null) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException("As a MEMBER you cannot update other users or update your userType.");
             }
         }
         Optional<User> optionalUpdatedUser = userRepository.findById(id);

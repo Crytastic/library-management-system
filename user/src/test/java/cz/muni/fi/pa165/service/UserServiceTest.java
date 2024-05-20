@@ -193,8 +193,12 @@ class UserServiceTest {
 
         when(userRepository.findUserByUsername(actor.getUsername())).thenReturn(actor);
 
-        assertThrows(UnauthorizedException.class, () -> userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
+        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () ->
+                userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
                 updatedUser.getAddress(), updatedUser.getBirthDate(), updatedUser.getUserType()));
+
+        assertThat(exception.getMessage())
+                .isEqualTo("As a MEMBER you cannot update other users or update your userType.");
 
         verify(userRepository, times(1)).findUserByUsername(actor.getUsername());
         verify(userRepository, times(0)).findById(userToBeUpdated.getId());
@@ -213,8 +217,11 @@ class UserServiceTest {
 
         when(userRepository.findUserByUsername(actor.getUsername())).thenReturn(actor);
 
-        assertThrows(UnauthorizedException.class, () -> userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
+        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
                 updatedUser.getAddress(), updatedUser.getBirthDate(), null));
+
+        assertThat(exception.getMessage())
+                .isEqualTo("As a MEMBER you cannot update other users or update your userType.");
 
         verify(userRepository, times(1)).findUserByUsername(actor.getUsername());
         verify(userRepository, times(0)).findById(userToBeUpdated.getId());
