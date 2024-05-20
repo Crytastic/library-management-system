@@ -79,7 +79,7 @@ public class UserService {
     public User updateUser(Long id, String username, String password, String address, LocalDate birthdate, UserType userType) {
         User userByUsername = userRepository.findUserByUsername(username);
         if (userByUsername == null || !userByUsername.getPasswordHash().equals(createPasswordHash(password))) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException("Combination of username and password does not exist.");
         }
         if (userByUsername.getUserType().equals(UserType.MEMBER)) {
             if (!Objects.equals(userByUsername.getId(), id) || userType != null) {
