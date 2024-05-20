@@ -75,6 +75,14 @@ class UserRestControllerTest {
         assertThat(response.getBody()).isNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
+    @Test
+    void deleteAll_allUsersDelete_callsUserServiceDelete() {
+        ResponseEntity<Void> response = userRestController.deleteUsers();
+
+        verify(userFacade, times(1)).deleteAll();
+        assertThat(response.getBody()).isNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
 
     @Test
     void updateUser_sufficientRightsAndUserExists_returnsUserAndOkStatus() {

@@ -119,6 +119,13 @@ class UserFacadeTest {
     }
 
     @Test
+    void deleteAll_allUsersDelete_callsUserServiceDelete() {
+        userFacade.deleteAll();
+
+        verify(userService, times(1)).deleteAll();
+    }
+
+    @Test
     void updateUser_incorrectUsername_throwsUnauthorisedException() {
         User testUser = TestDataFactory.firstMemberDAO;
         when(userService.updateUser(

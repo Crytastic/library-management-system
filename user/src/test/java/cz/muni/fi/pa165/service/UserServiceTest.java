@@ -96,6 +96,13 @@ class UserServiceTest {
     }
 
     @Test
+    void deleteAll_allUsersDelete_callsUserRepositoryDeleteAll() {
+        userService.deleteAll();
+
+        verify(userRepository, times(1)).deleteAll();
+    }
+
+    @Test
     void updateUser_incorrectUsername_notCallsUserRepositoryUpdateUserAndThrowsUnauthorisedException() {
         User testUser = TestDataFactory.firstMemberDAO;
         when(userRepository.findUserByUsername(anyString())).thenReturn(null);
