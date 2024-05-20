@@ -62,6 +62,19 @@ public class BookRestControllerTest {
     }
 
     @Test
+    void deleteBooks_allBooksDeleted_noContent() {
+        // Arrange
+        doNothing().when(bookFacade).deleteAll();
+
+        // Act
+        ResponseEntity<Void> response = bookRestController.deleteBooks();
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        verify(bookFacade, times(1)).deleteAll();
+    }
+
+    @Test
     void getBook_validId_returnsBook() {
         // Arrange
         Long id = 1L;

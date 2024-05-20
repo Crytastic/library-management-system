@@ -207,6 +207,15 @@ public class BookServiceTest {
     }
 
     @Test
+    void deleteAll_allBooksDelete_callsBookRepositoryDeleteAll() {
+        // Act
+        bookService.deleteAll();
+
+        // Assert
+        verify(bookRepository, times(1)).deleteAll();
+    }
+
+    @Test
     void createBook_returnsCreatedBook() {
         // Arrange
         String title = "The Lord of the Rings";
