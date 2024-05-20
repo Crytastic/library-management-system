@@ -89,6 +89,14 @@ class BorrowingControllerTest {
     }
 
     @Test
+    void deleteBorrowings_allBorrowingsDelete_callsBorrowingsFacadeDelete() {
+        ResponseEntity<Void> response = borrowingController.deleteBorrowings();
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        verify(borrowingFacade, times(1)).deleteAll();
+    }
+
+    @Test
     void updateBorrowing_borrowingFound_returnsOkStatus() {
         BorrowingDTO borrowingDTO = createDTOBorrowing();
         when(borrowingFacade.updateById(1L,
