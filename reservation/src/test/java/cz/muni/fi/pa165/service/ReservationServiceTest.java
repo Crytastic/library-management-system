@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.service;
 import cz.muni.fi.pa165.data.model.Reservation;
 import cz.muni.fi.pa165.data.repository.ReservationRepository;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
+import cz.muni.fi.pa165.util.ServiceHttpRequestProvider;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
@@ -27,6 +30,9 @@ import static org.mockito.Mockito.*;
 class ReservationServiceTest {
     @Mock
     private ReservationRepository reservationRepository;
+
+    @Mock
+    private ServiceHttpRequestProvider serviceHttpRequestProvider;
 
     @InjectMocks
     private ReservationService reservationService;
@@ -87,6 +93,8 @@ class ReservationServiceTest {
     void createReservation_validReservation_callsReservationRepositoryStore() {
         // Arrange
         when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
+        when(serviceHttpRequestProvider.callGetBookById(4L)).thenReturn(new ResponseEntity<>("something", HttpStatus.OK));
+        when(serviceHttpRequestProvider.callGetUserById(4L)).thenReturn(new ResponseEntity<>("something", HttpStatus.OK));
 
         // Act
         Reservation result = reservationService.createReservation(4L, 4L);
