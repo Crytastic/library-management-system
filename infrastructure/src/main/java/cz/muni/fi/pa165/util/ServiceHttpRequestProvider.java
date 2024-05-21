@@ -23,7 +23,7 @@ public class ServiceHttpRequestProvider {
 
 
         return restTemplate.exchange(
-                format("http://localhost:8083/api/books/%d", id),
+                format("http://book:8083/api/books/%d", id),
                 HttpMethod.GET,
                 createRequestEntity(request.getHeader("Authorization")),
                 String.class
@@ -35,7 +35,7 @@ public class ServiceHttpRequestProvider {
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
 
         return restTemplate.exchange(
-                format("http://localhost:8082/api/users/%d", id),
+                format("http://user:8082/api/users/%d", id),
                 HttpMethod.GET,
                 createRequestEntity(request.getHeader("Authorization")),
                 String.class
