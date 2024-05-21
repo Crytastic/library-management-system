@@ -68,9 +68,8 @@ public class ReservationController implements ReservationApi {
 
     @Override
     @Operation(security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Void> updateReservation(Long id, Long bookId, Long reserveeId, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
-        reservationFacade.updateById(id, bookId, reserveeId, reservedFrom, reservedTo);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<ReservationDTO> updateReservation(Long id, Long bookId, Long reserveeId, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
+        return new ResponseEntity<>(reservationFacade.updateById(id, bookId, reserveeId, reservedFrom, reservedTo), HttpStatus.OK);
     }
 
     @Override

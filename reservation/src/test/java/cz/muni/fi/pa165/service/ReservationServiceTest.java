@@ -104,13 +104,20 @@ class ReservationServiceTest {
         Long newReserveeId = 11L;
         OffsetDateTime newReservedFrom = TimeProvider.now().plusDays(1);
         OffsetDateTime newReservedTo = TimeProvider.now().plusDays(4);
+        Reservation reservation = new Reservation();
+        reservation.setId(id);
+        reservation.setBookId(newBookId);
+        reservation.setReserveeId(newReserveeId);
+        reservation.setReservedFrom(newReservedFrom);
+        reservation.setReservedTo(newReservedTo);
         when(reservationRepository.updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo)).thenReturn(1);
+        when(reservationRepository.findById(1L)).thenReturn(Optional.of(reservation));
 
         // Act
-        int result = reservationService.updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo);
+        Reservation result = reservationService.updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo);
 
         // Assert
-        assertThat(result).isEqualTo(1);
+        assertThat(result).isEqualTo(reservation);
         verify(reservationRepository, times(1)).updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo);
     }
 

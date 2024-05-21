@@ -99,9 +99,9 @@ class BorrowingControllerTest {
                 borrowingDTO.getReturned(),
                 borrowingDTO.getReturnDate(),
                 borrowingDTO.getLateReturnWeeklyFine(),
-                borrowingDTO.getFineResolved())).thenReturn(1);
+                borrowingDTO.getFineResolved())).thenReturn(borrowingDTO);
 
-        ResponseEntity<Void> response = borrowingController.updateBorrowing(1L,
+        ResponseEntity<BorrowingDTO> response = borrowingController.updateBorrowing(1L,
                 borrowingDTO.getBookId(),
                 borrowingDTO.getBorrowerId(),
                 borrowingDTO.getBorrowDate(),
@@ -111,6 +111,7 @@ class BorrowingControllerTest {
                 borrowingDTO.getLateReturnWeeklyFine(),
                 borrowingDTO.getFineResolved());
 
+        assertThat(response.getBody()).isEqualTo(borrowingDTO);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 

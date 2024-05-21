@@ -106,13 +106,15 @@ public class BookRestControllerTest {
         String newAuthor = "J. R. R. Tolkien";
         String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
         BookStatus newStatus = BookStatus.BORROWED;
+        BookDTO bookDTO = new BookDTO().id(id).title(newTitle).author(newAuthor).description(newDescription).status(newStatus);
 
-        when(bookFacade.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(1);
+        when(bookFacade.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(bookDTO);
 
         // Act
-        ResponseEntity<Void> response = bookRestController.updateBook(id, newTitle, newAuthor, newDescription, newStatus);
+        ResponseEntity<BookDTO> response = bookRestController.updateBook(id, newTitle, newAuthor, newDescription, newStatus);
 
         // Assert
+        assertThat(response.getBody()).isEqualTo(bookDTO);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 

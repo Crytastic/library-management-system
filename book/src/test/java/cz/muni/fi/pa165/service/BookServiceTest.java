@@ -70,20 +70,27 @@ public class BookServiceTest {
     }
 
     @Test
-    void updateById_bookFound_returnsOneOrMore() {
+    void updateById_bookFound_returnsUpdatedBook() {
         // Arrange
         Long id = 1L;
         String newTitle = "The Lord of the Rings: The Two Towers";
         String newAuthor = "J. R. R. Tolkien";
         String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
         BookStatus newStatus = BookStatus.BORROWED;
+        Book book = new Book();
+        book.setId(id);
+        book.setAuthor(newAuthor);
+        book.setTitle(newTitle);
+        book.setDescription(newDescription);
+        book.setStatus(newStatus);
         when(bookRepository.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(1);
+        when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
 
         // Act
-        int result = bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus);
+        Book result = bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus);
 
         // Assert
-        assertThat(result).isEqualTo(1);
+        assertThat(result).isEqualTo(book);
     }
 
     @Test

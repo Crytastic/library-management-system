@@ -43,8 +43,8 @@ public class BookFacade {
         bookService.deleteById(id);
     }
 
-    public int updateById(Long id, String title, String author, String description, BookStatus status) {
-        return bookService.updateById(id, title, author, description, status);
+    public BookDTO updateById(Long id, String title, String author, String description, BookStatus status) {
+        return bookMapper.mapToDto(bookService.updateById(id, title, author, description, status));
     }
 
     public List<String> findBookBorrowings(Long id) {

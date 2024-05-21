@@ -61,9 +61,9 @@ public class BookRestController implements BookApi {
 
     @Override
     @Operation(security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Void> updateBook(Long id, String title, String author, String description, BookStatus status) {
-        bookFacade.updateById(id, title, author, description, status);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<BookDTO> updateBook(Long id, String title, String author, String description, BookStatus status) {
+
+        return new ResponseEntity<>( bookFacade.updateById(id, title, author, description, status), HttpStatus.OK);
     }
 
     @Override
