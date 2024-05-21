@@ -232,4 +232,13 @@ class BorrowingFacadeTest {
         List<BorrowingDTO> borrowings = borrowingFacade.findAllActive();
         assertThat(borrowings).hasSize(1).first().isEqualTo(TestDataFactory.activeBorrowingDTO);
     }
+
+    @Test
+    void getAllByBook_someBorrowingWithBookExists_returnsBorrowings() {
+        when(borrowingService.findAllByBook(27L)).thenReturn(List.of(TestDataFactory.activeBorrowing));
+        when(borrowingMapper.mapToList(List.of(TestDataFactory.activeBorrowing))).thenReturn(List.of(TestDataFactory.activeBorrowingDTO));
+
+        List<BorrowingDTO> borrowingsDTO = borrowingFacade.findAllByBook(27L);
+        assertThat(borrowingsDTO).hasSize(1).first().isEqualTo(TestDataFactory.activeBorrowingDTO);
+    }
 }

@@ -138,4 +138,9 @@ public class BorrowingService {
         return borrowingRepository.findAll().stream().filter(b -> !b.isReturned()).collect(Collectors.toList());
     }
 
+    @Transactional
+    public List<Borrowing> findAllByBook(Long id) {
+        return findAll().stream().filter(b -> b.getBookId().equals(id)).collect(Collectors.toList());
+    }
+
 }

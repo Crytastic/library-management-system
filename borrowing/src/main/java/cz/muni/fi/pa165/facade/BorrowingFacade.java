@@ -59,4 +59,8 @@ public class BorrowingFacade {
     public List<BorrowingDTO> findAllActive() {
         return borrowingMapper.mapToList(borrowingService.findAllActive());
     }
+
+    public List<BorrowingDTO> findAllByBook(Long id) {
+        return borrowingMapper.mapToList(borrowingService.findAllByBook(id));
+    }
 }

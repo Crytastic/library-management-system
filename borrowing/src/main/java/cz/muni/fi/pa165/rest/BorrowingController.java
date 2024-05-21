@@ -79,4 +79,11 @@ public class BorrowingController implements BorrowingApi {
     public ResponseEntity<List<BorrowingDTO>> getActiveBorrowings() {
         return new ResponseEntity<>(borrowingFacade.findAllActive(), HttpStatus.OK);
     }
+
+    @Override
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<BorrowingDTO>> getBookBorrowings(Long id) {
+        return new ResponseEntity<>(borrowingFacade.findAllByBook(id), HttpStatus.OK);
+    }
+
 }
