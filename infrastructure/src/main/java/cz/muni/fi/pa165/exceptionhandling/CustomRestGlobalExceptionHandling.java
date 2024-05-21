@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.exceptionhandling;
 
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceAlreadyExistsException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.UnableToContactServiceException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
@@ -53,13 +54,23 @@ public class CustomRestGlobalExceptionHandling {
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
-    /**
-     * Handle all the exceptions not matched by above-mentioned definitions.
-     *
-     * @param ex      the ex
-     * @param request the request
-     * @return the response entity
-     */
+    @ExceptionHandler({UnableToContactServiceException.class})
+    public ResponseEntity<ApiError> handleUnableToContactService(final UnableToContactServiceException ex, final HttpServletRequest request) {
+        final ApiError apiError = new ApiError(
+                LocalDateTime.now(Clock.systemUTC()),
+                HttpStatus.SERVICE_UNAVAILABLE,
+                ex.getLocalizedMessage(),
+                URL_PATH_HELPER.getRequestUri(request));
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+        /**
+         * Handle all the exceptions not matched by above-mentioned definitions.
+         *
+         * @param ex      the ex
+         * @param request the request
+         * @return the response entity
+         */
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ApiError> handleAll(final Exception ex, HttpServletRequest request) {
         final ApiError apiError = new ApiError(
