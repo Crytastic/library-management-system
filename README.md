@@ -192,4 +192,8 @@ For more details on the Library Management System and its microservices, refer t
 ### Class Diagram for the DTOs
 
 ![](./puml/classDiagram.png "Class diagram defining DTOs of library management system")
+
+### High-level communication Diagram
+
+![](./puml/high-level-view.png "High-level component communication")
 ****
