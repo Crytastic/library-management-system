@@ -107,7 +107,7 @@ class ReservationServiceTest {
     }
 
     @Test
-    void createReservation_bookAlreadyReserved_throwsResourceNotAvailableException() {
+    void createReservation_bookAlreadyReserved_throwsConstraintViolationException() {
         // Arrange
         Long bookId = 1L;
         Long reserveeId = 2L;
@@ -118,11 +118,11 @@ class ReservationServiceTest {
 
             when(reservationRepository.findAllActive(now)).thenReturn(List.of(activeReservation));
 
-        // Act
-        Throwable exception = assertThrows(ConstraintViolationException.class, () -> reservationService.createReservation(bookId, reserveeId));
+            // Act
+            Throwable exception = assertThrows(ConstraintViolationException.class, () -> reservationService.createReservation(bookId, reserveeId));
 
-        // Assert
-        assertThat(exception.getMessage()).isEqualTo("Book already reserved.");
+            // Assert
+            assertThat(exception.getMessage()).isEqualTo("Book already reserved.");
         }
     }
 
