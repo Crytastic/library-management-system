@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Book;
 import cz.muni.fi.pa165.data.repository.BookRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ConstraintViolationException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.stubs.BorrowingServiceStub;
 import org.openapitools.model.BookStatus;
@@ -36,6 +37,11 @@ public class BookService {
 
     @Transactional
     public Book createBook(String title, String author, String description) {
+        List<Book> existingBooks = bookRepository.findByFilter(title, author, null, null);
+        if (!existingBooks.isEmpty()) {
+            throw new ConstraintViolationException(String
+                    .format("Book with title %s and author %s already exists.", title, author));
+        }
         return bookRepository.save(new Book(title, author, description, BookStatus.AVAILABLE));
     }
 

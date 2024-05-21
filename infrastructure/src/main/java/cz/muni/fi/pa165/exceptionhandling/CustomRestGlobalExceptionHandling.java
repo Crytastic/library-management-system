@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.exceptionhandling;
 
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ConstraintViolationException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceAlreadyExistsException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.UnauthorizedException;
@@ -48,6 +49,16 @@ public class CustomRestGlobalExceptionHandling {
         final ApiError apiError = new ApiError(
                 LocalDateTime.now(Clock.systemUTC()),
                 HttpStatus.UNAUTHORIZED,
+                ex.getLocalizedMessage(),
+                URL_PATH_HELPER.getRequestUri(request));
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity<ApiError> handleConstraintViolation(final ConstraintViolationException ex, final HttpServletRequest request) {
+        final ApiError apiError = new ApiError(
+                LocalDateTime.now(Clock.systemUTC()),
+                HttpStatus.BAD_REQUEST,
                 ex.getLocalizedMessage(),
                 URL_PATH_HELPER.getRequestUri(request));
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());

@@ -152,6 +152,18 @@ class ReservationServiceTest {
     }
 
     @Test
+    void deleteAll_allReservationsDelete_callsReservationRepositoryDeleteAll() {
+        // Arrange
+        doNothing().when(reservationRepository).deleteAll();
+
+        // Act
+        reservationService.deleteAll();
+
+        // Assert
+        verify(reservationRepository, times(1)).deleteAll();
+    }
+
+    @Test
     void findAllActive_callsReservationRepositoryFindAllActive() {
         // Arrange
         List<Reservation> activeReservations = Arrays.asList(

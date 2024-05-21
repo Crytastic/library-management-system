@@ -110,6 +110,13 @@ class BorrowingFacadeTest {
     }
 
     @Test
+    void deleteAll_allBorrowingsDeleted_callsBorrowingRepositoryOneTime() {
+        borrowingFacade.deleteAll();
+
+        verify(borrowingService, times(1)).deleteAll();
+    }
+
+    @Test
     void findAll_borrowingsReturned_returnsBorrowings() {
         List<Borrowing> borrowings = new ArrayList<>();
         borrowings.add(TestDataFactory.activeBorrowing);

@@ -170,6 +170,15 @@ class ReservationFacadeTest {
     }
 
     @Test
+    void deleteAll_allReservationsDelete_callsDeleteAllOnReservationService() {
+        // Act
+        reservationFacade.deleteAll();
+
+        // Assert
+        verify(reservationService, times(1)).deleteAll();
+    }
+
+    @Test
     void findAllActive_validReservations_returnsListOfActiveReservations() {
         // Arrange
         List<Reservation> activeReservations = new ArrayList<>();

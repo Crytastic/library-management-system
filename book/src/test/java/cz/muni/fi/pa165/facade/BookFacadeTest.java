@@ -127,6 +127,15 @@ class BookFacadeTest {
     }
 
     @Test
+    void deleteAll_allBooksDelete_bookServiceCallsOneTime() {
+        // Act
+        bookFacade.deleteAll();
+
+        // Assert
+        verify(bookService, times(1)).deleteAll();
+    }
+
+    @Test
     void updateById_validParameters_returnsUpdatedBook() {
         // Arrange
         Long id = 1L;
@@ -164,7 +173,7 @@ class BookFacadeTest {
         when(bookService.updateById(id, title, author, description, status)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found", id)));
 
         // Act
-        Throwable throwable = assertThrows(ResourceNotFoundException.class, () ->  bookFacade.updateById(id, title, author, description, status));
+        Throwable throwable = assertThrows(ResourceNotFoundException.class, () -> bookFacade.updateById(id, title, author, description, status));
 
         // Assert
         assertThat(throwable.getMessage()).isEqualTo(String.format("Book with id: %d not found", id));
