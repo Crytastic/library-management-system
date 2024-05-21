@@ -310,3 +310,30 @@ paths:
           description: Forbidden - access token does not have scope test_read
       security:
         - MUNI: [ test_read ]
+  /api/bookBorrowings:
+    get:
+      tags:
+        - Borrowing
+      summary: Get all borrowings of specific book
+      operationId: getBookBorrowings
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                title: BorrowingsResponse
+                items:
+                  $ref: '#/components/schemas/BorrowingDTO'
+        '404':
+          description: Book not found
+      security:
+        - MUNI: [ test_read ]

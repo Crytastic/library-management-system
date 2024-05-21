@@ -146,6 +146,18 @@ class BorrowingControllerTest {
 
     }
 
+    @Test
+    void getAllByBook_someBorrowingPresent_returnsBorrowings() {
+        when(borrowingFacade.findAllByBook(27L)).thenReturn(List.of(TestDataFactory.activeBorrowingDTO));
+
+        ResponseEntity<List<BorrowingDTO>> response = borrowingController.getBookBorrowings(27L);
+
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).hasSize(1).first().isEqualTo(TestDataFactory.activeBorrowingDTO);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    }
+
     private static BorrowingDTO createDTOBorrowing() {
         return new BorrowingDTO()
                 .bookId(4L)

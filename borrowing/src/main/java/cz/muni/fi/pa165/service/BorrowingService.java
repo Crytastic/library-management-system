@@ -3,10 +3,15 @@ package cz.muni.fi.pa165.service;
 import cz.muni.fi.pa165.data.model.Borrowing;
 import cz.muni.fi.pa165.data.repository.BorrowingRepository;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.UnableToContactServiceException;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.UnauthorizedException;
+import cz.muni.fi.pa165.util.ServiceHttpRequestProvider;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClientException;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -24,9 +29,12 @@ import java.util.stream.Collectors;
 public class BorrowingService {
     private final BorrowingRepository borrowingRepository;
 
+    private final ServiceHttpRequestProvider serviceHttpRequestProvider;
+
     @Autowired
-    public BorrowingService(BorrowingRepository borrowingRepository) {
+    public BorrowingService(BorrowingRepository borrowingRepository, ServiceHttpRequestProvider serviceHttpRequestProvider) {
         this.borrowingRepository = borrowingRepository;
+        this.serviceHttpRequestProvider = serviceHttpRequestProvider;
     }
 
     @Transactional
@@ -35,15 +43,27 @@ public class BorrowingService {
     }
 
     public Borrowing createBorrowing(Long bookId, Long borrowerId, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
-        Borrowing borrowing = new Borrowing(bookId,
-                borrowerId,
-                TimeProvider.now(),
-                expectedReturnDate == null ? getDefaultExpectedReturnDate() : expectedReturnDate,
-                false,
-                null,
-                lateReturnWeeklyFine == null ? getDefaultLateReturnWeeklyFine() : lateReturnWeeklyFine,
-                false);
-        return borrowingRepository.save(borrowing);
+        try {
+            ResponseEntity<String> ignoredBook = serviceHttpRequestProvider.callGetBookById(bookId);
+            ResponseEntity<String> ignoredUser = serviceHttpRequestProvider.callGetUserById(borrowerId);
+            Borrowing borrowing = new Borrowing(bookId,
+                    borrowerId,
+                    TimeProvider.now(),
+                    expectedReturnDate == null ? getDefaultExpectedReturnDate() : expectedReturnDate,
+                    false,
+                    null,
+                    lateReturnWeeklyFine == null ? getDefaultLateReturnWeeklyFine() : lateReturnWeeklyFine,
+                    false);
+            return borrowingRepository.save(borrowing);
+        } catch (RestClientException e) {
+            String message = e.getMessage().strip();
+            String httpMessage = message.replace('\"', ' ').strip();
+            switch (message.substring(0, 3)) {
+                case "404" -> throw new ResourceNotFoundException(httpMessage);
+                case "401" -> throw new UnauthorizedException(httpMessage);
+                default -> throw new UnableToContactServiceException(httpMessage);
+            }
+        }
     }
 
     @Transactional
@@ -116,6 +136,11 @@ public class BorrowingService {
     @Transactional
     public List<Borrowing> findAllActive() {
         return borrowingRepository.findAll().stream().filter(b -> !b.isReturned()).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<Borrowing> findAllByBook(Long id) {
+        return findAll().stream().filter(b -> b.getBookId().equals(id)).collect(Collectors.toList());
     }
 
 }
