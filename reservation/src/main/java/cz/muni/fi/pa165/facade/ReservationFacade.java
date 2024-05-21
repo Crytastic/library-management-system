@@ -39,8 +39,8 @@ public class ReservationFacade {
         return reservationMapper.mapToDto(reservationService.findById(id));
     }
 
-    public int updateById(Long id, Long bookId, Long reserveeId, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
-        return reservationService.updateById(id, bookId, reserveeId, reservedFrom, reservedTo);
+    public ReservationDTO updateById(Long id, Long bookId, Long reserveeId, OffsetDateTime reservedFrom, OffsetDateTime reservedTo) {
+        return reservationMapper.mapToDto(reservationService.updateById(id, bookId, reserveeId, reservedFrom, reservedTo));
     }
 
     public void deleteById(Long id) {

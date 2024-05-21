@@ -62,6 +62,19 @@ public class BookRestControllerTest {
     }
 
     @Test
+    void deleteBooks_allBooksDeleted_noContent() {
+        // Arrange
+        doNothing().when(bookFacade).deleteAll();
+
+        // Act
+        ResponseEntity<Void> response = bookRestController.deleteBooks();
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        verify(bookFacade, times(1)).deleteAll();
+    }
+
+    @Test
     void getBook_validId_returnsBook() {
         // Arrange
         Long id = 1L;
@@ -81,22 +94,6 @@ public class BookRestControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-    @Test
-    void getBookBorrowings_validId_returnsBorrowings() {
-        // Arrange
-        Long id = 1L;
-        List<String> borrowings = new ArrayList<>();
-        borrowings.add("Borrowing 1");
-        borrowings.add("Borrowing 2");
-        when(bookFacade.findBookBorrowings(id)).thenReturn(borrowings);
-
-        // Act
-        ResponseEntity<List<String>> response = bookRestController.getBookBorrowings(id);
-
-        // Assert
-        assertThat(response.getBody()).isEqualTo(borrowings);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
 
     @Test
     void updateBook_validIdAndRequestBody_returnsOk() {
@@ -106,13 +103,15 @@ public class BookRestControllerTest {
         String newAuthor = "J. R. R. Tolkien";
         String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
         BookStatus newStatus = BookStatus.BORROWED;
+        BookDTO bookDTO = new BookDTO().id(id).title(newTitle).author(newAuthor).description(newDescription).status(newStatus);
 
-        when(bookFacade.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(1);
+        when(bookFacade.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(bookDTO);
 
         // Act
-        ResponseEntity<Void> response = bookRestController.updateBook(id, newTitle, newAuthor, newDescription, newStatus);
+        ResponseEntity<BookDTO> response = bookRestController.updateBook(id, newTitle, newAuthor, newDescription, newStatus);
 
         // Assert
+        assertThat(response.getBody()).isEqualTo(bookDTO);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 

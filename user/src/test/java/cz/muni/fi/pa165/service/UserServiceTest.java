@@ -96,13 +96,21 @@ class UserServiceTest {
     }
 
     @Test
+    void deleteAll_allUsersDelete_callsUserRepositoryDeleteAll() {
+        userService.deleteAll();
+
+        verify(userRepository, times(1)).deleteAll();
+    }
+
+    @Test
     void updateUser_incorrectUsername_notCallsUserRepositoryUpdateUserAndThrowsUnauthorisedException() {
         User testUser = TestDataFactory.firstMemberDAO;
         when(userRepository.findUserByUsername(anyString())).thenReturn(null);
 
-        assertThrows(UnauthorizedException.class, () ->
+        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () ->
                 userService.updateUser(TestDataFactory.secondMemberDAO.getId(), "IncorrectUserName", testUser.getPasswordHash(), "Nová Adresa 123, Brno", null, null));
 
+        assertThat(exception.getMessage()).isEqualTo("Combination of username and password does not exist.");
         verify(userRepository, times(0)).save(testUser);
     }
 
@@ -111,9 +119,10 @@ class UserServiceTest {
         User testUser = TestDataFactory.firstMemberDAO;
         when(userRepository.findUserByUsername(anyString())).thenReturn(TestDataFactory.secondMemberDAO);
 
-        assertThrows(UnauthorizedException.class, () ->
+        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () ->
                 userService.updateUser(TestDataFactory.secondMemberDAO.getId(), testUser.getUsername(), "incorrectPassword", "Nová Adresa 123, Brno", null, null));
 
+        assertThat(exception.getMessage()).isEqualTo("Combination of username and password does not exist.");
         verify(userRepository, times(0)).save(testUser);
     }
 
@@ -191,8 +200,12 @@ class UserServiceTest {
 
         when(userRepository.findUserByUsername(actor.getUsername())).thenReturn(actor);
 
-        assertThrows(UnauthorizedException.class, () -> userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
+        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () ->
+                userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
                 updatedUser.getAddress(), updatedUser.getBirthDate(), updatedUser.getUserType()));
+
+        assertThat(exception.getMessage())
+                .isEqualTo("As a MEMBER you cannot update other users or update your userType.");
 
         verify(userRepository, times(1)).findUserByUsername(actor.getUsername());
         verify(userRepository, times(0)).findById(userToBeUpdated.getId());
@@ -211,8 +224,11 @@ class UserServiceTest {
 
         when(userRepository.findUserByUsername(actor.getUsername())).thenReturn(actor);
 
-        assertThrows(UnauthorizedException.class, () -> userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
+        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> userService.updateUser(userToBeUpdated.getId(), actor.getUsername(), actorPassword,
                 updatedUser.getAddress(), updatedUser.getBirthDate(), null));
+
+        assertThat(exception.getMessage())
+                .isEqualTo("As a MEMBER you cannot update other users or update your userType.");
 
         verify(userRepository, times(1)).findUserByUsername(actor.getUsername());
         verify(userRepository, times(0)).findById(userToBeUpdated.getId());

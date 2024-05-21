@@ -211,6 +211,10 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookDTO'
         '404':
           description: Not found
         '401':
@@ -219,34 +223,3 @@ paths:
           description: Forbidden - access token does not have scope test_write
       security:
         - MUNI: [ test_write ]
-
-  /api/books/{id}/borrowings:
-    get:
-      tags:
-        - Book
-      summary: Get all borrowings of specific book
-      operationId: getBookBorrowings
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema: #  schema:
-                type: array           #    $ref: '#/path/to/borrowing/schema'
-                items:
-                  type: string
-        '404':
-          description: Book not found
-        '401':
-          description: Unauthorized - access token not provided or not valid
-        '403':
-          description: Forbidden - access token does not have scope test_read
-      security:
-        - MUNI: [ test_read ]

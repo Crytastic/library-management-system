@@ -2,7 +2,9 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Borrowing;
 import cz.muni.fi.pa165.data.repository.BorrowingRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ConstraintViolationException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
+import cz.muni.fi.pa165.util.ServiceHttpRequestProvider;
 import cz.muni.fi.pa165.util.TestDataFactory;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -30,6 +34,9 @@ import static org.mockito.Mockito.*;
 class BorrowingServiceTest {
     @Mock
     private BorrowingRepository borrowingRepository;
+
+    @Mock
+    private ServiceHttpRequestProvider serviceHttpRequestProvider;
 
     @InjectMocks
     private BorrowingService borrowingService;
@@ -62,6 +69,8 @@ class BorrowingServiceTest {
         Borrowing newBorrowing = new Borrowing(bookId, borrowerId, borrowDate, expectedReturnDate, false,
                 null, lateReturnWeeklyFine, false);
         when(borrowingRepository.save(newBorrowing)).thenReturn(newBorrowing);
+        when(serviceHttpRequestProvider.callGetBookById(7L)).thenReturn(new ResponseEntity<>("something", HttpStatus.OK));
+        when(serviceHttpRequestProvider.callGetUserById(8L)).thenReturn(new ResponseEntity<>("something", HttpStatus.OK));
 
         try (MockedStatic<TimeProvider> timeProviderDummy = mockStatic(TimeProvider.class)) {
             timeProviderDummy.when(TimeProvider::now).thenReturn(borrowDate);
@@ -81,12 +90,36 @@ class BorrowingServiceTest {
     }
 
     @Test
+    void createBorrowing_bookAlreadyBorrowed_throwsConstraintViolationException() {
+        // Arrange
+        Long bookId = 1L;
+        Long borrowerId = 2L;
+        OffsetDateTime now = TimeProvider.now();
+        Borrowing activeBorrowing = new Borrowing(bookId, borrowerId, now.minusDays(1), now.plusDays(14), false, null, BigDecimal.TEN, false);
+
+        when(borrowingRepository.findAll()).thenReturn(List.of(activeBorrowing));
+
+        // Act
+        Throwable exception = assertThrows(ConstraintViolationException.class, () -> borrowingService.createBorrowing(bookId, borrowerId, null, null));
+
+        // Assert
+        assertThat(exception.getMessage()).isEqualTo("Book already borrowed.");
+    }
+
+    @Test
     void deleteById_borrowingDeleted_callsBorrowingRepositoryOneTime() {
         Long idToDelete = 1L;
 
         borrowingService.deleteById(idToDelete);
 
         verify(borrowingRepository, times(1)).deleteById(idToDelete);
+    }
+
+    @Test
+    void deleteAll_allBorrowingsDeleted_callsBorrowingRepositoryOneTime() {
+        borrowingService.deleteAll();
+
+        verify(borrowingRepository, times(1)).deleteAll();
     }
 
     @Test
@@ -105,17 +138,18 @@ class BorrowingServiceTest {
     }
 
     @Test
-    void updateById_oneItemChanged_returnsOne() {
+    void updateById_oneItemChanged_returnsUpdatedBorrowing() {
         Long changedBook = 2L;
         Borrowing updatedBorrowing = TestDataFactory.activeBorrowing;
         when(borrowingRepository.updateById(updatedBorrowing.getId(), changedBook, null, null,
                 null, null, null, null, null))
                 .thenReturn(1);
+        when(borrowingRepository.findById(TestDataFactory.activeBorrowing.getId())).thenReturn(Optional.of(updatedBorrowing));
 
-        int numberOfUpdatedBorrowings = borrowingService.updateById(updatedBorrowing.getId(), changedBook, null, null,
+        Borrowing result = borrowingService.updateById(updatedBorrowing.getId(), changedBook, null, null,
                 null, null, null, null, null);
 
-        assertThat(numberOfUpdatedBorrowings).isEqualTo(1);
+        assertThat(result).isEqualTo(TestDataFactory.activeBorrowing);
         verify(borrowingRepository, times(1)).updateById(updatedBorrowing.getId(), changedBook, null, null,
                 null, null, null, null, null);
     }
@@ -141,7 +175,7 @@ class BorrowingServiceTest {
     }
 
     @Test
-    void updateById_allItemChanged_returnsOne() {
+    void updateById_allItemChanged_returnsUpdatedborrowing() {
         Long changedBook = 4L;
         Long borrowerId = 5L;
         Boolean returned = true;
@@ -153,11 +187,12 @@ class BorrowingServiceTest {
         Borrowing updatedBorrowing = TestDataFactory.activeBorrowing;
         when(borrowingRepository.updateById(updatedBorrowing.getId(), changedBook, borrowerId,
                 borrowDate, expectedReturnDate, returned, returnedDate, lateReturnWeeklyFine, fineResolved)).thenReturn(1);
+        when(borrowingRepository.findById(updatedBorrowing.getId())).thenReturn(Optional.of(TestDataFactory.activeBorrowing));
 
-        int numberOfUpdatedBorrowings = borrowingService.updateById(updatedBorrowing.getId(), changedBook, borrowerId,
+        Borrowing result = borrowingService.updateById(updatedBorrowing.getId(), changedBook, borrowerId,
                 borrowDate, expectedReturnDate, returned, returnedDate, lateReturnWeeklyFine, fineResolved);
 
-        assertThat(numberOfUpdatedBorrowings).isEqualTo(1);
+        assertThat(result).isEqualTo(TestDataFactory.activeBorrowing);
         verify(borrowingRepository, times(1)).updateById(updatedBorrowing.getId(), changedBook, borrowerId,
                 borrowDate, expectedReturnDate, returned, returnedDate, lateReturnWeeklyFine, fineResolved);
     }
@@ -252,6 +287,14 @@ class BorrowingServiceTest {
         when(borrowingRepository.findAll()).thenReturn(List.of(TestDataFactory.activeBorrowing, TestDataFactory.inActiveBorrowing));
 
         List<Borrowing> borrowings = borrowingService.findAllActive();
+        assertThat(borrowings).hasSize(1).first().isEqualTo(TestDataFactory.activeBorrowing);
+    }
+
+    @Test
+    void getAllByBook_someBorrowingWithBookExists_returnsBorrowings() {
+        when(borrowingRepository.findAll()).thenReturn(List.of(TestDataFactory.activeBorrowing, TestDataFactory.inActiveBorrowing));
+
+        List<Borrowing> borrowings = borrowingService.findAllByBook(27L);
         assertThat(borrowings).hasSize(1).first().isEqualTo(TestDataFactory.activeBorrowing);
     }
 }

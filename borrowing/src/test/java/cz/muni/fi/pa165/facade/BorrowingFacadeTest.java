@@ -110,6 +110,13 @@ class BorrowingFacadeTest {
     }
 
     @Test
+    void deleteAll_allBorrowingsDeleted_callsBorrowingRepositoryOneTime() {
+        borrowingFacade.deleteAll();
+
+        verify(borrowingService, times(1)).deleteAll();
+    }
+
+    @Test
     void findAll_borrowingsReturned_returnsBorrowings() {
         List<Borrowing> borrowings = new ArrayList<>();
         borrowings.add(TestDataFactory.activeBorrowing);
@@ -137,6 +144,15 @@ class BorrowingFacadeTest {
                 new BigDecimal(3),
                 true);
         updatedBorrowing.setId(3L);
+        BorrowingDTO updatedBorrowingDTO = new BorrowingDTO()
+                .bookId(17L)
+                .borrowerId(18L)
+                .borrowDate(TimeProvider.now())
+                .expectedReturnDate(TimeProvider.now())
+                .returned(true)
+                .returnDate(TimeProvider.now())
+                .lateReturnWeeklyFine(new BigDecimal(3))
+                .fineResolved(true);
 
         when(borrowingService.updateById(
                 updatedBorrowing.getId(),
@@ -148,9 +164,10 @@ class BorrowingFacadeTest {
                 updatedBorrowing.getReturnDate(),
                 updatedBorrowing.getLateReturnWeeklyFine(),
                 updatedBorrowing.isFineResolved()))
-                .thenReturn(1);
+                .thenReturn(updatedBorrowing);
+        when(borrowingMapper.mapToDto(updatedBorrowing)).thenReturn(updatedBorrowingDTO);
 
-        int numberOfUpdatedBorrowings = borrowingFacade.updateById(
+        BorrowingDTO result = borrowingFacade.updateById(
                 updatedBorrowing.getId(),
                 updatedBorrowing.getBookId(),
                 updatedBorrowing.getBorrowerId(),
@@ -161,7 +178,7 @@ class BorrowingFacadeTest {
                 updatedBorrowing.getLateReturnWeeklyFine(),
                 updatedBorrowing.isFineResolved());
 
-        assertThat(numberOfUpdatedBorrowings).isEqualTo(1);
+        assertThat(result).isEqualTo(updatedBorrowingDTO);
         verify(borrowingService, times(1)).updateById(
                 updatedBorrowing.getId(),
                 updatedBorrowing.getBookId(),
@@ -231,5 +248,14 @@ class BorrowingFacadeTest {
 
         List<BorrowingDTO> borrowings = borrowingFacade.findAllActive();
         assertThat(borrowings).hasSize(1).first().isEqualTo(TestDataFactory.activeBorrowingDTO);
+    }
+
+    @Test
+    void getAllByBook_someBorrowingWithBookExists_returnsBorrowings() {
+        when(borrowingService.findAllByBook(27L)).thenReturn(List.of(TestDataFactory.activeBorrowing));
+        when(borrowingMapper.mapToList(List.of(TestDataFactory.activeBorrowing))).thenReturn(List.of(TestDataFactory.activeBorrowingDTO));
+
+        List<BorrowingDTO> borrowingsDTO = borrowingFacade.findAllByBook(27L);
+        assertThat(borrowingsDTO).hasSize(1).first().isEqualTo(TestDataFactory.activeBorrowingDTO);
     }
 }

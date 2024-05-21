@@ -44,8 +44,8 @@ public class BorrowingFacade {
         borrowingService.deleteById(id);
     }
 
-    public int updateById(Long id, Long bookId, Long borrowerId, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
-        return borrowingService.updateById(id, bookId, borrowerId, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved);
+    public BorrowingDTO updateById(Long id, Long bookId, Long borrowerId, OffsetDateTime borrowDate, OffsetDateTime expectedReturnDate, Boolean returned, OffsetDateTime returnDate, BigDecimal lateReturnWeeklyFine, Boolean fineResolved) {
+        return borrowingMapper.mapToDto(borrowingService.updateById(id, bookId, borrowerId, borrowDate, expectedReturnDate, returned, returnDate, lateReturnWeeklyFine, fineResolved));
     }
 
     public BigDecimal getFineById(Long id) {
@@ -58,5 +58,9 @@ public class BorrowingFacade {
 
     public List<BorrowingDTO> findAllActive() {
         return borrowingMapper.mapToList(borrowingService.findAllActive());
+    }
+
+    public List<BorrowingDTO> findAllByBook(Long id) {
+        return borrowingMapper.mapToList(borrowingService.findAllByBook(id));
     }
 }

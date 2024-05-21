@@ -127,69 +127,57 @@ class BookFacadeTest {
     }
 
     @Test
-    void updateById_validParameters_returnsOneOrMore() {
+    void deleteAll_allBooksDelete_bookServiceCallsOneTime() {
+        // Act
+        bookFacade.deleteAll();
+
+        // Assert
+        verify(bookService, times(1)).deleteAll();
+    }
+
+    @Test
+    void updateById_validParameters_returnsUpdatedBook() {
         // Arrange
         Long id = 1L;
         String title = "The Lord of the Rings";
         String author = "J.R.R. Tolkien";
         String description = "Fantasy";
         BookStatus status = BookStatus.BORROWED;
-        when(bookService.updateById(id, title, author, description, status)).thenReturn(1);
+        Book book = new Book();
+        book.setId(id);
+        book.setDescription(description);
+        book.setStatus(status);
+        book.setTitle(title);
+        book.setAuthor(author);
+        BookDTO bookDTO = new BookDTO().id(id).author(author).status(status).title(title).description(description);
+
+        when(bookService.updateById(id, title, author, description, status)).thenReturn(book);
+        when(bookMapper.mapToDto(book)).thenReturn(bookDTO);
 
         // Act
-        int result = bookFacade.updateById(id, title, author, description, status);
+        BookDTO result = bookFacade.updateById(id, title, author, description, status);
 
         // Assert
-        assertThat(result).isEqualTo(1);
+        assertThat(result).isEqualTo(bookDTO);
         verify(bookService, times(1)).updateById(id, title, author, description, status);
     }
 
     @Test
-    void updateById_invalidId_returnsZero() {
+    void updateById_invalidId_throwsResourceNotFoundException() {
         // Arrange
         Long id = 1L;
         String title = "The Lord of the Rings";
         String author = "J.R.R. Tolkien";
         String description = "Fantasy";
         BookStatus status = BookStatus.BORROWED;
-        when(bookService.updateById(id, title, author, description, status)).thenReturn(0);
+        when(bookService.updateById(id, title, author, description, status)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found", id)));
 
         // Act
-        int result = bookFacade.updateById(id, title, author, description, status);
+        Throwable throwable = assertThrows(ResourceNotFoundException.class, () -> bookFacade.updateById(id, title, author, description, status));
 
         // Assert
-        assertThat(result).isEqualTo(0);
+        assertThat(throwable.getMessage()).isEqualTo(String.format("Book with id: %d not found", id));
         verify(bookService, times(1)).updateById(id, title, author, description, status);
     }
 
-    @Test
-    void findBookBorrowings_validId_returnsListOfBorrowings() {
-        // Arrange
-        Long id = 1L;
-        List<String> borrowings = new ArrayList<>();
-        borrowings.add("Pepa z Depa");
-        borrowings.add("Miloš Vokuřil");
-        when(bookService.findBookBorrowings(id)).thenReturn(borrowings);
-
-        // Act
-        List<String> result = bookFacade.findBookBorrowings(id);
-
-        // Assert
-
-        assertThat(result).hasSize(2);
-        verify(bookService, times(1)).findBookBorrowings(id);
-    }
-
-    @Test
-    void findBookBorrowings_invalidId_returnsEmptyOptional() {
-        // Arrange
-        Long id = 1L;
-        when(bookService.findBookBorrowings(id)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found", id)));
-
-        // Act + Assert
-        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookFacade.findBookBorrowings(id));
-        assertThat(exception.getMessage()).isEqualTo(String.format("Book with id: %d not found", id));
-
-        verify(bookService, times(1)).findBookBorrowings(id);
-    }
 }

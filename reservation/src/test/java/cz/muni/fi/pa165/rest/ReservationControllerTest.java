@@ -62,6 +62,16 @@ public class ReservationControllerTest {
     }
 
     @Test
+    void deleteReservations_allReservationsDelete_returnsNoContent() {
+        // Act
+        ResponseEntity<Void> response = reservationController.deleteReservations();
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        verify(reservationFacade, times(1)).deleteAll();
+    }
+
+    @Test
     void getActiveReservations_validReservations_returnsOK() {
         // Arrange
         List<ReservationDTO> activeReservations = new ArrayList<>();
@@ -128,10 +138,12 @@ public class ReservationControllerTest {
         Long reserveeId = 3L;
         OffsetDateTime reservedFrom = TimeProvider.now().plusDays(1);
         OffsetDateTime reservedTo = TimeProvider.now().plusDays(4);
-        when(reservationFacade.updateById(id, bookId, reserveeId, reservedFrom, reservedTo)).thenReturn(1);
+        ReservationDTO reservationDTO = new ReservationDTO().id(id).bookId(bookId).reservedFrom(reservedFrom).reservedTo(reservedTo).reserveeId(reserveeId);
+
+        when(reservationFacade.updateById(id, bookId, reserveeId, reservedFrom, reservedTo)).thenReturn(reservationDTO);
 
         // Act
-        ResponseEntity<Void> response = reservationController.updateReservation(id, bookId, reserveeId, reservedFrom, reservedTo);
+        ResponseEntity<ReservationDTO> response = reservationController.updateReservation(id, bookId, reserveeId, reservedFrom, reservedTo);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

@@ -2,14 +2,19 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Reservation;
 import cz.muni.fi.pa165.data.repository.ReservationRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ConstraintViolationException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
+import cz.muni.fi.pa165.util.ServiceHttpRequestProvider;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
@@ -27,6 +32,9 @@ import static org.mockito.Mockito.*;
 class ReservationServiceTest {
     @Mock
     private ReservationRepository reservationRepository;
+
+    @Mock
+    private ServiceHttpRequestProvider serviceHttpRequestProvider;
 
     @InjectMocks
     private ReservationService reservationService;
@@ -87,6 +95,8 @@ class ReservationServiceTest {
     void createReservation_validReservation_callsReservationRepositoryStore() {
         // Arrange
         when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
+        when(serviceHttpRequestProvider.callGetBookById(4L)).thenReturn(new ResponseEntity<>("something", HttpStatus.OK));
+        when(serviceHttpRequestProvider.callGetUserById(4L)).thenReturn(new ResponseEntity<>("something", HttpStatus.OK));
 
         // Act
         Reservation result = reservationService.createReservation(4L, 4L);
@@ -97,6 +107,26 @@ class ReservationServiceTest {
     }
 
     @Test
+    void createReservation_bookAlreadyReserved_throwsConstraintViolationException() {
+        // Arrange
+        Long bookId = 1L;
+        Long reserveeId = 2L;
+        OffsetDateTime now = TimeProvider.now();
+        try (MockedStatic<TimeProvider> timeProviderDummy = mockStatic(TimeProvider.class)) {
+            timeProviderDummy.when(TimeProvider::now).thenReturn(now);
+            Reservation activeReservation = new Reservation(bookId, reserveeId, now.minusDays(1), now.plusDays(2));
+
+            when(reservationRepository.findAllActive(now)).thenReturn(List.of(activeReservation));
+
+            // Act
+            Throwable exception = assertThrows(ConstraintViolationException.class, () -> reservationService.createReservation(bookId, reserveeId));
+
+            // Assert
+            assertThat(exception.getMessage()).isEqualTo("Book already reserved.");
+        }
+    }
+
+    @Test
     void updateById_existingId_callsReservationRepositoryUpdateById() {
         // Arrange
         Long id = 1L;
@@ -104,13 +134,20 @@ class ReservationServiceTest {
         Long newReserveeId = 11L;
         OffsetDateTime newReservedFrom = TimeProvider.now().plusDays(1);
         OffsetDateTime newReservedTo = TimeProvider.now().plusDays(4);
+        Reservation reservation = new Reservation();
+        reservation.setId(id);
+        reservation.setBookId(newBookId);
+        reservation.setReserveeId(newReserveeId);
+        reservation.setReservedFrom(newReservedFrom);
+        reservation.setReservedTo(newReservedTo);
         when(reservationRepository.updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo)).thenReturn(1);
+        when(reservationRepository.findById(1L)).thenReturn(Optional.of(reservation));
 
         // Act
-        int result = reservationService.updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo);
+        Reservation result = reservationService.updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo);
 
         // Assert
-        assertThat(result).isEqualTo(1);
+        assertThat(result).isEqualTo(reservation);
         verify(reservationRepository, times(1)).updateById(id, newBookId, newReserveeId, newReservedFrom, newReservedTo);
     }
 
@@ -142,6 +179,18 @@ class ReservationServiceTest {
 
         // Assert
         verify(reservationRepository, times(1)).deleteById(id);
+    }
+
+    @Test
+    void deleteAll_allReservationsDelete_callsReservationRepositoryDeleteAll() {
+        // Arrange
+        doNothing().when(reservationRepository).deleteAll();
+
+        // Act
+        reservationService.deleteAll();
+
+        // Assert
+        verify(reservationRepository, times(1)).deleteAll();
     }
 
     @Test

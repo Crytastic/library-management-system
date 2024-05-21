@@ -49,21 +49,15 @@ public class BookRestController implements BookApi {
 
     @Override
     @Operation(security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<List<String>> getBookBorrowings(Long id) {
-        return new ResponseEntity<>(bookFacade.findBookBorrowings(id), HttpStatus.OK);
-    }
-
-    @Override
-    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<BookDTO>> getBooks(String title, String author, String description, BookStatus status) {
         return new ResponseEntity<>(bookFacade.findByFilter(title, author, description, status), HttpStatus.OK);
     }
 
     @Override
     @Operation(security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Void> updateBook(Long id, String title, String author, String description, BookStatus status) {
-        bookFacade.updateById(id, title, author, description, status);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<BookDTO> updateBook(Long id, String title, String author, String description, BookStatus status) {
+
+        return new ResponseEntity<>( bookFacade.updateById(id, title, author, description, status), HttpStatus.OK);
     }
 
     @Override

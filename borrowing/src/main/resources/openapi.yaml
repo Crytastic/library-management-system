@@ -108,7 +108,7 @@ paths:
             in: query,
             required: false,
             schema: { type: string, format: date-time },
-            description: "Expected return date. Three months from now If not specified." }
+            description: "Expected return date. Three months from now If not specified. For example: 2023-05-21T14:30:00+01:00" }
         - { name: lateReturnWeeklyFine,
             in: query,
             required: false,
@@ -197,12 +197,14 @@ paths:
           schema:
             type: string
             format: date-time
+          description: "For example: 2023-05-21T14:30:00+01:00"
         - in: query
           name: expectedReturnDate
           required: false
           schema:
             type: string
             format: date-time
+          description: "For example: 2023-05-21T14:30:00+01:00"
         - in: query
           name: returned
           required: false
@@ -214,6 +216,7 @@ paths:
           schema:
             type: string
             format: date-time
+          description: "For example: 2023-05-21T14:30:00+01:00"
         - in: query
           name: lateReturnWeeklyFine
           required: false
@@ -227,6 +230,10 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BorrowingDTO'
         '404':
           description: Not found
         '401':
@@ -304,5 +311,32 @@ paths:
           description: Unauthorized - access token not provided or not valid
         '403':
           description: Forbidden - access token does not have scope test_read
+      security:
+        - MUNI: [ test_read ]
+  /api/bookBorrowings:
+    get:
+      tags:
+        - Borrowing
+      summary: Get all borrowings of specific book
+      operationId: getBookBorrowings
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                title: BorrowingsResponse
+                items:
+                  $ref: '#/components/schemas/BorrowingDTO'
+        '404':
+          description: Book not found
       security:
         - MUNI: [ test_read ]

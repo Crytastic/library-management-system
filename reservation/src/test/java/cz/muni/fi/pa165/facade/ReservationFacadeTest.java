@@ -117,18 +117,27 @@ class ReservationFacadeTest {
     }
 
     @Test
-    void updateById_validParameters_returnsOneOrMore() {
+    void updateById_validParameters_returnsUpdatedReservation() {
         // Arrange
         Long id = 1L;
         OffsetDateTime reservedFrom = TimeProvider.now();
         OffsetDateTime reservedTo = TimeProvider.now().plusDays(1);
-        when(reservationService.updateById(id, reservation.getBookId(), reservation.getReserveeId(), reservedFrom, reservedTo)).thenReturn(1);
+        Reservation updatedReservation = new Reservation();
+        updatedReservation.setId(id);
+        updatedReservation.setReservedFrom(reservedFrom);
+        updatedReservation.setReservedTo(reservedTo);
+        updatedReservation.setBookId(reservation.getBookId());
+        updatedReservation.setReserveeId(reservation.getReserveeId());
+        ReservationDTO updatedReservationDTO = new ReservationDTO().bookId(id).reservedFrom(reservedFrom).reservedTo(reservedTo).bookId(reservation.getBookId()).reserveeId(reservation.getReserveeId());
+
+        when(reservationService.updateById(id, reservation.getBookId(), reservation.getReserveeId(), reservedFrom, reservedTo)).thenReturn(updatedReservation);
+        when(reservationMapper.mapToDto(updatedReservation)).thenReturn(updatedReservationDTO);
 
         // Act
-        int result = reservationFacade.updateById(id, reservation.getBookId(), reservation.getReserveeId(), reservedFrom, reservedTo);
+        ReservationDTO result = reservationFacade.updateById(id, reservation.getBookId(), reservation.getReserveeId(), reservedFrom, reservedTo);
 
         // Assert
-        assertThat(result).isEqualTo(1);
+        assertThat(result).isEqualTo(updatedReservationDTO);
 
         verify(reservationService, times(1)).updateById(id, reservation.getBookId(), reservation.getReserveeId(), reservedFrom, reservedTo);
     }
@@ -158,6 +167,15 @@ class ReservationFacadeTest {
 
         // Assert
         verify(reservationService, times(1)).deleteById(id);
+    }
+
+    @Test
+    void deleteAll_allReservationsDelete_callsDeleteAllOnReservationService() {
+        // Act
+        reservationFacade.deleteAll();
+
+        // Assert
+        verify(reservationService, times(1)).deleteAll();
     }
 
     @Test

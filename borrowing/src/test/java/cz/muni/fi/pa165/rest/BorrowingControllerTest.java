@@ -89,6 +89,14 @@ class BorrowingControllerTest {
     }
 
     @Test
+    void deleteBorrowings_allBorrowingsDelete_callsBorrowingsFacadeDelete() {
+        ResponseEntity<Void> response = borrowingController.deleteBorrowings();
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        verify(borrowingFacade, times(1)).deleteAll();
+    }
+
+    @Test
     void updateBorrowing_borrowingFound_returnsOkStatus() {
         BorrowingDTO borrowingDTO = createDTOBorrowing();
         when(borrowingFacade.updateById(1L,
@@ -99,9 +107,9 @@ class BorrowingControllerTest {
                 borrowingDTO.getReturned(),
                 borrowingDTO.getReturnDate(),
                 borrowingDTO.getLateReturnWeeklyFine(),
-                borrowingDTO.getFineResolved())).thenReturn(1);
+                borrowingDTO.getFineResolved())).thenReturn(borrowingDTO);
 
-        ResponseEntity<Void> response = borrowingController.updateBorrowing(1L,
+        ResponseEntity<BorrowingDTO> response = borrowingController.updateBorrowing(1L,
                 borrowingDTO.getBookId(),
                 borrowingDTO.getBorrowerId(),
                 borrowingDTO.getBorrowDate(),
@@ -111,6 +119,7 @@ class BorrowingControllerTest {
                 borrowingDTO.getLateReturnWeeklyFine(),
                 borrowingDTO.getFineResolved());
 
+        assertThat(response.getBody()).isEqualTo(borrowingDTO);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
@@ -130,6 +139,18 @@ class BorrowingControllerTest {
         when(borrowingFacade.findAllActive()).thenReturn(List.of(TestDataFactory.activeBorrowingDTO));
 
         ResponseEntity<List<BorrowingDTO>> response = borrowingController.getActiveBorrowings();
+
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()).hasSize(1).first().isEqualTo(TestDataFactory.activeBorrowingDTO);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    }
+
+    @Test
+    void getAllByBook_someBorrowingPresent_returnsBorrowings() {
+        when(borrowingFacade.findAllByBook(27L)).thenReturn(List.of(TestDataFactory.activeBorrowingDTO));
+
+        ResponseEntity<List<BorrowingDTO>> response = borrowingController.getBookBorrowings(27L);
 
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody()).hasSize(1).first().isEqualTo(TestDataFactory.activeBorrowingDTO);

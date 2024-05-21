@@ -142,15 +142,21 @@ paths:
           schema:
             type: string
             format: date-time
+          description: "For example: 2023-05-21T14:30:00+01:00"
         - in: query
           name: reservedTo
           required: false
           schema:
             type: string
             format: date-time
+          description: "For example: 2023-05-21T14:30:00+01:00"
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationDTO'
         '404':
           description: Not found
       security:

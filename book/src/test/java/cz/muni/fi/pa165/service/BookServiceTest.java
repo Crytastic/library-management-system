@@ -2,8 +2,8 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Book;
 import cz.muni.fi.pa165.data.repository.BookRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ConstraintViolationException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
-import cz.muni.fi.pa165.stubs.BorrowingServiceStub;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,8 +23,6 @@ import static org.mockito.Mockito.*;
 public class BookServiceTest {
     @Mock
     private BookRepository bookRepository;
-    @Mock
-    BorrowingServiceStub borrowingServiceStub;
 
     @InjectMocks
     private BookService bookService;
@@ -70,48 +68,27 @@ public class BookServiceTest {
     }
 
     @Test
-    void updateById_bookFound_returnsOneOrMore() {
+    void updateById_bookFound_returnsUpdatedBook() {
         // Arrange
         Long id = 1L;
         String newTitle = "The Lord of the Rings: The Two Towers";
         String newAuthor = "J. R. R. Tolkien";
         String newDescription = "The Lord of the Rings is an epic high fantasy novel by the English author and scholar J. R. R. Tolkien. Set in Middle-earth, the story began as a sequel to Tolkien's 1937 children's book The Hobbit, but eventually developed into a much larger work.";
         BookStatus newStatus = BookStatus.BORROWED;
+        Book book = new Book();
+        book.setId(id);
+        book.setAuthor(newAuthor);
+        book.setTitle(newTitle);
+        book.setDescription(newDescription);
+        book.setStatus(newStatus);
         when(bookRepository.updateById(id, newTitle, newAuthor, newDescription, newStatus)).thenReturn(1);
+        when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
 
         // Act
-        int result = bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus);
+        Book result = bookService.updateById(id, newTitle, newAuthor, newDescription, newStatus);
 
         // Assert
-        assertThat(result).isEqualTo(1);
-    }
-
-    @Test
-    void findBookBorrowings_bookFound_returnsBorrowings() {
-        // Arrange
-        Long id = 1L;
-        List<String> borrowings = List.of("Borrowing 1", "Borrowing 2");
-        when(borrowingServiceStub.apiCallToBorrowingServiceToFindBookBorrowings(id)).thenReturn(borrowings);
-        when(bookRepository.findById(id)).thenReturn(Optional.of(new Book("", "", "", BookStatus.AVAILABLE)));
-
-        // Act
-        List<String> result = bookService.findBookBorrowings(id);
-
-        // Assert
-        assertThat(result).isEqualTo(borrowings);
-    }
-
-    @Test
-    void findBookBorrowings_bookNotFound_returnsEmpty() {
-        // Arrange
-        Long id = 1L;
-        when(bookRepository.findById(id)).thenReturn(Optional.empty());
-
-        // Act + Assert
-        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookService.findBookBorrowings(id));
-        assertThat(exception.getMessage()).isEqualTo(String.format("Book with id: %d not found", id));
-
-
+        assertThat(result).isEqualTo(book);
     }
 
     @Test
@@ -200,6 +177,15 @@ public class BookServiceTest {
     }
 
     @Test
+    void deleteAll_allBooksDelete_callsBookRepositoryDeleteAll() {
+        // Act
+        bookService.deleteAll();
+
+        // Assert
+        verify(bookRepository, times(1)).deleteAll();
+    }
+
+    @Test
     void createBook_returnsCreatedBook() {
         // Arrange
         String title = "The Lord of the Rings";
@@ -207,6 +193,7 @@ public class BookServiceTest {
         String author = "J.R.R. Tolkien";
         Book createdBook = new Book(title, author, description, BookStatus.AVAILABLE);
         when(bookRepository.save(createdBook)).thenReturn(createdBook);
+        when(bookRepository.findByFilter(title, author, null, null)).thenReturn(List.of());
 
         // Act
         Book result = bookService.createBook(title, author, description);
@@ -217,5 +204,19 @@ public class BookServiceTest {
         assertThat(result.getAuthor()).isEqualTo(author);
         assertThat(result.getDescription()).isEqualTo(description);
         verify(bookRepository, times(1)).save(createdBook);
+    }
+
+    @Test
+    void createBook_bookAlreadyExists_throwConstraintViolationException() {
+        // Arrange
+        String title = "The Lord of the Rings";
+        String description = "Fantasy novel";
+        String author = "J.R.R. Tolkien";
+        Book createdBook = new Book(title, author, description, BookStatus.AVAILABLE);
+        when(bookRepository.findByFilter(title, author, null, null)).thenReturn(List.of(createdBook));
+
+        // Act + Assert
+        Throwable exception = assertThrows(ConstraintViolationException.class, () -> bookService.createBook(title, author, description));
+        assertThat(exception.getMessage()).isEqualTo(String.format("Book with title %s and author %s already exists.", title, author));
     }
 }

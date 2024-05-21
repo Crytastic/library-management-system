@@ -1,8 +1,6 @@
 package cz.muni.fi.pa165.exceptionhandling;
 
-import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceAlreadyExistsException;
-import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
-import cz.muni.fi.pa165.exceptionhandling.exceptions.UnauthorizedException;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -48,6 +46,26 @@ public class CustomRestGlobalExceptionHandling {
         final ApiError apiError = new ApiError(
                 LocalDateTime.now(Clock.systemUTC()),
                 HttpStatus.UNAUTHORIZED,
+                ex.getLocalizedMessage(),
+                URL_PATH_HELPER.getRequestUri(request));
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity<ApiError> handleConstraintViolation(final ConstraintViolationException ex, final HttpServletRequest request) {
+        final ApiError apiError = new ApiError(
+                LocalDateTime.now(Clock.systemUTC()),
+                HttpStatus.BAD_REQUEST,
+                ex.getLocalizedMessage(),
+                URL_PATH_HELPER.getRequestUri(request));
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler({UnableToContactServiceException.class})
+    public ResponseEntity<ApiError> handleUnableToContactService(final UnableToContactServiceException ex, final HttpServletRequest request) {
+        final ApiError apiError = new ApiError(
+                LocalDateTime.now(Clock.systemUTC()),
+                HttpStatus.SERVICE_UNAVAILABLE,
                 ex.getLocalizedMessage(),
                 URL_PATH_HELPER.getRequestUri(request));
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
