@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Borrowing;
 import cz.muni.fi.pa165.data.repository.BorrowingRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ConstraintViolationException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.util.ServiceHttpRequestProvider;
 import cz.muni.fi.pa165.util.TestDataFactory;
@@ -86,6 +87,23 @@ class BorrowingServiceTest {
             assertThat(borrowing.isFineResolved()).isFalse();
             verify(borrowingRepository, times(1)).save(newBorrowing);
         }
+    }
+
+    @Test
+    void createBorrowing_bookAlreadyBorrowed_throwsConstraintViolationException() {
+        // Arrange
+        Long bookId = 1L;
+        Long borrowerId = 2L;
+        OffsetDateTime now = TimeProvider.now();
+        Borrowing activeBorrowing = new Borrowing(bookId, borrowerId, now.minusDays(1), now.plusDays(14), false, null, BigDecimal.TEN, false);
+
+        when(borrowingRepository.findAll()).thenReturn(List.of(activeBorrowing));
+
+        // Act
+        Throwable exception = assertThrows(ConstraintViolationException.class, () -> borrowingService.createBorrowing(bookId, borrowerId, null, null));
+
+        // Assert
+        assertThat(exception.getMessage()).isEqualTo("Book already borrowed.");
     }
 
     @Test
