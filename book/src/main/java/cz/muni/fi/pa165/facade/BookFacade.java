@@ -47,10 +47,6 @@ public class BookFacade {
         return bookMapper.mapToDto(bookService.updateById(id, title, author, description, status));
     }
 
-    public List<String> findBookBorrowings(Long id) {
-        return bookService.findBookBorrowings(id);
-    }
-
     public void deleteAll() {
         bookService.deleteAll();
     }
