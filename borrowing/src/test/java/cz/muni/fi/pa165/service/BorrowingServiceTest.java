@@ -3,6 +3,7 @@ package cz.muni.fi.pa165.service;
 import cz.muni.fi.pa165.data.model.Borrowing;
 import cz.muni.fi.pa165.data.repository.BorrowingRepository;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
+import cz.muni.fi.pa165.util.ServiceHttpRequestProvider;
 import cz.muni.fi.pa165.util.TestDataFactory;
 import cz.muni.fi.pa165.util.TimeProvider;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -30,6 +33,9 @@ import static org.mockito.Mockito.*;
 class BorrowingServiceTest {
     @Mock
     private BorrowingRepository borrowingRepository;
+
+    @Mock
+    private ServiceHttpRequestProvider serviceHttpRequestProvider;
 
     @InjectMocks
     private BorrowingService borrowingService;
@@ -62,6 +68,8 @@ class BorrowingServiceTest {
         Borrowing newBorrowing = new Borrowing(bookId, borrowerId, borrowDate, expectedReturnDate, false,
                 null, lateReturnWeeklyFine, false);
         when(borrowingRepository.save(newBorrowing)).thenReturn(newBorrowing);
+        when(serviceHttpRequestProvider.callGetBookById(7L)).thenReturn(new ResponseEntity<>("something", HttpStatus.OK));
+        when(serviceHttpRequestProvider.callGetUserById(8L)).thenReturn(new ResponseEntity<>("something", HttpStatus.OK));
 
         try (MockedStatic<TimeProvider> timeProviderDummy = mockStatic(TimeProvider.class)) {
             timeProviderDummy.when(TimeProvider::now).thenReturn(borrowDate);
