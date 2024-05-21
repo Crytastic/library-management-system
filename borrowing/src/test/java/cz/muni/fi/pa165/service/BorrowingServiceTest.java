@@ -271,4 +271,12 @@ class BorrowingServiceTest {
         List<Borrowing> borrowings = borrowingService.findAllActive();
         assertThat(borrowings).hasSize(1).first().isEqualTo(TestDataFactory.activeBorrowing);
     }
+
+    @Test
+    void getAllByBook_someBorrowingWithBookExists_returnsBorrowings() {
+        when(borrowingRepository.findAll()).thenReturn(List.of(TestDataFactory.activeBorrowing, TestDataFactory.inActiveBorrowing));
+
+        List<Borrowing> borrowings = borrowingService.findAllByBook(27L);
+        assertThat(borrowings).hasSize(1).first().isEqualTo(TestDataFactory.activeBorrowing);
+    }
 }
