@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Reservation;
 import cz.muni.fi.pa165.data.repository.ReservationRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ConstraintViolationException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.UnableToContactServiceException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.UnauthorizedException;
@@ -18,17 +19,10 @@ import java.util.List;
 
 import static java.lang.String.format;
 
-/**
- * Service layer for managing book reservations.
- * Provides methods to interact with reservations.
- *
- * @author Martin Suchánek
- */
 @Service
 public class ReservationService {
-    ReservationRepository reservationRepository;
-
-    ServiceHttpRequestProvider serviceHttpRequestProvider;
+    private final ReservationRepository reservationRepository;
+    private final ServiceHttpRequestProvider serviceHttpRequestProvider;
 
     @Autowired
     public ReservationService(ReservationRepository reservationRepository, ServiceHttpRequestProvider serviceHttpRequestProvider) {
@@ -43,13 +37,18 @@ public class ReservationService {
 
     @Transactional
     public Reservation createReservation(Long bookId, Long reserveeId) {
+        List<Reservation> activeReservations = findAllActive();
+        for (Reservation reservation : activeReservations) {
+            if (reservation.getBookId().equals(bookId)) {
+                throw new ConstraintViolationException("Book already reserved.");
+            }
+        }
 
         try {
             ResponseEntity<String> ignoredBook = serviceHttpRequestProvider.callGetBookById(bookId);
             ResponseEntity<String> ignoredUser = serviceHttpRequestProvider.callGetUserById(reserveeId);
             return reservationRepository.save(new Reservation(bookId, reserveeId, TimeProvider.now(), getDefaultReservationCancelDate()));
         } catch (RestClientException e) {
-
             String message = e.getMessage().strip();
             String httpMessage = message.replace('\"', ' ').strip();
             switch (message.substring(0, 3)) {
@@ -78,7 +77,6 @@ public class ReservationService {
         } else {
             throw new ResourceNotFoundException(format("Reservation with id: %d not found", id));
         }
-
     }
 
     @Transactional
@@ -100,5 +98,4 @@ public class ReservationService {
     public void deleteAll() {
         reservationRepository.deleteAll();
     }
-
 }

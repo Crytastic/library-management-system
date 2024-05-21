@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Borrowing;
 import cz.muni.fi.pa165.data.repository.BorrowingRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ConstraintViolationException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.UnableToContactServiceException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.UnauthorizedException;
@@ -42,7 +43,15 @@ public class BorrowingService {
         return borrowingRepository.findAll();
     }
 
+    @Transactional
     public Borrowing createBorrowing(Long bookId, Long borrowerId, OffsetDateTime expectedReturnDate, BigDecimal lateReturnWeeklyFine) {
+        List<Borrowing> activeBorrowings = findAllActive();
+        for (Borrowing borrowing : activeBorrowings) {
+            if (borrowing.getBookId().equals(bookId)) {
+                throw new ConstraintViolationException("Book already borrowed.");
+            }
+        }
+
         try {
             ResponseEntity<String> ignoredBook = serviceHttpRequestProvider.callGetBookById(bookId);
             ResponseEntity<String> ignoredUser = serviceHttpRequestProvider.callGetUserById(borrowerId);

@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.data.model.Reservation;
 import cz.muni.fi.pa165.data.repository.ReservationRepository;
+import cz.muni.fi.pa165.exceptionhandling.exceptions.ConstraintViolationException;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
 import cz.muni.fi.pa165.util.ServiceHttpRequestProvider;
 import cz.muni.fi.pa165.util.TimeProvider;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -102,6 +104,26 @@ class ReservationServiceTest {
         // Assert
         assertThat(result).isEqualTo(reservation);
         verify(reservationRepository, times(1)).save(any(Reservation.class));
+    }
+
+    @Test
+    void createReservation_bookAlreadyReserved_throwsConstraintViolationException() {
+        // Arrange
+        Long bookId = 1L;
+        Long reserveeId = 2L;
+        OffsetDateTime now = TimeProvider.now();
+        try (MockedStatic<TimeProvider> timeProviderDummy = mockStatic(TimeProvider.class)) {
+            timeProviderDummy.when(TimeProvider::now).thenReturn(now);
+            Reservation activeReservation = new Reservation(bookId, reserveeId, now.minusDays(1), now.plusDays(2));
+
+            when(reservationRepository.findAllActive(now)).thenReturn(List.of(activeReservation));
+
+            // Act
+            Throwable exception = assertThrows(ConstraintViolationException.class, () -> reservationService.createReservation(bookId, reserveeId));
+
+            // Assert
+            assertThat(exception.getMessage()).isEqualTo("Book already reserved.");
+        }
     }
 
     @Test
