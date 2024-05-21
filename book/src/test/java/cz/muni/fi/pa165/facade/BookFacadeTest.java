@@ -162,34 +162,4 @@ class BookFacadeTest {
         verify(bookService, times(1)).updateById(id, title, author, description, status);
     }
 
-    @Test
-    void findBookBorrowings_validId_returnsListOfBorrowings() {
-        // Arrange
-        Long id = 1L;
-        List<String> borrowings = new ArrayList<>();
-        borrowings.add("Pepa z Depa");
-        borrowings.add("Miloš Vokuřil");
-        when(bookService.findBookBorrowings(id)).thenReturn(borrowings);
-
-        // Act
-        List<String> result = bookFacade.findBookBorrowings(id);
-
-        // Assert
-
-        assertThat(result).hasSize(2);
-        verify(bookService, times(1)).findBookBorrowings(id);
-    }
-
-    @Test
-    void findBookBorrowings_invalidId_returnsEmptyOptional() {
-        // Arrange
-        Long id = 1L;
-        when(bookService.findBookBorrowings(id)).thenThrow(new ResourceNotFoundException(String.format("Book with id: %d not found", id)));
-
-        // Act + Assert
-        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookFacade.findBookBorrowings(id));
-        assertThat(exception.getMessage()).isEqualTo(String.format("Book with id: %d not found", id));
-
-        verify(bookService, times(1)).findBookBorrowings(id);
-    }
 }

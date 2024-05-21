@@ -81,22 +81,6 @@ public class BookRestControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-    @Test
-    void getBookBorrowings_validId_returnsBorrowings() {
-        // Arrange
-        Long id = 1L;
-        List<String> borrowings = new ArrayList<>();
-        borrowings.add("Borrowing 1");
-        borrowings.add("Borrowing 2");
-        when(bookFacade.findBookBorrowings(id)).thenReturn(borrowings);
-
-        // Act
-        ResponseEntity<List<String>> response = bookRestController.getBookBorrowings(id);
-
-        // Assert
-        assertThat(response.getBody()).isEqualTo(borrowings);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
 
     @Test
     void updateBook_validIdAndRequestBody_returnsOk() {

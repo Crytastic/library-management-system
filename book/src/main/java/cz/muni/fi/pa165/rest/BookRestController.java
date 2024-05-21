@@ -49,12 +49,6 @@ public class BookRestController implements BookApi {
 
     @Override
     @Operation(security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<List<String>> getBookBorrowings(Long id) {
-        return new ResponseEntity<>(bookFacade.findBookBorrowings(id), HttpStatus.OK);
-    }
-
-    @Override
-    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<BookDTO>> getBooks(String title, String author, String description, BookStatus status) {
         return new ResponseEntity<>(bookFacade.findByFilter(title, author, description, status), HttpStatus.OK);
     }

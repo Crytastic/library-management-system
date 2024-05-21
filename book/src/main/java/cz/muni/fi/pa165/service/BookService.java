@@ -3,7 +3,6 @@ package cz.muni.fi.pa165.service;
 import cz.muni.fi.pa165.data.model.Book;
 import cz.muni.fi.pa165.data.repository.BookRepository;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
-import cz.muni.fi.pa165.stubs.BorrowingServiceStub;
 import org.openapitools.model.BookStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,11 +20,8 @@ import java.util.List;
 public class BookService {
     private final BookRepository bookRepository;
 
-    private final BorrowingServiceStub borrowingServiceStub;
-
     @Autowired
-    public BookService(BorrowingServiceStub borrowingServiceStub, BookRepository bookRepository) {
-        this.borrowingServiceStub = borrowingServiceStub;
+    public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
@@ -57,15 +53,6 @@ public class BookService {
             return updatedCount;
         } else {
             throw new ResourceNotFoundException(String.format("Book with id: %d not found", id));
-        }
-    }
-
-    @Transactional
-    public List<String> findBookBorrowings(Long id) {
-        if (bookRepository.findById(id).isEmpty()) {
-            throw new ResourceNotFoundException(String.format("Book with id: %d not found", id));
-        } else {
-            return borrowingServiceStub.apiCallToBorrowingServiceToFindBookBorrowings(id);
         }
     }
 

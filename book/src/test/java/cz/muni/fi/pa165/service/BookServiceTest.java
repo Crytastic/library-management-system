@@ -3,7 +3,6 @@ package cz.muni.fi.pa165.service;
 import cz.muni.fi.pa165.data.model.Book;
 import cz.muni.fi.pa165.data.repository.BookRepository;
 import cz.muni.fi.pa165.exceptionhandling.exceptions.ResourceNotFoundException;
-import cz.muni.fi.pa165.stubs.BorrowingServiceStub;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,8 +22,6 @@ import static org.mockito.Mockito.*;
 public class BookServiceTest {
     @Mock
     private BookRepository bookRepository;
-    @Mock
-    BorrowingServiceStub borrowingServiceStub;
 
     @InjectMocks
     private BookService bookService;
@@ -84,34 +81,6 @@ public class BookServiceTest {
 
         // Assert
         assertThat(result).isEqualTo(1);
-    }
-
-    @Test
-    void findBookBorrowings_bookFound_returnsBorrowings() {
-        // Arrange
-        Long id = 1L;
-        List<String> borrowings = List.of("Borrowing 1", "Borrowing 2");
-        when(borrowingServiceStub.apiCallToBorrowingServiceToFindBookBorrowings(id)).thenReturn(borrowings);
-        when(bookRepository.findById(id)).thenReturn(Optional.of(new Book("", "", "", BookStatus.AVAILABLE)));
-
-        // Act
-        List<String> result = bookService.findBookBorrowings(id);
-
-        // Assert
-        assertThat(result).isEqualTo(borrowings);
-    }
-
-    @Test
-    void findBookBorrowings_bookNotFound_returnsEmpty() {
-        // Arrange
-        Long id = 1L;
-        when(bookRepository.findById(id)).thenReturn(Optional.empty());
-
-        // Act + Assert
-        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> bookService.findBookBorrowings(id));
-        assertThat(exception.getMessage()).isEqualTo(String.format("Book with id: %d not found", id));
-
-
     }
 
     @Test
